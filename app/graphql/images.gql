@@ -1,0 +1,21 @@
+query GetMediaImages {
+  files(first: 50, query: "mediaType:IMAGE") {
+    edges {
+      node {
+        ... on MediaImage {
+          id
+          image {
+            id
+            url
+            width
+            height
+            altText
+          }
+          originalSource {
+            url
+          }
+        }
+      }
+    }
+  }
+} 

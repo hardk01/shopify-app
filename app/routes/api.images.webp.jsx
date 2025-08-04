@@ -1,5 +1,8 @@
 import { json } from "@remix-run/node";
 import { authenticate } from "../shopify.server";
+import { Subscription } from "../models/subscription.js";
+import { Shop } from "../models/Shop.js";
+import { connectDatabase } from "../utilty/database.js";
 import fs from 'fs';
 import path from 'path';
 import { saveCompressedImage } from "../utils/compressedImages";
@@ -15,7 +18,7 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
 
 export async function action({ request }) {
   try {
-    const { admin } = await authenticate.admin(request);
+    const { admin, session } = await authenticate.admin(request);
     
     if (!sharp) {
       throw new Error('Sharp module is not available');
@@ -25,6 +28,53 @@ export async function action({ request }) {
     
     if (!imageUrl || !imageId) {
       throw new Error('Image URL and ID are required');
+    }
+
+    // Ensure database connection
+    let subscription = null;
+    let shopRecord = null;
+    
+    try {
+      await connectDatabase();
+      
+      // Check plan limits before processing
+      shopRecord = await Shop.findOne({ shop: session.shop });
+      if (!shopRecord) {
+        shopRecord = await Shop.create({
+          shop: session.shop,
+          name: session.shop,
+          myshopifyDomain: session.shop,
+          plan: 'FREE',
+          accessToken: session.accessToken
+        });
+      }
+
+      subscription = await Subscription.findOne({ shopId: shopRecord._id });
+      if (!subscription) {
+        subscription = await Subscription.create({
+          shopId: shopRecord._id,
+          plan: 'FREE',
+          status: 'active',
+          accessToken: session.accessToken
+        });
+      }
+
+      // Check if user has exceeded WebP conversion limits
+      if (subscription.hasExceededImageLimits('webp', 1)) {
+        const limits = subscription.getPlanLimits();
+        const remaining = subscription.getRemainingQuota('webp');
+        return json({
+          success: false,
+          error: `Plan limit exceeded. Your ${subscription.plan} plan allows ${limits.webPConvertLimit} WebP conversions. You have ${remaining} remaining. Please upgrade your plan to continue.`,
+          limitExceeded: true,
+          currentPlan: subscription.plan,
+          limit: limits.webPConvertLimit,
+          remaining: remaining
+        }, { status: 403 });
+      }
+    } catch (dbError) {
+      console.warn('Database connection failed, proceeding without plan limits:', dbError.message);
+      // Continue without plan limits if database is not available
     }
 
     // Get original filename and create WebP filename
@@ -42,15 +92,15 @@ export async function action({ request }) {
             userErrors {
               field
               message
-            }
           }
-        }`,
+        }
+      }`,
         {
           variables: {
             fileIds: [imageId]
           }
         }
-      );
+    );
       const deleteData = await deleteResponse.json();
       if (deleteData.data?.fileDelete?.userErrors?.length > 0) {
         const msg = deleteData.data.fileDelete.userErrors[0].message;
@@ -58,6 +108,11 @@ export async function action({ request }) {
         if (msg.includes('Access denied') || msg.includes('delete files permissions')) {
           console.warn('Could not delete original file due to permissions:', msg);
           deleteError = msg;
+        } else if (msg.includes('does not exist')) {
+          return json({
+            success: false,
+            error: 'The image no longer exists in Shopify and could not be converted.'
+          }, { status: 404 });
         } else {
           throw new Error(`Failed to delete original file: ${msg}`);
         }
@@ -199,7 +254,7 @@ export async function action({ request }) {
               contentType: "IMAGE",
               originalSource: target.resourceUrl,
               filename: webpFilename,
-              alt: `${originalFilename.split('.')[0]}`
+              alt: ""
             }
           ]
         }
@@ -261,7 +316,6 @@ export async function action({ request }) {
       if (!processedFile) {
         throw new Error('Failed to check file status');
       }
-
       retries++;
     }
 
@@ -314,6 +368,11 @@ export async function action({ request }) {
     // Persist the compressed size
     await saveCompressedImage(imageId, webpBuffer.length);
 
+    // Increment the WebP conversion count
+    if (subscription) {
+      await subscription.incrementImageCount('webp', 1);
+    }
+
     return json({
       success: true,
       file: {
@@ -323,6 +382,15 @@ export async function action({ request }) {
         originalDeleted,
         deleteError,
         compressedSize: webpBuffer.length
+      },
+      usage: subscription ? {
+        current: subscription.webPConvertCount + 1,
+        limit: subscription.getPlanLimits().webPConvertLimit,
+        remaining: subscription.getRemainingQuota('webp') - 1
+      } : {
+        current: 0,
+        limit: 50,
+        remaining: 50
       }
     });
 
@@ -371,6 +439,5 @@ export async function loader({ request }) {
       // ...other fields
     };
   });
-
   return json({ images });
 } 

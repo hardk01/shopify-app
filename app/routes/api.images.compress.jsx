@@ -1,5 +1,8 @@
 import { json } from "@remix-run/node";
 import { authenticate } from "../shopify.server";
+import { Subscription } from "../models/subscription.js";
+import { Shop } from "../models/Shop.js";
+import { connectDatabase } from "../utilty/database.js";
 
 let sharp;
 if (typeof process !== 'undefined' && process.versions && process.versions.node) {
@@ -11,21 +14,69 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
 }
 
 export async function action({ request }) {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   
   try {
     if (!sharp) {
       throw new Error('Sharp module is not available');
     }
 
-    const { imageUrl, imageId, quality, filename, altText } = await request.json();
+    const { imageUrl, imageId, quality, filename, originalFilename, altText } = await request.json();
+
+    // Try to connect to database
+    let subscription = null;
+    let shopRecord = null;
+    
+    try {
+      await connectDatabase();
+      
+      // Check plan limits before processing
+      shopRecord = await Shop.findOne({ shop: session.shop });
+      if (!shopRecord) {
+        shopRecord = await Shop.create({
+          shop: session.shop,
+          name: session.shop,
+          myshopifyDomain: session.shop,
+          plan: 'FREE',
+          accessToken: session.accessToken
+        });
+      }
+
+      subscription = await Subscription.findOne({ shopId: shopRecord._id });
+      if (!subscription) {
+        subscription = await Subscription.create({
+          shopId: shopRecord._id,
+          plan: 'FREE',
+          status: 'active',
+          accessToken: session.accessToken
+        });
+      }
+
+      // Check if user has exceeded compression limits
+      if (subscription.hasExceededImageLimits('compress', 1)) {
+        const limits = subscription.getPlanLimits();
+        const remaining = subscription.getRemainingQuota('compress');
+        return json({
+          success: false,
+          error: `Plan limit exceeded. Your ${subscription.plan} plan allows ${limits.imageCompressLimit} image compressions. You have ${remaining} remaining. Please upgrade your plan to continue.`,
+          limitExceeded: true,
+          currentPlan: subscription.plan,
+          limit: limits.imageCompressLimit,
+          remaining: remaining
+        }, { status: 403 });
+      }
+    } catch (dbError) {
+      console.warn('Database connection failed, proceeding without plan limits:', dbError.message);
+      // Continue without plan limits if database is not available
+    }
 
     // Fetch the image from the URL
     const imageResponse = await fetch(imageUrl);
     const imageBuffer = await imageResponse.arrayBuffer();
 
-    const originalFilename = decodeURIComponent(imageUrl.split('/').pop().split('?')[0]);
-    const ext = originalFilename.split('.').pop().toLowerCase();
+    // Use the provided originalFilename or extract it from the URL
+    const extractedFilename = decodeURIComponent(imageUrl.split('/').pop().split('?')[0]);
+    const ext = extractedFilename.split('.').pop().toLowerCase();
     let mimeType = '';
     let compressFn = null;
     let sharpOptions = { quality: parseInt(quality, 10) };
@@ -57,28 +108,51 @@ export async function action({ request }) {
     const compressedSize = compressedImage.length;
     const compressionRatio = (originalSize / compressedSize).toFixed(2);
 
-    // 1. Delete the original file first
-    await admin.graphql(
-      `mutation fileDelete($fileIds: [ID!]!) {
-        fileDelete(fileIds: $fileIds) {
-          deletedFileIds
-          userErrors {
-            field
-            message
+    // IMPORTANT: We need to preserve the exact URL structure to maintain product references
+    
+    // 1. Get the original file details including the exact URL
+    const fileDetailsResponse = await admin.graphql(
+      `query GetFile($id: ID!) {
+        node(id: $id) {
+          ... on MediaImage {
+            id
+            image {
+              url
+              originalSrc
+            }
+            alt
+            originalSource {
+              fileSize
+            }
+            status
           }
         }
       }`,
-      {
-        variables: {
-          fileIds: [imageId]
-        }
-      }
+      { variables: { id: imageId } }
     );
-
-    // Wait a moment for Shopify to process the deletion
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // 2. Get staged upload URL from Shopify
+    
+    const fileDetails = await fileDetailsResponse.json();
+    const originalFile = fileDetails.data?.node;
+    
+    if (!originalFile) {
+      throw new Error('Could not retrieve original file details');
+    }
+    
+    // Store the original URL for reference
+    const originalUrl = originalFile.image.url || originalFile.image.originalSrc;
+    console.log("Original image URL:", originalUrl);
+    
+    // Extract the original filename from the URL
+    const urlParts = originalUrl.split('/');
+    const filenameWithQuery = urlParts[urlParts.length - 1];
+    const filenameOnly = filenameWithQuery.split('?')[0];
+    
+    console.log("Original filename with path:", filenameOnly);
+    
+    // Instead of deleting and recreating, we'll use the fileUpdate mutation
+    // which should preserve the URL structure
+    
+    // 1. First, stage the upload for the compressed image
     const stagedResponse = await admin.graphql(
       `mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
         stagedUploadsCreate(input: $input) {
@@ -100,7 +174,7 @@ export async function action({ request }) {
         variables: {
           input: [
             {
-              filename: originalFilename,
+              filename: filenameOnly, // Use the exact original filename with path
               mimeType: mimeType,
               httpMethod: "POST",
               resource: "FILE"
@@ -124,7 +198,7 @@ export async function action({ request }) {
     target.parameters.forEach(({ name, value }) => {
       formData.append(name, value);
     });
-    formData.append('file', new Blob([compressedImage], { type: mimeType }), originalFilename);
+    formData.append('file', new Blob([compressedImage], { type: mimeType }), filenameOnly);
 
     const uploadResponse = await fetch(target.url, {
       method: 'POST',
@@ -133,11 +207,12 @@ export async function action({ request }) {
     if (!uploadResponse.ok) {
       throw new Error('Failed to upload compressed file to Shopify');
     }
-
-    // 3. Create the new file in Shopify
-    const fileCreateResponse = await admin.graphql(
-      `mutation fileCreate($files: [FileCreateInput!]!) {
-        fileCreate(files: $files) {
+    
+    // 3. Use the fileUpdate mutation to update the existing file
+    // This should preserve the URL structure
+    const fileUpdateResponse = await admin.graphql(
+      `mutation fileUpdate($files: [FileUpdateInput!]!) {
+        fileUpdate(files: $files) {
           files {
             ... on MediaImage {
               id
@@ -155,33 +230,33 @@ export async function action({ request }) {
         variables: {
           files: [
             {
-              contentType: "IMAGE",
+              id: imageId,
               originalSource: target.resourceUrl,
-              filename: originalFilename,
-              alt: altText
+              alt: altText || originalFile.alt || ""
             }
           ]
         }
       }
     );
 
-    const fileData = await fileCreateResponse.json();
-    if (fileData.data?.fileCreate?.userErrors?.length > 0) {
-      throw new Error(fileData.data.fileCreate.userErrors[0].message);
+    const fileData = await fileUpdateResponse.json();
+    if (fileData.data?.fileUpdate?.userErrors?.length > 0) {
+      throw new Error(fileData.data.fileUpdate.userErrors[0].message);
     }
-    const newFile = fileData.data?.fileCreate?.files?.[0];
-    if (!newFile) {
-      console.error("File create response:", JSON.stringify(fileData, null, 2));
+    
+    const updatedFile = fileData.data?.fileUpdate?.files?.[0];
+    if (!updatedFile) {
+      console.error("File update response:", JSON.stringify(fileData, null, 2));
       return json({
         success: false,
-        error: "Failed to create new file in Shopify. Response: " + JSON.stringify(fileData)
+        error: "Failed to update file in Shopify. Response: " + JSON.stringify(fileData)
       }, { status: 500 });
     }
 
     // Poll for file to be ready
     let retries = 0;
     const maxRetries = 10;
-    let readyFile = newFile;
+    let readyFile = updatedFile;
     while ((!readyFile.image || !readyFile.image.url) && retries < maxRetries) {
       // Wait 2 seconds between polls
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -196,7 +271,7 @@ export async function action({ request }) {
             }
           }
         }`,
-        { variables: { id: newFile.id } }
+        { variables: { id: imageId } }
       );
       const checkData = await checkResponse.json();
       readyFile = checkData.data?.node;
@@ -209,14 +284,35 @@ export async function action({ request }) {
         error: "File processing timeout. Please try again later."
       }, { status: 500 });
     }
+    
+    // Log the URLs to verify they match
+    console.log('Original URL:', originalUrl);
+    console.log('Updated URL:', readyFile.image.url);
+
+    // Increment the compression count
+    if (subscription) {
+      await subscription.incrementImageCount('compress', 1);
+    }
 
     // 5. Return the new file info
     return json({
       success: true,
+      originalFilename: originalFilename || extractedFilename.split('.')[0],
       newFile: {
         id: readyFile.id,
         url: readyFile.image.url,
-        size: compressedSize
+        size: compressedSize,
+        originalUrl: originalUrl // Include the original URL for reference
+      },
+      originalFilename: filenameOnly.split('.')[0], // Return the filename without extension
+      usage: subscription ? {
+        current: subscription.imageCompressCount + 1,
+        limit: subscription.getPlanLimits().imageCompressLimit,
+        remaining: subscription.getRemainingQuota('compress') - 1
+      } : {
+        current: 0,
+        limit: 200,
+        remaining: 200
       }
     });
 

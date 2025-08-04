@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --p-font-size-350: 1.125rem;
+  --p-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --polaris-font-family: 'Polaris', 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --polaris-font-size: 14px;
+}
+
+html, body, * {
+  font-family: var(--p-font-family-sans) !important;
+}
+
+/* Global styles */
+.page-container {
+  background: #F7F7F8;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.content-container {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+/* Common text styles */
+.title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #202223;
+  margin-bottom: 24px;
+}
+
+.subtitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: #202223;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 14px;
+  color: #202223;
+  margin-bottom: 2px;
+}
+
+.helper-text {
+  color: #6D7175;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.billing-features,
+.billing-card,
+.billing-features *,
+.billing-card * {
+  font-family: var(--polaris-font-family) !important;
+  font-size: var(--polaris-font-size) !important;
+}

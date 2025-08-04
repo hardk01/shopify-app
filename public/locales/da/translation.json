@@ -1,0 +1,331 @@
+{
+  "welcome": "Velkomst",
+  "logout": "Logout",
+  "language": "Sprog",
+  "select_language": "Vælg dit sprog",
+  "profile": {
+    "title": "Velkommen til appen!",
+    "owner": {
+      "name": "Samantha",
+      "description": "Samantha er ejer af tre blomstrende Shopify -butikker. Start din produktudforskning ved at lære om, hvordan hun finder produkter at sælge."
+    }
+  },
+  "intro": {
+    "greeting": null,
+    "welcome_message": "Velkommen til",
+    "app_name": "Sbit - Upload af bulkprodukt"
+  },
+  "info": {
+    "status": "Gratis",
+    "export_step": "Eksportere"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": null,
+      "title": "Eksporter din bulkproduktfil",
+      "description": "Download din produktliste (CSV) fra enhver e -handelsplatform som Shopify, WooCommerce, Magento eller BigCommerce.",
+      "button": "Brug for fulde instruktioner"
+    },
+    {
+      "step_number": 2,
+      "emoji": null,
+      "title": "Vælg din kildeplatform",
+      "description": "Vælg den platform, hvorfra din produktfil blev eksporteret. Dette hjælper os med at optimere importindstillingerne automatisk.",
+      "button": "Vælg platform"
+    },
+    {
+      "step_number": 3,
+      "emoji": null,
+      "title": "Upload din produktfil",
+      "description": "Upload blot den eksporterede fil her. Vi behandler dine produkter og forbereder dem til problemfri migration i din Shopify -butik.",
+      "button": "Upload fil"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Shopify",
+      "description": "Shopify er en e -handelsplatform, der giver dig mulighed for at oprette en online butik til at sælge produkter."
+    },
+    {
+      "name": "WooCommerce",
+      "description": "WooCommerce er en open source, tilpasselig e-handelsplatform bygget på WordPress."
+    },
+    {
+      "name": "Magento",
+      "description": "Magento er en open source e-handelsplatform skrevet i PHP med kraftfulde værktøjer til at styre din online forretning."
+    },
+    {
+      "name": "BigCommerce",
+      "description": "BigCommerce er en førende SaaS-e-handelsplatform designet til hurtigt voksende virksomheder."
+    }
+  ],
+  "quick_tutorials": {
+    "title": "Hurtige tutorials",
+    "subtitle": "Det er her en valgfri underoverskrift kan gå",
+    "tutorials": [
+      {
+        "title": "Kom godt i gang med Shopify Polaris",
+        "description": "Lær hvordan du konfigurerer din første Shopify -app ved hjælp af Polaris Design System.",
+        "watch_video": "Se video",
+        "read_instruction": "Læs instruktion"
+      },
+      {
+        "title": "Sådan tilføjes brugerdefinerede felter til produkter",
+        "description": "Denne tutorial viser dig, hvordan du tilføjer og administrerer brugerdefinerede felter i dine Shopify -produkter.",
+        "watch_video": "Se video",
+        "read_instruction": "Læs instruktion"
+      },
+      {
+        "title": "Upload din produktfil",
+        "description": "Upload blot den eksporterede fil her. Vi behandler dine produkter og forbereder dem til problemfri migration i din Shopify -butik.",
+        "watch_video": "Se video",
+        "read_instruction": "Læs instruktion"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "Valider produkt",
+    "secondary_action": "Lær mere",
+    "description": "Samantha er ejer af 3 blomstrende Shopify -butikker. Start din produktudforskning ved at lære om, hvordan hun finder produkter at sælge.",
+    "dismiss": "Afskedige"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "Brug for hjælp eller import?",
+        "description": "Få e -mail -support",
+        "info": "E -mail os, så vender vi tilbage til dig så hurtigt som muligt."
+      },
+      "live_chat": {
+        "title": "Start live chat",
+        "description": "Tal med os direkte via live chat for at få hjælp til dit spørgsmål."
+      },
+      "help_docs": {
+        "title": "Hjælp Docs",
+        "description": "Find en løsning til dit problem med dokumenter og tutorials."
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "Hvad er upload af bulkproduktet?",
+      "answer": "Upload af bulkproduktet giver dig mulighed for nemt at importere og eksportere produkter på tværs af flere e -handelsplatforme, herunder Shopify, WooCommerce, Amazon, Walmart, Etsy, BigCommerce og mere. Med vores app kan du strømline din produktstyringsproces og flytte data mellem platforme ubesværet."
+    },
+    {
+      "question": "Hvilke platforme understøttes til produktimport og eksport?",
+      "answer": "Vores app understøtter følgende platforme til produktimport og eksport:\n\n- Shopify\n- Amazon -sælger\n- Walmart sælger\n- eBay -sælger\n- Aliexpress\n- WooCommerce\n- Wix Seller\n- Alibaba\n- Etsy\n- Squarespace\n- BigCommerce\n- Brugerdefineret CSV"
+    },
+    {
+      "question": "Hvordan importerer jeg produkter til min butik?",
+      "answer": "For at importere produkter skal du vælge den ønskede platform (f.eks. Shopify, Amazon osv.), Upload din CSV -fil, der indeholder produktoplysningerne, og appen importerer automatisk produkterne til din butik."
+    },
+    {
+      "question": "Hvordan eksporterer jeg produkter fra Shopify til andre platforme?",
+      "answer": "For at eksportere dine produkter fra Shopify skal du blot vælge den ønskede platform (f.eks. Amazon, eBay osv.) Og vælge eksportindstillingen. Vores app genererer en CSV -fil, som du kan uploade til den valgte platform."
+    },
+    {
+      "question": "Hvilke typer planer er tilgængelige?",
+      "answer": "Vi tilbyder flere abonnementsplaner, der passer til dine behov:\n\nGratis: $ 0/måned for 20 produkter import & eksport (Shopify, WooCommerce). Fornyer ikke.\nButiksplan: $ 9,99/måned for 100 produkter import og eksport (Shopify, Woocommerce, Wix, BigCommerce, Squarespace). Fornyer månedligt.\nLagerplan: $ 14.99/måned for 300 produkter Import & Export (Shopify, WooCommerce, Squarespace, Amazon, Alibaba, Custom Sheet). Fornyer månedligt.\nFabriksplan: $ 49.99/måned for 1.000 produkter Import & Export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, Aliexpress, Etsy). Inkluderer prioriteret support. Fornyer månedligt.\nFranchise Plan: $ 129.99/måned for 3.000 produkter Import & Export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, Aliexpress, Etsy, Ebay). Inkluderer prioriteret support. Fornyer månedligt.\nCitadelplan: $ 499.99/måned for 50.000 produkter Import & Export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, Aliexpress, Etsy, Ebay). Inkluderer prioriteret support. Fornyer månedligt."
+    },
+    {
+      "question": "Hvad er forskellen mellem planerne?",
+      "answer": "De største forskelle mellem planerne er antallet af produkter, du kan importere/eksportere og de understøttede platforme. Planer med højere niveau giver mulighed for større produktimport og flere platformintegrationer. Derudover inkluderer fabrikken, franchisen og citadelplanerne prioriteret support."
+    },
+    {
+      "question": "Får jeg support, hvis jeg har brug for hjælp til appen?",
+      "answer": "Ja, vi tilbyder kundesupport gennem live chat og en supportformular. Du kan nå ud til hjælp til eventuelle problemer, du står overfor. Vores prioriterede support er tilgængelig for fabrikken, franchise og citadelplaner."
+    },
+    {
+      "question": "Hvilke oplysninger har jeg brug for for at give support?",
+      "answer": "For support skal du angive dit navn, e -mail -id, samarbejdskode, gemme adgangskode (af tidligere grunde) og en detaljeret meddelelse, der beskriver dit problem."
+    },
+    {
+      "question": "Hvad sker der, hvis jeg overskrider produktgrænserne for min plan?",
+      "answer": "Hvis du overskrider produktgrænserne for din nuværende plan, skal du opgradere til en højere niveausplan, der understøtter et større antal produkter. Du kan nemt opgradere din plan gennem dine kontoindstillinger."
+    },
+    {
+      "question": "Kan jeg annullere mit abonnement når som helst?",
+      "answer": "Ja, du kan til enhver tid annullere dit abonnement. Hvis du er på en månedlig fornyende plan, træder annulleringen i kraft, efter at din nuværende faktureringscyklus slutter."
+    },
+    {
+      "question": "Hvordan kontakter jeg support?",
+      "answer": "Du kan kontakte support gennem vores live chat -funktion eller ved at udfylde den supportformular, der er tilgængelig i appen. Hvis du bruger en fabrik, franchise eller citadelplan, har du adgang til prioriteret support."
+    },
+    {
+      "question": "Hvad er indstillingen 'Custom CSV'?",
+      "answer": "Indstillingen 'Custom CSV' giver dig mulighed for at importere og eksportere produktdata ved hjælp af dit eget brugerdefinerede CSV -filformat. Dette er ideelt til virksomheder, der har specifikke datastrukturer eller bruger flere platforme uden for standardintegrationerne."
+    }
+  ],
+  "feedback": {
+    "title": "Vil du overveje at forlade os en anmeldelse?",
+    "message": "Vi vil meget gerne høre din feedback! Tag et øjeblik på at forlade en gennemgang og hjælpe os med at forbedre vores service.",
+    "link_text": "Lær mere om SBIT - Upload af bulkdata"
+  },
+  "import": {
+    "title": "Importer produkter",
+    "history": "Importhistorik",
+    "no_history": "Ingen importhistorie fundet.",
+    "source": "Kilde",
+    "date": "Dato",
+    "data_type": "Datatype",
+    "imported": "Importeret",
+    "report": "Rapport",
+    "status": "Status",
+    "view_issues": "Se problemer",
+    "pending": "Indtil",
+    "processing": "Forarbejdning",
+    "complete": "Komplet",
+    "import_issues_for": "Importproblemer til",
+    "updated": "Opdateret",
+    "loading_issues": "Indlæser problemer",
+    "product_name": "Produktnavn",
+    "details": "Detaljer",
+    "importing": "Import",
+    "of": "af",
+    "products": "produkter",
+    "select_source": "Vælg din kildefil",
+    "upload_csv": "Upload CSV",
+    "start_import": "Start import",
+    "import_success": "Importer vellykket!",
+    "import_error": "Import mislykkedes. Prøv igen.",
+    "choose_file": "Vælg fil",
+    "drop_csv": "Slip din CSV -fil her, eller klik for at uploade.",
+    "download_sample": "Download prøve CSV",
+    "instructions": "Instruktioner",
+    "step1": "Trin 1: Download din produktliste (CSV) fra din e -handelsplatform.",
+    "step2": "Trin 2: Vælg din kildeplatform.",
+    "step3": "Trin 3: Upload din produktfil.",
+    "need_help": "Brug for hjælp? Kontakt support.",
+    "quick_tutorials": "Hurtige tutorials",
+    "quick_tutorials_subheading": "Lær hvordan du bruger appen hurtigt",
+    "watch_video": "Se video",
+    "read_instruction": "Læs instruktion",
+    "need_help_or_import": "Brug for hjælp eller import?",
+    "get_email_support": "Få e -mail -support",
+    "email_support_description": "E -mail os, så vender vi tilbage til dig så hurtigt som muligt.",
+    "start_live_chat": "Start live chat",
+    "live_chat_description": "Tal med os direkte via live chat for at få hjælp til dit spørgsmål.",
+    "help_docs": "Hjælp Docs",
+    "help_docs_description": "Find en løsning til dit problem med dokumenter og tutorials.",
+    "select_source_file": "Vælg kildefil",
+    "import_products_by_csv": "Importer produkter af CSV",
+    "add_files": "Tilføj filer",
+    "accepts_csv": "Accepterer kun CSV -filer",
+    "cancel": "Ophæve"
+  },
+  "export": {
+    "title": "Eksportprodukter",
+    "format": "Eksportformat",
+    "select_format": "Vælg Eksportformat",
+    "export_csv": "Eksport CSV",
+    "export_success": "Eksport vellykket!",
+    "export_error": "Eksport mislykkedes. Prøv igen.",
+    "download": "Download",
+    "recent_exports": "Seneste eksport",
+    "no_exports": "Ingen eksporthistorie fundet.",
+    "all": "Alle",
+    "active": "Aktiv",
+    "draft": "Udkast",
+    "archived": "Arkiveret",
+    "search": "Søgningsprodukter",
+    "filters": "Filtre",
+    "clear_filters": "Ryd alle filtre",
+    "exporting": "Eksport ..."
+  },
+  "contact": {
+    "title": "Kontakt support",
+    "your_name": "Dit navn",
+    "your_email": "Din e -mail",
+    "collab_code": "Samarbejdskode",
+    "store_password": "Gem adgangskode",
+    "reason": "Årsag",
+    "message": "Besked",
+    "send": "Sende",
+    "cancel": "Ophæve",
+    "success": "Din besked er sendt!",
+    "error": "Kunne ikke sende besked. Prøv igen.",
+    "required": "Udfyld venligst alle krævede felter",
+    "help_text": "Vi bruger denne adresse, hvis vi har brug for at kontakte dig om din konto.",
+    "technical": "Teknisk problem",
+    "billing": "Fakturering",
+    "feature": "Funktionsanmodning",
+    "other": "Andre",
+    "storeInformation": "Gem oplysninger",
+    "collaborator_request_code": "Samarbejdsanmodningskode",
+    "code_instructions": "For at finde den 4-cifrede adgangskode skal du følge nedenstående trin: Naviger til din Shopify Store Admin> Indstillinger> Brugere> Sikkerhed> Butikssikkerhed> Samarbejdspartnere, og der er din kode!",
+    "password_instructions": "Adgangskode til at få adgang til webstedet, hvis det er tilgængeligt",
+    "contact_reason": "Kontakt grund",
+    "reason_for_contacting": "Grund til at kontakte",
+    "page_information": "Sideoplysninger",
+    "page_help_text": "Oplysninger om den side, du har problemer med, f.eks. Sidetitel, side URL",
+    "message_help_text": "Oplysninger om den side, du har problemer med, f.eks. Sidetitel, side URL"
+  },
+  "billing": {
+    "title": "Priserplaner",
+    "current_plan": "Nuværende plan",
+    "upgrade": "Opgradering",
+    "features": "Funktioner",
+    "price": "Pris",
+    "period": "Periode",
+    "choose_plan": "Vælg Plan",
+    "free": "Gratis",
+    "shop_plan": "Butiksplan",
+    "warehouse_plan": "Lagerplan",
+    "factory_plan": "Fabriksplan",
+    "franchise_plan": "Franchiseplan",
+    "citadel_plan": "Citadelplan",
+    "warning_cookies": "ADVARSEL: Cookies er deaktiveret eller blokeret. Aktivér tredjeparts-cookies i din browser, og sørg for, at du ikke bruger en tunnel, der blokerer cookies (som nogle CloudFlare/NGROK-opsætninger). Shopify -indlejrede apps kræver, at cookies fungerer korrekt.",
+    "plan_details": "Planlæg detaljer",
+    "plan_limits": "Planlæg grænser",
+    "import_limit": "Importgrænse",
+    "export_limit": "Eksportgrænse",
+    "platforms": "Understøttede platforme",
+    "subscription_status": "Abonnementsstatus",
+    "start_date": "Startdato",
+    "end_date": "Slutdato",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "cancel": "Annuller abonnement",
+    "renew": "Forny abonnement",
+    "billing_cycle": "Faktureringscyklus",
+    "monthly": "Månedlig",
+    "annually": "Årligt",
+    "payment_method": "Betalingsmetode",
+    "update_payment": "Opdater betalingsmetode",
+    "invoice_history": "Fakturahistorie",
+    "download_invoice": "Download faktura",
+    "no_invoices": "Ingen fakturaer fundet.",
+    "next_billing": "Næste faktureringsdato",
+    "plan": "Plan",
+    "status": "Status",
+    "actions": "Handlinger",
+    "does_not_renew": "Forny ikke",
+    "renews_monthly": "Fornyer månedligt",
+    "contact_us_to_upgrade": "Kontakt os for at opgradere",
+    "upgrading": "Opgradering ...",
+    "platforms_shop": "Shopify, Woocommerce",
+    "platforms_shop_plus": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace",
+    "platforms_warehouse": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet",
+    "platforms_factory": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, Aliexpress, Etsy",
+    "platforms_franchise": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, Aliexpress, Etsy, Ebay",
+    "platforms_citadel": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, Aliexpress, Etsy, Ebay",
+    "priority_support": "Prioritetsstøtte",
+    "import_export_20": "20 produkter import og eksport",
+    "import_export_100": "100 produkter import og eksport",
+    "import_export_300": "300 produkter import og eksport",
+    "import_export_1000": "1.000 produkter import og eksport",
+    "import_export_3000": "3.000 produkter import og eksport",
+    "import_export_50000": "50.000 produkter import og eksport"
+  },
+  "stats": {
+    "total_product": "Samlet produkt",
+    "import": "Importere",
+    "export": "Eksportere"
+  },
+  "review_banner": {
+    "title": "Vil du overveje at forlade os en anmeldelse?",
+    "message": "Vi vil meget gerne høre din feedback! Tag et øjeblik på at forlade en gennemgang og hjælpe os med at forbedre vores service.",
+    "leave_review": "Efterlad en anmeldelse"
+  }
+}

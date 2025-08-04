@@ -1,0 +1,331 @@
+{
+  "welcome": "Benvenuto",
+  "logout": "Logout",
+  "language": "Lingua",
+  "select_language": "Seleziona la tua lingua",
+  "profile": {
+    "title": "Benvenuti nell'app!",
+    "owner": {
+      "name": "Samantha",
+      "description": "Samantha è il proprietario di tre fiorenti negozi Shopify. Inizia l'esplorazione del tuo prodotto imparando come trova prodotti da vendere."
+    }
+  },
+  "intro": {
+    "greeting": null,
+    "welcome_message": "Benvenuti a",
+    "app_name": "Sbit - Caricamento del prodotto in blocco"
+  },
+  "info": {
+    "status": "Gratuito",
+    "export_step": "Esportare"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": null,
+      "title": "Esporta il tuo file di prodotto sfuso",
+      "description": "Scarica il tuo elenco di prodotti (CSV) da qualsiasi piattaforma di eCommerce come Shopify, WooCommerce, Magento o BigCommerce.",
+      "button": "Hai bisogno di istruzioni complete"
+    },
+    {
+      "step_number": 2,
+      "emoji": null,
+      "title": "Seleziona la tua piattaforma di origine",
+      "description": "Scegli la piattaforma da cui è stato esportato il file del prodotto. Questo ci aiuta a ottimizzare automaticamente le impostazioni di importazione.",
+      "button": "Seleziona la piattaforma"
+    },
+    {
+      "step_number": 3,
+      "emoji": null,
+      "title": "Carica il tuo file di prodotto",
+      "description": "Basta caricare il file esportato qui. Elaboreremo i tuoi prodotti e li prepareremo per la migrazione senza soluzione di continuità nel tuo negozio Shopify.",
+      "button": "Carica file"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Shopify",
+      "description": "Shopify è una piattaforma di e -commerce che ti consente di creare un negozio online per vendere prodotti."
+    },
+    {
+      "name": "WooCommerce",
+      "description": "WooCommerce è una piattaforma di eCommerce personalizzabile a sourfaccia open source costruita su WordPress."
+    },
+    {
+      "name": "Magento",
+      "description": "Magento è una piattaforma di e-commerce open source scritta in PHP, con strumenti potenti per gestire la tua attività online."
+    },
+    {
+      "name": "Bigcommerce",
+      "description": "BigCommerce è una piattaforma di eCommerce SaaS leader progettata per aziende in rapida crescita."
+    }
+  ],
+  "quick_tutorials": {
+    "title": "Tutorial veloci",
+    "subtitle": "È qui che può andare un sottotitolo opzionale",
+    "tutorials": [
+      {
+        "title": "Iniziare con Shopify Polaris",
+        "description": "Scopri come impostare la tua prima app Shopify utilizzando il sistema di progettazione Polaris.",
+        "watch_video": "Guarda il video",
+        "read_instruction": "Leggi le istruzioni"
+      },
+      {
+        "title": "Come aggiungere campi personalizzati ai prodotti",
+        "description": "Questo tutorial mostra come aggiungere e gestire i campi personalizzati nei tuoi prodotti Shopify.",
+        "watch_video": "Guarda il video",
+        "read_instruction": "Leggi le istruzioni"
+      },
+      {
+        "title": "Carica il tuo file di prodotto",
+        "description": "Basta caricare il file esportato qui. Elaboreremo i tuoi prodotti e li prepareremo per la migrazione senza soluzione di continuità nel tuo negozio Shopify.",
+        "watch_video": "Guarda il video",
+        "read_instruction": "Leggi le istruzioni"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "Convalida il prodotto",
+    "secondary_action": "Saperne di più",
+    "description": "Samantha è il proprietario di 3 fiorenti negozi Shopify. Inizia l'esplorazione del tuo prodotto imparando come trova prodotti da vendere.",
+    "dismiss": "Congedare"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "Hai bisogno di aiuto o importazione?",
+        "description": "Ottieni supporto e -mail",
+        "info": "Inviaci un'e -mail e ti ricontatteremo il prima possibile."
+      },
+      "live_chat": {
+        "title": "Inizia la chat dal vivo",
+        "description": "Parla con noi direttamente tramite chat dal vivo per ottenere aiuto con la tua domanda."
+      },
+      "help_docs": {
+        "title": "Aiuta i documenti",
+        "description": "Trova una soluzione per il tuo problema con documenti e tutorial."
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "Qual è l'app di caricamento del prodotto in blocco?",
+      "answer": "L'app di caricamento del prodotto in blocco consente di importare ed esportare facilmente prodotti su più piattaforme di e -commerce, tra cui Shopify, WooCommerce, Amazon, Walmart, Etsy, BigCommerce e altro ancora. Con la nostra app, puoi semplificare il processo di gestione dei prodotti e spostare i dati tra le piattaforme senza sforzo."
+    },
+    {
+      "question": "Quali piattaforme sono supportate per l'importazione ed esportazione del prodotto?",
+      "answer": "La nostra app supporta le seguenti piattaforme per l'importazione ed esportazione del prodotto:\n\n- Shopify\n- Amazon Seller\n- Walmart Seller\n- Venditore eBay\n- Aliexpress\n- WooCommerce\n- Wix Seller\n- Alibaba\n- Etsy\n- Squarespace\n- BigCommerce\n- CSV personalizzato"
+    },
+    {
+      "question": "Come importare prodotti nel mio negozio?",
+      "answer": "Per importare prodotti, selezionare la piattaforma desiderata (ad es. Shopify, Amazon, ecc.), Carica il tuo file CSV contenente i dettagli del prodotto e l'app importerà automaticamente i prodotti nel tuo negozio."
+    },
+    {
+      "question": "Come esporto i prodotti da Shopify ad altre piattaforme?",
+      "answer": "Per esportare i tuoi prodotti da Shopify, seleziona semplicemente la piattaforma desiderata (ad es. Amazon, eBay, ecc.) E scegliere l'opzione di esportazione. La nostra app genererà un file CSV che puoi caricare sulla piattaforma scelta."
+    },
+    {
+      "question": "Quali tipi di piani sono disponibili?",
+      "answer": "Offriamo più piani di abbonamento per soddisfare le tue esigenze:\n\nGRATUITO: $ 0/mese per 20 prodotti Importazione ed esportazione (Shopify, WooCommerce). Non si rinnova.\nPiano del negozio: $ 9,99/mese per 100 prodotti Importazione ed esportazione (Shopify, WooCommerce, Wix, BigCommerce, Squarespace). Rinnova mensilmente.\nPiano di magazzino: $ 14,99/mese per 300 prodotti Importazione ed esportazione (Shopify, Woocommerce, Squarespace, Amazon, Alibaba, foglio personalizzato). Rinnova mensilmente.\nPiano di fabbrica: $ 49,99/mese per 1.000 prodotti Importazione ed esportazione (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Foglio personalizzato, Aliexpress, Etsy). Include il supporto prioritario. Rinnova mensilmente.\nPiano di franchising: $ 129,99/mese per 3.000 prodotti Importazione ed esportazione (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Foglio personalizzato, Aliexpress, Etsy, eBay). Include il supporto prioritario. Rinnova mensilmente.\nPiano Cittadel: $ 499,99/mese per 50.000 prodotti Importazione ed esportazione (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Foglio personalizzato, Aliexpress, Etsy, eBay). Include il supporto prioritario. Rinnova mensilmente."
+    },
+    {
+      "question": "Qual è la differenza tra i piani?",
+      "answer": "Le principali differenze tra i piani sono il numero di prodotti che puoi importare/esportare e le piattaforme supportate. I piani di livello superiore consentono maggiori importazioni di prodotti e più integrazioni della piattaforma. Inoltre, i piani di fabbrica, franchising e cittadella includono supporto prioritario."
+    },
+    {
+      "question": "Ricevo supporto se ho bisogno di aiuto con l'app?",
+      "answer": "Sì, offriamo assistenza clienti tramite chat live e un modulo di supporto. Puoi raggiungere l'assistenza per eventuali problemi che stai affrontando. Il nostro supporto prioritario è disponibile per i piani di fabbrica, franchising e Citadel."
+    },
+    {
+      "question": "Quali informazioni ho bisogno di fornire supporto?",
+      "answer": "Per supporto, fornire il tuo nome, ID e -mail, codice di collaborazione, archiviazione della password (per motivi precedenti) e un messaggio dettagliato che descrive il tuo problema."
+    },
+    {
+      "question": "Cosa succede se supero i limiti del prodotto del mio piano?",
+      "answer": "Se superano i limiti del prodotto del tuo piano attuale, dovrai passare a un piano di livello superiore che supporta un numero maggiore di prodotti. Puoi aggiornare facilmente il tuo piano tramite le impostazioni dell'account."
+    },
+    {
+      "question": "Posso annullare il mio abbonamento in qualsiasi momento?",
+      "answer": "Sì, puoi annullare l'abbonamento in qualsiasi momento. Se sei su un piano di rinnovamento mensile, la cancellazione entrerà in vigore dopo la fine del ciclo di fatturazione attuale."
+    },
+    {
+      "question": "Come contatto il supporto?",
+      "answer": "Puoi contattare il supporto tramite la nostra funzione di chat live o compilando il modulo di supporto disponibile nell'app. Se stai usando un piano di fabbrica, franchising o cittadella, avrai accesso al supporto prioritario."
+    },
+    {
+      "question": "Qual è l'opzione \"CSV personalizzata\"?",
+      "answer": "L'opzione \"CSV personalizzata\" consente di importare ed esportare i dati del prodotto utilizzando il tuo formato di file CSV personalizzato. Questo è ideale per le aziende che dispongono di strutture di dati specifiche o utilizzano più piattaforme al di fuori delle integrazioni standard."
+    }
+  ],
+  "feedback": {
+    "title": "Considereresti di lasciarci una recensione?",
+    "message": "Ci piacerebbe sentire il tuo feedback! Per favore, prenditi un momento per lasciare una recensione e aiutaci a migliorare il nostro servizio.",
+    "link_text": "Ulteriori informazioni su Sbit - Caricamento dei dati in blocco"
+  },
+  "import": {
+    "title": "Importa prodotti",
+    "history": "Cronologia delle importazioni",
+    "no_history": "Nessuna storia di importazione trovata.",
+    "source": "Fonte",
+    "date": "Data",
+    "data_type": "Tipo di dati",
+    "imported": "Importato",
+    "report": "Rapporto",
+    "status": "Stato",
+    "view_issues": "Visualizza i problemi",
+    "pending": "In attesa di",
+    "processing": "Elaborazione",
+    "complete": "Completare",
+    "import_issues_for": "Problemi di importazione per",
+    "updated": "Aggiornato",
+    "loading_issues": "Problemi di caricamento",
+    "product_name": "Nome prodotto",
+    "details": "Dettagli",
+    "importing": "Importazione",
+    "of": "Di",
+    "products": "prodotti",
+    "select_source": "Seleziona il tuo file di origine",
+    "upload_csv": "Carica CSV",
+    "start_import": "Inizia l'importazione",
+    "import_success": "Importa successo!",
+    "import_error": "Importazione non riuscita. Per favore riprova.",
+    "choose_file": "Scegli il file",
+    "drop_csv": "Rilascia il tuo file CSV qui o fai clic per caricare.",
+    "download_sample": "Scarica il campione CSV",
+    "instructions": "Istruzioni",
+    "step1": "Passaggio 1: scarica il tuo elenco di prodotti (CSV) dalla piattaforma di eCommerce.",
+    "step2": "Passaggio 2: selezionare la piattaforma di origine.",
+    "step3": "Passaggio 3: carica il file del prodotto.",
+    "need_help": "Hai bisogno di aiuto? Supporto di contatto.",
+    "quick_tutorials": "Tutorial veloci",
+    "quick_tutorials_subheading": "Impara come utilizzare rapidamente l'app",
+    "watch_video": "Guarda il video",
+    "read_instruction": "Leggi le istruzioni",
+    "need_help_or_import": "Hai bisogno di aiuto o importazione?",
+    "get_email_support": "Ottieni supporto e -mail",
+    "email_support_description": "Inviaci un'e -mail e ti ricontatteremo il prima possibile.",
+    "start_live_chat": "Inizia la chat dal vivo",
+    "live_chat_description": "Parla con noi direttamente tramite chat dal vivo per ottenere aiuto con la tua domanda.",
+    "help_docs": "Aiuta i documenti",
+    "help_docs_description": "Trova una soluzione per il tuo problema con documenti e tutorial.",
+    "select_source_file": "Seleziona il file di origine",
+    "import_products_by_csv": "Importa prodotti da CSV",
+    "add_files": "Aggiungi file",
+    "accepts_csv": "Accetta solo file CSV",
+    "cancel": "Cancellare"
+  },
+  "export": {
+    "title": "Prodotti di esportazione",
+    "format": "Formato di esportazione",
+    "select_format": "Seleziona il formato di esportazione",
+    "export_csv": "Esportazione CSV",
+    "export_success": "Esportazione di successo!",
+    "export_error": "L'esportazione non è riuscita. Per favore riprova.",
+    "download": "Scaricamento",
+    "recent_exports": "Recenti esportazioni",
+    "no_exports": "Nessuna storia di esportazione trovata.",
+    "all": "Tutto",
+    "active": "Attivo",
+    "draft": "Bozza",
+    "archived": "Archiviato",
+    "search": "Cerca prodotti",
+    "filters": "Filtri",
+    "clear_filters": "Cancella tutti i filtri",
+    "exporting": "Esportazione ..."
+  },
+  "contact": {
+    "title": "Supporto di contatto",
+    "your_name": "Il tuo nome",
+    "your_email": "La tua email",
+    "collab_code": "Codice di collaborazione",
+    "store_password": "Memorizza la password",
+    "reason": "Motivo",
+    "message": "Messaggio",
+    "send": "Inviare",
+    "cancel": "Cancellare",
+    "success": "Il tuo messaggio è stato inviato!",
+    "error": "Impossibile inviare messaggio. Per favore riprova.",
+    "required": "Si prega di compilare tutti i campi richiesti",
+    "help_text": "Useremo questo indirizzo se abbiamo bisogno di contattarti sul tuo account.",
+    "technical": "Problema tecnico",
+    "billing": "Fatturazione",
+    "feature": "Richiesta di funzionalità",
+    "other": "Altro",
+    "storeInformation": "Archiviare informazioni",
+    "collaborator_request_code": "Codice di richiesta del collaboratore",
+    "code_instructions": "Per trovare il codice di accesso a 4 cifre, seguire i passaggi seguenti: Passa a Shopify Store Admin> Impostazioni> Utenti> Sicurezza> Sicurezza Store> Collaboratori e c'è il tuo codice!",
+    "password_instructions": "Password per accedere al sito Web se disponibile",
+    "contact_reason": "Motivo di contatto",
+    "reason_for_contacting": "Motivo per contattare",
+    "page_information": "Informazioni sulla pagina",
+    "page_help_text": "Informazioni sulla pagina con cui hai problemi come il titolo di pagina, URL della pagina",
+    "message_help_text": "Informazioni sulla pagina con cui hai problemi come il titolo di pagina, URL della pagina"
+  },
+  "billing": {
+    "title": "Piani di prezzo",
+    "current_plan": "Piano attuale",
+    "upgrade": "Aggiornamento",
+    "features": "Caratteristiche",
+    "price": "Prezzo",
+    "period": "Periodo",
+    "choose_plan": "Scegli il piano",
+    "free": "Gratuito",
+    "shop_plan": "Piano di negozio",
+    "warehouse_plan": "Piano di magazzino",
+    "factory_plan": "Piano di fabbrica",
+    "franchise_plan": "Piano di franchising",
+    "citadel_plan": "Piano Cittadella",
+    "warning_cookies": "ATTENZIONE: i cookie sono disabilitati o bloccati. Si prega di abilitare i cookie di terze parti nel browser e assicurarsi di non utilizzare un tunnel che blocca i cookie (come alcune configurazioni di cloudflare/ngrok). Le app incorporate Shopify richiedono che i cookie funzionino correttamente.",
+    "plan_details": "Dettagli del piano",
+    "plan_limits": "Limiti del piano",
+    "import_limit": "Limite di importazione",
+    "export_limit": "Limite di esportazione",
+    "platforms": "Piattaforme supportate",
+    "subscription_status": "Stato di abbonamento",
+    "start_date": "Data di inizio",
+    "end_date": "Data di fine",
+    "active": "Attivo",
+    "inactive": "Inattivo",
+    "cancel": "Annulla l'abbonamento",
+    "renew": "Rinnovare l'abbonamento",
+    "billing_cycle": "Ciclo di fatturazione",
+    "monthly": "Mensile",
+    "annually": "Annualmente",
+    "payment_method": "Metodo di pagamento",
+    "update_payment": "Aggiorna il metodo di pagamento",
+    "invoice_history": "Storia della fattura",
+    "download_invoice": "Scarica fattura",
+    "no_invoices": "Nessuna fattura trovata.",
+    "next_billing": "Data di fatturazione successiva",
+    "plan": "Piano",
+    "status": "Stato",
+    "actions": "Azioni",
+    "does_not_renew": "Non si rinnova",
+    "renews_monthly": "Rinnova mensilmente",
+    "contact_us_to_upgrade": "Contattaci per aggiornare",
+    "upgrading": "Aggiornamento ...",
+    "platforms_shop": "Shopify, WooCommerce",
+    "platforms_shop_plus": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace",
+    "platforms_warehouse": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Foglio personalizzato",
+    "platforms_factory": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Sheet Custom, Aliexpress, Etsy",
+    "platforms_franchise": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Sheet Custom, Aliexpress, Etsy, eBay",
+    "platforms_citadel": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Sheet Custom, Aliexpress, Etsy, eBay",
+    "priority_support": "Supporto prioritario",
+    "import_export_20": "20 prodotti Importazione ed esportazione",
+    "import_export_100": "100 prodotti Importazione ed esportazione",
+    "import_export_300": "300 prodotti Importazione ed esportazione",
+    "import_export_1000": "1.000 prodotti Importazione ed esportazione",
+    "import_export_3000": "3.000 prodotti Importazione ed esportazione",
+    "import_export_50000": "50.000 prodotti Importazione ed esportazione"
+  },
+  "stats": {
+    "total_product": "Prodotto totale",
+    "import": "Importare",
+    "export": "Esportare"
+  },
+  "review_banner": {
+    "title": "Considereresti di lasciarci una recensione?",
+    "message": "Ci piacerebbe sentire il tuo feedback! Per favore, prenditi un momento per lasciare una recensione e aiutaci a migliorare il nostro servizio.",
+    "leave_review": "Lascia una recensione"
+  }
+}

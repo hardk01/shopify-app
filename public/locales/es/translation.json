@@ -1,0 +1,326 @@
+{
+  "welcome": "Welcome",
+  "logout": "Logout",
+  "language": "Language",
+  "select_language": "Select your language",
+  "profile": {
+    "title": "Welcome to the app!",
+    "owner": {
+      "name": "Samantha",
+      "description": "Samantha is the owner of three thriving Shopify stores. Start your product exploration by learning about how she finds products to sell."
+    }
+  },
+  "intro": {
+    "greeting": "👋",
+    "welcome_message": "Welcome to",
+    "app_name": "SBit - Bulk Product Upload"
+  },
+  "info": {
+    "status": "Free",
+    "export_step": "Export"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": "🚀",
+      "title": "Export Your Bulk Product File",
+      "description": "Download your product list (CSV) from any eCommerce platform like Shopify, WooCommerce, Magento, or BigCommerce.",
+      "button": "Need Full Instructions"
+    },
+    {
+      "step_number": 2,
+      "emoji": "🛒",
+      "title": "Select Your Source Platform",
+      "description": "Choose the platform from which your product file was exported. This helps us optimize the import settings automatically.",
+      "button": "Select Platform"
+    },
+    {
+      "step_number": 3,
+      "emoji": "⛵",
+      "title": "Upload Your Product File",
+      "description": "Simply upload the exported file here. We'll process your products and prepare them for seamless migration into your Shopify store.",
+      "button": "Upload File"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Shopify",
+      "description": "Shopify is an eCommerce platform that lets you create an online store to sell products."
+    },
+    {
+      "name": "WooCommerce",
+      "description": "WooCommerce is an open-source, customizable eCommerce platform built on WordPress."
+    },
+    {
+      "name": "Magento",
+      "description": "Magento is an open-source eCommerce platform written in PHP, with powerful tools to manage your online business."
+    },
+    {
+      "name": "BigCommerce",
+      "description": "BigCommerce is a leading SaaS eCommerce platform designed for fast-growing businesses."
+    }
+  ],
+  "quick_tutorials": {
+    "title": "Quick tutorials",
+    "subtitle": "This is where an optional subheading can go",
+    "tutorials": [
+      {
+        "title": "Getting Started with Shopify Polaris",
+        "description": "Learn how to set up your first Shopify app using the Polaris design system.",
+        "watch_video": "Watch video",
+        "read_instruction": "Read instruction"
+      },
+      {
+        "title": "How to Add Custom Fields to Products",
+        "description": "This tutorial shows you how to add and manage custom fields in your Shopify products.",
+        "watch_video": "Watch video",
+        "read_instruction": "Read instruction"
+      },
+      {
+        "title": "Upload Your Product File",
+        "description": "Simply upload the exported file here. We'll process your products and prepare them for seamless migration into your Shopify store.",
+        "watch_video": "Watch video",
+        "read_instruction": "Read instruction"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "Validate product",
+    "secondary_action": "Learn more",
+    "description": "Samantha is the owner of 3 thriving Shopify stores. Start your product exploration by learning about how she finds products to sell.",
+    "dismiss": "Dismiss"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "Need help or Import?",
+        "description": "Get email support",
+        "info": "Email us and we'll get back to you as soon as possible."
+      },
+      "live_chat": {
+        "title": "Start live chat",
+        "description": "Talk to us directly via live chat to get help with your question."
+      },
+      "help_docs": {
+        "title": "Help docs",
+        "description": "Find a solution for your problem with documents and tutorials."
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "What is the Bulk Product Uploading App?",
+      "answer": "The Bulk Product Uploading App allows you to easily import and export products across multiple eCommerce platforms, including Shopify, WooCommerce, Amazon, Walmart, Etsy, BigCommerce, and more. With our app, you can streamline your product management process and move data between platforms effortlessly."
+    },
+    {
+      "question": "Which platforms are supported for product import and export?",
+      "answer": "Our app supports the following platforms for product import and export:\n\n- Shopify\n- Amazon Seller\n- Walmart Seller\n- eBay Seller\n- AliExpress\n- WooCommerce\n- Wix Seller\n- Alibaba\n- Etsy\n- Squarespace\n- BigCommerce\n- Custom CSV"
+    },
+    {
+      "question": "How do I import products into my store?",
+      "answer": "To import products, select your desired platform (e.g., Shopify, Amazon, etc.), upload your CSV file containing the product details, and the app will automatically import the products to your store."
+    },
+    {
+      "question": "How do I export products from Shopify to other platforms?",
+      "answer": "To export your products from Shopify, simply select the desired platform (e.g., Amazon, eBay, etc.) and choose the export option. Our app will generate a CSV file that you can upload to the chosen platform."
+    },
+    {
+      "question": "What types of plans are available?",
+      "answer": "We offer multiple subscription plans to fit your needs:\n\nFREE: $0/month for 20 products import & export (Shopify, WooCommerce). Does not renew.\nSHOP PLAN: $9.99/month for 100 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace). Renews monthly.\nWAREHOUSE PLAN: $14.99/month for 300 products import & export (Shopify, WooCommerce, Squarespace, Amazon, Alibaba, Custom Sheet). Renews monthly.\nFACTORY PLAN: $49.99/month for 1,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy). Includes priority support. Renews monthly.\nFRANCHISE PLAN: $129.99/month for 3,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, eBay). Includes priority support. Renews monthly.\nCITADEL PLAN: $499.99/month for 50,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, eBay). Includes priority support. Renews monthly."
+    },
+    {
+      "question": "What is the difference between the plans?",
+      "answer": "The main differences between the plans are the number of products you can import/export and the platforms supported. Higher-tier plans allow for larger product imports and more platform integrations. Additionally, the Factory, Franchise, and Citadel plans include priority support."
+    },
+    {
+      "question": "Do I get support if I need help with the app?",
+      "answer": "Yes, we offer customer support through live chat and a support form. You can reach out for assistance with any issues you're facing. Our priority support is available for the Factory, Franchise, and Citadel plans."
+    },
+    {
+      "question": "What information do I need to provide for support?",
+      "answer": "For support, please provide your name, email ID, collaboration code, store password (for previous reasons), and a detailed message describing your issue."
+    },
+    {
+      "question": "What happens if I exceed the product limits of my plan?",
+      "answer": "If you exceed the product limits of your current plan, you will need to upgrade to a higher-tier plan that supports a larger number of products. You can easily upgrade your plan through your account settings."
+    },
+    {
+      "question": "Can I cancel my subscription at any time?",
+      "answer": "Yes, you can cancel your subscription at any time. If you are on a monthly-renewing plan, the cancellation will take effect after your current billing cycle ends."
+    },
+    {
+      "question": "How do I contact support?",
+      "answer": "You can contact support through our live chat feature or by filling out the support form available in the app. If you are using a Factory, Franchise, or Citadel plan, you'll have access to priority support."
+    },
+    {
+      "question": "What is the 'Custom CSV' option?",
+      "answer": "The 'Custom CSV' option allows you to import and export product data using your own custom CSV file format. This is ideal for businesses that have specific data structures or use multiple platforms outside of the standard integrations."
+    }
+  ],
+  "feedback": {
+    "title": "Would you consider leaving us a review?",
+    "message": "We'd love to hear your feedback! Please take a moment to leave a review and help us improve our service.",
+    "link_text": "Learn more about SBit - Bulk Data Upload"
+  },
+  "import": {
+    "title": "Import Products",
+    "history": "Import History",
+    "no_history": "No import history found.",
+    "source": "Source",
+    "date": "Date",
+    "data_type": "Data Type",
+    "imported": "Imported",
+    "report": "Report",
+    "status": "Status",
+    "view_issues": "View issues",
+    "pending": "Pending",
+    "processing": "Processing",
+    "complete": "Complete",
+    "import_issues_for": "Import issues for",
+    "updated": "Updated",
+    "loading_issues": "Loading issues",
+    "product_name": "Product Name",
+    "details": "Details",
+    "importing": "Importing",
+    "of": "of",
+    "products": "products",
+    "select_source": "Select your Source File",
+    "upload_csv": "Upload CSV",
+    "start_import": "Start import",
+    "import_success": "Import successful!",
+    "import_error": "Import failed. Please try again.",
+    "choose_file": "Choose file",
+    "drop_csv": "Drop your CSV file here or click to upload.",
+    "download_sample": "Download sample CSV",
+    "instructions": "Instructions",
+    "step1": "Step 1: Download your product list (CSV) from your eCommerce platform.",
+    "step2": "Step 2: Select your source platform.",
+    "step3": "Step 3: Upload your product file.",
+    "need_help": "Need help? Contact support.",
+    "quick_tutorials": "Quick Tutorials",
+    "quick_tutorials_subheading": "Learn how to use the app quickly",
+    "watch_video": "Watch Video",
+    "read_instruction": "Read Instruction",
+    "need_help_or_import": "Need help or Import?",
+    "get_email_support": "Get email support",
+    "email_support_description": "Email us and we'll get back to you as soon as possible.",
+    "start_live_chat": "Start live chat",
+    "live_chat_description": "Talk to us directly via live chat to get help with your question.",
+    "help_docs": "Help docs",
+    "help_docs_description": "Find a solution for your problem with documents and tutorials."
+  },
+  "export": {
+    "title": "Export Products",
+    "format": "Export Format",
+    "select_format": "Select export format",
+    "export_csv": "Export CSV",
+    "export_success": "Export successful!",
+    "export_error": "Export failed. Please try again.",
+    "download": "Download",
+    "recent_exports": "Recent Exports",
+    "no_exports": "No export history found.",
+    "all": "All",
+    "active": "Active",
+    "draft": "Draft",
+    "archived": "Archived",
+    "search": "Search products",
+    "filters": "Filters",
+    "clear_filters": "Clear all filters",
+    "exporting": "Exporting..."
+  },
+  "contact": {
+    "title": "Contact Support",
+    "your_name": "Your name",
+    "your_email": "Your email",
+    "collab_code": "Collaboration code",
+    "store_password": "Store password",
+    "reason": "Reason",
+    "message": "Message",
+    "send": "Send",
+    "cancel": "Cancel",
+    "success": "Your message has been sent!",
+    "error": "Failed to send message. Please try again.",
+    "required": "Please fill in all required fields",
+    "help_text": "We'll use this address if we need to contact you about your account.",
+    "technical": "Technical Issue",
+    "billing": "Billing",
+    "feature": "Feature Request",
+    "other": "Other",
+    "storeInformation": "Store Information",
+    "collaborator_request_code": "Collaborator request code",
+    "code_instructions": "To find the 4-digit access code, please follow the steps below: Navigate to your Shopify store admin > Settings > Users > Security > Store security > Collaborators, and there's your code!",
+    "password_instructions": "Password to access the website if available",
+    "contact_reason": "Contact Reason",
+    "reason_for_contacting": "Reason for contacting",
+    "page_information": "Page information",
+    "page_help_text": "Information about the page you are having problems with such as page title, page url",
+    "message_help_text": "Information about the page you are having problems with such as page title, page url"
+  },
+  "billing": {
+    "title": "Pricing Plans",
+    "current_plan": "Current Plan",
+    "upgrade": "Upgrade",
+    "features": "Features",
+    "price": "Price",
+    "period": "Period",
+    "choose_plan": "Choose Plan",
+    "free": "Free",
+    "shop_plan": "Shop Plan",
+    "warehouse_plan": "Warehouse Plan",
+    "factory_plan": "Factory Plan",
+    "franchise_plan": "Franchise Plan",
+    "citadel_plan": "Citadel Plan",
+    "warning_cookies": "Warning: Cookies are disabled or blocked. Please enable third-party cookies in your browser and ensure you are not using a tunnel that blocks cookies (like some Cloudflare/ngrok setups). Shopify embedded apps require cookies to work correctly.",
+    "plan_details": "Plan Details",
+    "plan_limits": "Plan Limits",
+    "import_limit": "Import Limit",
+    "export_limit": "Export Limit",
+    "platforms": "Supported Platforms",
+    "subscription_status": "Subscription Status",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "active": "Active",
+    "inactive": "Inactive",
+    "cancel": "Cancel Subscription",
+    "renew": "Renew Subscription",
+    "billing_cycle": "Billing Cycle",
+    "monthly": "Monthly",
+    "annually": "Annually",
+    "payment_method": "Payment Method",
+    "update_payment": "Update Payment Method",
+    "invoice_history": "Invoice History",
+    "download_invoice": "Download Invoice",
+    "no_invoices": "No invoices found.",
+    "next_billing": "Next Billing Date",
+    "plan": "Plan",
+    "status": "Status",
+    "actions": "Actions",
+    "does_not_renew": "Doesn't renew",
+    "renews_monthly": "Renews monthly",
+    "contact_us_to_upgrade": "Contact us to upgrade",
+    "upgrading": "Upgrading...",
+    "platforms_shop": "Shopify, WooCommerce",
+    "platforms_shop_plus": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace",
+    "platforms_warehouse": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet",
+    "platforms_factory": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy",
+    "platforms_franchise": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, Ebay",
+    "platforms_citadel": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, Ebay",
+    "priority_support": "Priority support",
+    "import_export_20": "20 Products Import & Export",
+    "import_export_100": "100 Products Import & Export",
+    "import_export_300": "300 Products Import & Export",
+    "import_export_1000": "1,000 Products Import & Export",
+    "import_export_3000": "3,000 Products Import & Export",
+    "import_export_50000": "50,000 Products Import & Export"
+  },
+  "stats": {
+    "total_product": "Total Product",
+    "import": "Import",
+    "export": "Export"
+  },
+  "review_banner": {
+    "title": "Would you consider leaving us a review?",
+    "message": "We'd love to hear your feedback! Please take a moment to leave a review and help us improve our service.",
+    "leave_review": "Leave a review"
+  }
+}

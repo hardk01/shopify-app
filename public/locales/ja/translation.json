@@ -1,0 +1,331 @@
+{
+  "welcome": "いらっしゃいませ",
+  "logout": "ログアウト",
+  "language": "言語",
+  "select_language": "あなたの言語を選択します",
+  "profile": {
+    "title": "アプリへようこそ！",
+    "owner": {
+      "name": "サマンサ",
+      "description": "サマンサは、3つの繁栄したShopify店の所有者です。彼女が販売する製品をどのように見つけているのかを学んで、製品の探索を始めましょう。"
+    }
+  },
+  "intro": {
+    "greeting": null,
+    "welcome_message": "ようこそ",
+    "app_name": "SBIT-バルク製品のアップロード"
+  },
+  "info": {
+    "status": "無料",
+    "export_step": "輸出"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": null,
+      "title": "バルク製品ファイルをエクスポートします",
+      "description": "Shopify、Woocommerce、Magento、BigCommerceなどのeコマースプラットフォームから製品リスト（CSV）をダウンロードしてください。",
+      "button": "完全な指示が必要です"
+    },
+    {
+      "step_number": 2,
+      "emoji": null,
+      "title": "ソースプラットフォームを選択します",
+      "description": "製品ファイルがエクスポートされたプラットフォームを選択します。これにより、インポート設定を自動的に最適化できます。",
+      "button": "プラットフォームを選択します"
+    },
+    {
+      "step_number": 3,
+      "emoji": null,
+      "title": "製品ファイルをアップロードします",
+      "description": "ここにエクスポートされたファイルをアップロードするだけです。私たちはあなたの製品を処理し、あなたのShopifyストアへのシームレスな移行のためにそれらを準備します。",
+      "button": "ファイルをアップロードします"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Shopify",
+      "description": "Shopifyは、製品を販売するためのオンラインストアを作成できるeコマースプラットフォームです。"
+    },
+    {
+      "name": "woocommerce",
+      "description": "WooCommerceは、WordPressに構築されたオープンソースのカスタマイズ可能なeコマースプラットフォームです。"
+    },
+    {
+      "name": "マゼント",
+      "description": "Magentoは、オンラインビジネスを管理するための強力なツールを備えたPHPで書かれたオープンソースのeコマースプラットフォームです。"
+    },
+    {
+      "name": "BigCommerce",
+      "description": "BigCommerceは、急速に成長するビジネス向けに設計された主要なSaaS eコマースプラットフォームです。"
+    }
+  ],
+  "quick_tutorials": {
+    "title": "クイックチュートリアル",
+    "subtitle": "これは、オプションのサブヘディングが進むことができる場所です",
+    "tutorials": [
+      {
+        "title": "Shopify Polarisを始めましょう",
+        "description": "Polaris設計システムを使用して、最初のShopifyアプリをセットアップする方法を学びます。",
+        "watch_video": "ビデオを見る",
+        "read_instruction": "指示を読んでください"
+      },
+      {
+        "title": "製品にカスタムフィールドを追加する方法",
+        "description": "このチュートリアルでは、Shopify製品にカスタムフィールドを追加および管理する方法を示します。",
+        "watch_video": "ビデオを見る",
+        "read_instruction": "指示を読んでください"
+      },
+      {
+        "title": "製品ファイルをアップロードします",
+        "description": "ここにエクスポートされたファイルをアップロードするだけです。私たちはあなたの製品を処理し、あなたのShopifyストアへのシームレスな移行のためにそれらを準備します。",
+        "watch_video": "ビデオを見る",
+        "read_instruction": "指示を読んでください"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "製品を検証します",
+    "secondary_action": "もっと詳しく知る",
+    "description": "サマンサは、3つのThring Shopify Storesのオーナーです。彼女が販売する製品をどのように見つけているのかを学んで、製品の探索を始めましょう。",
+    "dismiss": "却下する"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "ヘルプまたはインポートが必要ですか？",
+        "description": "電子メールサポートを取得します",
+        "info": "メールでお問い合わせください。できるだけ早くご連絡いたします。"
+      },
+      "live_chat": {
+        "title": "ライブチャットを開始します",
+        "description": "ライブチャットで直接私たちに相談して、あなたの質問を助けてください。"
+      },
+      "help_docs": {
+        "title": "ドキュメントを手伝ってください",
+        "description": "ドキュメントやチュートリアルの問題の解決策を見つけてください。"
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "バルク製品アップロードアプリは何ですか？",
+      "answer": "Bulk製品アップロードアプリを使用すると、Shopify、Woocommerce、Amazon、Walmart、Etsy、BigCommerceなど、複数のeコマースプラットフォームに製品を簡単にインポートおよびエクスポートできます。アプリを使用すると、製品管理プロセスを合理化し、プラットフォーム間のデータを簡単に移動できます。"
+    },
+    {
+      "question": "製品のインポートとエクスポートのためにサポートされているプラ​​ットフォームはどれですか？",
+      "answer": "当社のアプリは、製品のインポートとエクスポートのための次のプラットフォームをサポートしています。\n\n -  Shopify\n - アマゾンの売り手\n - ウォルマート売り手\n -  eBayの売り手\n -  aliexpress\n-WooCommerce\n-WIXセラー\n - アリババ\n-Etsy\n -  squarespace\n-bigcommerce\n - カスタムCSV"
+    },
+    {
+      "question": "私の店に製品を輸入するにはどうすればよいですか？",
+      "answer": "製品をインポートするには、目的のプラットフォーム（Shopify、Amazonなどなど）を選択し、製品の詳細を含むCSVファイルをアップロードすると、アプリは製品をストアに自動的にインポートします。"
+    },
+    {
+      "question": "Shopifyから他のプラットフォームに製品をエクスポートするにはどうすればよいですか？",
+      "answer": "Shopifyから製品をエクスポートするには、目的のプラットフォーム（Amazon、eBayなどなど）を選択し、エクスポートオプションを選択します。当社のアプリは、選択したプラットフォームにアップロードできるCSVファイルを生成します。"
+    },
+    {
+      "question": "どのような種類のプランが利用可能ですか？",
+      "answer": "お客様のニーズに合わせて複数のサブスクリプションプランを提供しています。\n\n無料：20製品の輸入＆エクスポート（Shopify、Woocommerce）の場合は月額0ドル。更新しません。\nショッププラン：100製品の輸入と輸出（Shopify、Woocommerce、Wix、BigCommerce、Squarespace）の場合、月額9.99ドル。毎月更新します。\n倉庫計画：300製品の輸入と輸出（Shopify、Woocommerce、Squarespace、Amazon、Alibaba、カスタムシート）の場合、月額14.99ドル。毎月更新します。\n工場計画：1,000製品の輸入と輸出（Shopify、Woocommerce、Wix、BigCommerce、Squarespace、Amazon、Alibaba、カスタムシート、Aliexpress、Etsy）の場合、月額49.99ドル/月。優先サポートが含まれています。毎月更新します。\nフランチャイズプラン：3,000製品の輸入と輸出（Shopify、Woocommerce、Wix、BigCommerce、Squarespace、Amazon、Alibaba、カスタムシート、Aliexpress、Etsy、eBay）の場合、月額129.99ドル/月。優先サポートが含まれています。毎月更新します。\nCitadel Plan：50,000製品の輸入と輸出（Shopify、Woocommerce、Wix、BigCommerce、Squarespace、Amazon、Alibaba、Custom Sheet、Aliexpress、Etsy、eBay）の場合、月額499.99ドル/月。優先サポートが含まれています。毎月更新します。"
+    },
+    {
+      "question": "計画の違いは何ですか？",
+      "answer": "プランの主な違いは、インポート/エクスポートできる製品の数とサポートされているプラ​​ットフォームです。高層プランにより、製品の輸入が大きくなり、プラットフォームの統合が増加する可能性があります。さらに、工場、フランチャイズ、およびシタデルの計画には、優先サポートが含まれています。"
+    },
+    {
+      "question": "アプリのサポートが必要な場合はサポートが得られますか？",
+      "answer": "はい、ライブチャットとサポートフォームを通じてカスタマーサポートを提供しています。あなたが直面している問題について支援を求めることができます。私たちの優先サポートは、工場、フランチャイズ、シタデル計画で利用できます。"
+    },
+    {
+      "question": "サポートのためにどのような情報を提供する必要がありますか？",
+      "answer": "サポートについては、名前、電子メールID、コラボレーションコード、パスワードを保存する（以前の理由で）、および問題を説明する詳細なメッセージを提供してください。"
+    },
+    {
+      "question": "計画の製品制限を超えるとどうなりますか？",
+      "answer": "現在のプランの製品制限を超えた場合、より多くの製品をサポートする高層プランにアップグレードする必要があります。アカウント設定を通じてプランを簡単にアップグレードできます。"
+    },
+    {
+      "question": "いつでもサブスクリプションをキャンセルできますか？",
+      "answer": "はい、いつでもサブスクリプションをキャンセルできます。毎月の再生計画を立てている場合、現在の請求サイクルが終了した後、キャンセルが有効になります。"
+    },
+    {
+      "question": "サポートに連絡するにはどうすればよいですか？",
+      "answer": "ライブチャット機能を介して、またはアプリで利用可能なサポートフォームに記入することにより、サポートに連絡できます。工場、フランチャイズ、またはシタデルプランを使用している場合、優先サポートにアクセスできます。"
+    },
+    {
+      "question": "「カスタムCSV」オプションは何ですか？",
+      "answer": "「カスタムCSV」オプションを使用すると、独自のカスタムCSVファイル形式を使用して製品データをインポートおよびエクスポートできます。これは、特定のデータ構造を持っている企業や標準統合以外の複数のプラットフォームを使用する企業に最適です。"
+    }
+  ],
+  "feedback": {
+    "title": "レビューを残すと思いますか？",
+    "message": "あなたのフィードバックを聞いてみたいです！レビューを残して、サービスを改善するのを手伝ってください。",
+    "link_text": "SBITの詳細 - バルクデータのアップロードをご覧ください"
+  },
+  "import": {
+    "title": "輸入製品",
+    "history": "インポート履歴",
+    "no_history": "輸入履歴は見つかりません。",
+    "source": "ソース",
+    "date": "日付",
+    "data_type": "データ型",
+    "imported": "輸入",
+    "report": "報告",
+    "status": "状態",
+    "view_issues": "問題を表示します",
+    "pending": "保留中",
+    "processing": "処理",
+    "complete": "完了",
+    "import_issues_for": "の問題をインポートします",
+    "updated": "更新",
+    "loading_issues": "ロードの問題",
+    "product_name": "製品名",
+    "details": "詳細",
+    "importing": "インポート",
+    "of": "の",
+    "products": "製品",
+    "select_source": "ソースファイルを選択します",
+    "upload_csv": "CSVをアップロードします",
+    "start_import": "インポートを開始します",
+    "import_success": "インポート成功！",
+    "import_error": "インポートが失敗しました。もう一度やり直してください。",
+    "choose_file": "ファイルを選択します",
+    "drop_csv": "CSVファイルをここにドロップするか、クリックしてアップロードします。",
+    "download_sample": "サンプルCSVをダウンロードします",
+    "instructions": "説明書",
+    "step1": "ステップ1：eコマースプラットフォームから製品リスト（CSV）をダウンロードします。",
+    "step2": "ステップ2：ソースプラットフォームを選択します。",
+    "step3": "ステップ3：製品ファイルをアップロードします。",
+    "need_help": "助けが必要ですか？お問い合わせサポート。",
+    "quick_tutorials": "クイックチュートリアル",
+    "quick_tutorials_subheading": "アプリをすばやく使用する方法を学びます",
+    "watch_video": "ビデオを見る",
+    "read_instruction": "指示を読んでください",
+    "need_help_or_import": "ヘルプまたはインポートが必要ですか？",
+    "get_email_support": "電子メールサポートを取得します",
+    "email_support_description": "メールでお問い合わせください。できるだけ早くご連絡いたします。",
+    "start_live_chat": "ライブチャットを開始します",
+    "live_chat_description": "ライブチャットで直接私たちに相談して、あなたの質問を助けてください。",
+    "help_docs": "ドキュメントを手伝ってください",
+    "help_docs_description": "ドキュメントやチュートリアルの問題の解決策を見つけてください。",
+    "select_source_file": "ソースファイルを選択します",
+    "import_products_by_csv": "CSVによる製品をインポートします",
+    "add_files": "ファイルを追加します",
+    "accepts_csv": "CSVファイルのみを受け入れます",
+    "cancel": "キャンセル"
+  },
+  "export": {
+    "title": "輸出製品",
+    "format": "エクスポート形式",
+    "select_format": "[エクスポート形式]を選択します",
+    "export_csv": "CSVをエクスポートします",
+    "export_success": "エクスポートが成功しました！",
+    "export_error": "エクスポートは失敗しました。もう一度やり直してください。",
+    "download": "ダウンロード",
+    "recent_exports": "最近の輸出",
+    "no_exports": "輸出履歴は見つかりませんでした。",
+    "all": "全て",
+    "active": "アクティブ",
+    "draft": "下書き",
+    "archived": "アーカイブ",
+    "search": "製品を検索します",
+    "filters": "フィルター",
+    "clear_filters": "すべてのフィルターをクリアします",
+    "exporting": "エクスポート..."
+  },
+  "contact": {
+    "title": "お問い合わせサポート",
+    "your_name": "あなたの名前",
+    "your_email": "あなたのメール",
+    "collab_code": "コラボレーションコード",
+    "store_password": "パスワードを保存します",
+    "reason": "理由",
+    "message": "メッセージ",
+    "send": "送信",
+    "cancel": "キャンセル",
+    "success": "あなたのメッセージが送信されました！",
+    "error": "メッセージを送信できませんでした。もう一度やり直してください。",
+    "required": "必要なすべてのフィールドに記入してください",
+    "help_text": "お客様のアカウントについて連絡する必要がある場合は、このアドレスを使用します。",
+    "technical": "技術的な問題",
+    "billing": "請求する",
+    "feature": "機能リクエスト",
+    "other": "他の",
+    "storeInformation": "情報を保存します",
+    "collaborator_request_code": "コラボレーターリクエストコード",
+    "code_instructions": "4桁のアクセスコードを見つけるには、以下の手順に従ってください。ShopifyStore管理者> [設定]> [ユーザー]> [セキュリティ]> [セキュリティ]> [コラボレーター]に移動してください。コードがあります。",
+    "password_instructions": "利用可能な場合はウェブサイトにアクセスするパスワード",
+    "contact_reason": "連絡先の理由",
+    "reason_for_contacting": "連絡の理由",
+    "page_information": "ページ情報",
+    "page_help_text": "ページタイトル、ページURLなど、問題があるページに関する情報",
+    "message_help_text": "ページタイトル、ページURLなど、問題があるページに関する情報"
+  },
+  "billing": {
+    "title": "価格設定計画",
+    "current_plan": "現在の計画",
+    "upgrade": "アップグレード",
+    "features": "特徴",
+    "price": "価格",
+    "period": "期間",
+    "choose_plan": "計画を選択してください",
+    "free": "無料",
+    "shop_plan": "ショッププラン",
+    "warehouse_plan": "倉庫計画",
+    "factory_plan": "工場計画",
+    "franchise_plan": "フランチャイズ計画",
+    "citadel_plan": "シタデル計画",
+    "warning_cookies": "警告：Cookieは無効またはブロックされています。ブラウザでサードパーティのCookieを有効にし、Cookieをブロックするトンネルを使用していないことを確認してください（いくつかのCloudFlare/ngrokセットアップなど）。 Shopify埋め込みアプリは、正しく動作するためにCookieが必要です。",
+    "plan_details": "詳細を計画します",
+    "plan_limits": "計画制限",
+    "import_limit": "インポート制限",
+    "export_limit": "輸出制限",
+    "platforms": "サポートされているプラ​​ットフォーム",
+    "subscription_status": "サブスクリプションステータス",
+    "start_date": "開始日",
+    "end_date": "終了日",
+    "active": "アクティブ",
+    "inactive": "非アクティブ",
+    "cancel": "キャンセルサブスクリプション",
+    "renew": "サブスクリプションを更新します",
+    "billing_cycle": "請求サイクル",
+    "monthly": "毎月",
+    "annually": "毎年",
+    "payment_method": "支払方法",
+    "update_payment": "支払い方法を更新します",
+    "invoice_history": "請求書履歴",
+    "download_invoice": "請求書をダウンロードしてください",
+    "no_invoices": "請求書は見つかりません。",
+    "next_billing": "次の請求日",
+    "plan": "プラン",
+    "status": "状態",
+    "actions": "アクション",
+    "does_not_renew": "更新しません",
+    "renews_monthly": "毎月更新します",
+    "contact_us_to_upgrade": "アップグレードするにはお問い合わせください",
+    "upgrading": "アップグレード...",
+    "platforms_shop": "Shopify、woocommerce",
+    "platforms_shop_plus": "Shopify、Woocommerce、Wix、BigCommerce、Squarespace",
+    "platforms_warehouse": "Shopify、Woocommerce、Wix、BigCommerce、Squarespace、Amazon、Alibaba、カスタムシート",
+    "platforms_factory": "Shopify、Woocommerce、Wix、BigCommerce、Squarespace、Amazon、Alibaba、カスタムシート、Aliexpress、Etsy",
+    "platforms_franchise": "Shopify、Woocommerce、Wix、BigCommerce、Squarespace、Amazon、Alibaba、カスタムシート、Aliexpress、Etsy、eBay",
+    "platforms_citadel": "Shopify、Woocommerce、Wix、BigCommerce、Squarespace、Amazon、Alibaba、カスタムシート、Aliexpress、Etsy、eBay",
+    "priority_support": "優先サポート",
+    "import_export_20": "20製品のインポートとエクスポート",
+    "import_export_100": "100の製品インポートとエクスポート",
+    "import_export_300": "300製品インポートとエクスポート",
+    "import_export_1000": "1,000の製品インポートとエクスポート",
+    "import_export_3000": "3,000製品の輸入と輸出",
+    "import_export_50000": "50,000の製品インポートとエクスポート"
+  },
+  "stats": {
+    "total_product": "総製品",
+    "import": "輸入",
+    "export": "輸出"
+  },
+  "review_banner": {
+    "title": "レビューを残すと思いますか？",
+    "message": "あなたのフィードバックを聞いてみたいです！レビューを残して、サービスを改善するのを手伝ってください。",
+    "leave_review": "レビューを残してください"
+  }
+}

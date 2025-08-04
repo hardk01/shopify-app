@@ -1,0 +1,331 @@
+{
+  "welcome": "Hoş geldin",
+  "logout": "Oturum açma",
+  "language": "Dil",
+  "select_language": "Dilinizi Seçin",
+  "profile": {
+    "title": "Uygulamaya hoş geldiniz!",
+    "owner": {
+      "name": "Samantha",
+      "description": "Samantha, üç gelişen Shopify mağazasının sahibidir. Ürün araştırmanıza nasıl satılacak ürünleri bulduğunu öğrenerek başlatın."
+    }
+  },
+  "intro": {
+    "greeting": null,
+    "welcome_message": "Hoş geldiniz",
+    "app_name": "Sbit - toplu ürün yüklemesi"
+  },
+  "info": {
+    "status": "Özgür",
+    "export_step": "İhracat"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": null,
+      "title": "Toplu ürün dosyanızı dışa aktarın",
+      "description": "Ürün Listenizi (CSV) Shopify, WooCommerce, Magento veya Bigcommerce gibi herhangi bir e -ticaret platformundan indirin.",
+      "button": "Tam talimatlara ihtiyacım var"
+    },
+    {
+      "step_number": 2,
+      "emoji": null,
+      "title": "Kaynak Platformunuzu Seçin",
+      "description": "Ürün dosyanızın dışa aktarıldığı platformu seçin. Bu, içe aktarma ayarlarını otomatik olarak optimize etmemize yardımcı olur.",
+      "button": "Platform seçin"
+    },
+    {
+      "step_number": 3,
+      "emoji": null,
+      "title": "Ürün dosyanızı yükleyin",
+      "description": "Dışa aktarılan dosyayı buraya yükleyin. Ürünlerinizi işleyeceğiz ve Shopify mağazanıza kesintisiz göç için hazırlayacağız.",
+      "button": "Dosyayı Yükle"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Alışveriş yapmak",
+      "description": "Shopify, ürün satmak için bir çevrimiçi mağaza oluşturmanızı sağlayan bir e -ticaret platformudur."
+    },
+    {
+      "name": "Woocommerce",
+      "description": "WooCommerce, WordPress üzerine inşa edilmiş açık kaynaklı, özelleştirilebilir bir e-ticaret platformudur."
+    },
+    {
+      "name": "Magento",
+      "description": "Magento, çevrimiçi işinizi yönetmek için güçlü araçlarla PHP'de yazılmış bir açık kaynaklı e-ticaret platformudur."
+    },
+    {
+      "name": "Bigcommerce",
+      "description": "Bigcommerce, hızlı büyüyen işletmeler için tasarlanmış önde gelen bir SaaS e-ticaret platformudur."
+    }
+  ],
+  "quick_tutorials": {
+    "title": "Hızlı öğreticiler",
+    "subtitle": "İsteğe bağlı bir alt başlığın gidebileceği yer burası",
+    "tutorials": [
+      {
+        "title": "Shopify Polaris'e başlamak",
+        "description": "Polaris tasarım sistemini kullanarak ilk Shopify uygulamanızı nasıl kuracağınızı öğrenin.",
+        "watch_video": "Video izle",
+        "read_instruction": "Talimat Oku"
+      },
+      {
+        "title": "Ürünlere özel alanlar nasıl eklenir",
+        "description": "Bu öğretici, Shopify ürünlerinizdeki özel alanları nasıl ekleyeceğinizi ve yöneteceğinizi gösterir.",
+        "watch_video": "Video izle",
+        "read_instruction": "Talimat Oku"
+      },
+      {
+        "title": "Ürün dosyanızı yükleyin",
+        "description": "Dışa aktarılan dosyayı buraya yükleyin. Ürünlerinizi işleyeceğiz ve Shopify mağazanıza kesintisiz göç için hazırlayacağız.",
+        "watch_video": "Video izle",
+        "read_instruction": "Talimat Oku"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "Ürünü doğrulayın",
+    "secondary_action": "Daha fazla bilgi edin",
+    "description": "Samantha, 3 gelişen Shopify mağazasının sahibidir. Ürün araştırmanıza nasıl satılacak ürünleri bulduğunu öğrenerek başlatın.",
+    "dismiss": "Azletmek"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "Yardıma mı yoksa içe aktarmaya mı ihtiyacınız var?",
+        "description": "E -posta Desteği Alın",
+        "info": "Bize e -posta gönderin, en kısa zamanda size geri dönelim."
+      },
+      "live_chat": {
+        "title": "Canlı Sohbete Başla",
+        "description": "Sorunuzla ilgili yardım almak için doğrudan canlı sohbet yoluyla bizimle konuşun."
+      },
+      "help_docs": {
+        "title": "Dokümanlar Yardım",
+        "description": "Belgeler ve öğreticilerle ilgili sorununuz için bir çözüm bulun."
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "Toplu ürün yükleme uygulaması nedir?",
+      "answer": "Toplu ürün yükleme uygulaması, Shopify, WooCommerce, Amazon, Walmart, Etsy, Bigcommerce ve daha fazlası dahil olmak üzere birçok e -ticaret platformuna ürünleri kolayca içe aktarmanıza ve dışa aktarmanıza olanak tanır. Uygulamamızla, ürün yönetimi sürecinizi kolaylaştırabilir ve verileri platformlar arasında zahmetsizce taşıyabilirsiniz."
+    },
+    {
+      "question": "Ürün içe aktarma ve ihracat için hangi platformlar desteklenir?",
+      "answer": "Uygulamamız, ürün içe aktarma ve ihracat için aşağıdaki platformları desteklemektedir:\n\n- Shopify\n- Amazon satıcısı\n- Walmart satıcısı\n- eBay satıcısı\n- AliExpress\n- Woocommerce\n- wix satıcısı\n- Alibaba\n- Etsy\n- Squarespace\n- Bigcommerce\n- Özel CSV"
+    },
+    {
+      "question": "Ürünleri mağazama nasıl içe aktarırım?",
+      "answer": "Ürünleri içe aktarmak için istediğiniz platformu seçin (örn. Shopify, Amazon vb.), Ürün ayrıntılarını içeren CSV dosyanızı yükleyin, uygulama ürünleri otomatik olarak mağazanıza aktaracaktır."
+    },
+    {
+      "question": "Ürünleri Shopify'dan diğer platformlara nasıl ihraç edebilirim?",
+      "answer": "Ürünlerinizi Shopify'dan dışa aktarmak için istenen platformu (ör. Amazon, eBay vb.) Seçin ve dışa aktarma seçeneğini seçin. Uygulamamız, seçilen platforma yükleyebileceğiniz bir CSV dosyası oluşturur."
+    },
+    {
+      "question": "Ne tür planlar mevcut?",
+      "answer": "İhtiyaçlarınıza uyacak birden fazla abonelik planı sunuyoruz:\n\nÜcretsiz: 20 ürün için 0 $/aylık İthalat ve İhracat (Shopify, WooCommerce). Yenilemiyor.\nMağaza Planı: 100 Ürün için 9,99 $/Aylık İthalat ve İhracat (Shopify, WooCommerce, Wix, Bigcommerce, Squarespace). Aylık olarak yenilenir.\nDepo Planı: 300 ürün ithalat ve ihracat için 14,99 $/ay (Shopify, WooCommerce, Squarespace, Amazon, Alibaba, özel sayfa). Aylık olarak yenilenir.\nFabrika planı: 1.000 ürün ithalat ve ihracat için 49,99 $/ay (Shopify, WooCommerce, Wix, Bigcommerce, Squarespace, Amazon, Alibaba, Özel Sayfa, AliExpress, Etsy). Öncelik desteği içerir. Aylık olarak yenilenir.\nFranchise Planı: 3.000 ürün ithalat ve ihracat için 129,99 $/ay (Shopify, WooCommerce, Wix, Bigcommerce, Squarespace, Amazon, Alibaba, Özel Sayfa, AliExpress, Etsy, Ebay). Öncelik desteği içerir. Aylık olarak yenilenir.\nCitadel Planı: 50.000 ürün ithalat ve ihracat için 499,99 $/ay (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Özel Sayfa, AliExpress, Etsy, eBay). Öncelik desteği içerir. Aylık olarak yenilenir."
+    },
+    {
+      "question": "Planlar arasındaki fark nedir?",
+      "answer": "Planlar arasındaki temel farklılıklar, içe aktarabileceğiniz/ihracat yapabileceğiniz ürün sayısı ve desteklenen platformlardır. Daha yüksek katmanlı planlar, daha büyük ürün ithalatına ve daha fazla platform entegrasyonlarına izin verir. Ayrıca, fabrika, franchise ve kale planları öncelik desteği içerir."
+    },
+    {
+      "question": "Uygulamada yardıma ihtiyacım olursa destek alıyor muyum?",
+      "answer": "Evet, canlı sohbet ve bir destek formu aracılığıyla müşteri desteği sunuyoruz. Karşılaştığınız sorunlarla ilgili yardım için ulaşabilirsiniz. Öncelik desteğimiz fabrika, franchise ve kale planları için mevcuttur."
+    },
+    {
+      "question": "Destek için hangi bilgileri vermem gerekiyor?",
+      "answer": "Destek için lütfen adınızı, e -posta kimliğinizi, işbirliği kodunuzu, depo şifresini (önceki nedenlerle) ve sorununuzu açıklayan ayrıntılı bir mesajı sağlayın."
+    },
+    {
+      "question": "Planımın ürün sınırlarını aşarsam ne olur?",
+      "answer": "Mevcut planınızın ürün sınırlarını aşarsanız, daha fazla sayıda ürünü destekleyen daha yüksek katmanlı bir plana yükseltmeniz gerekecektir. Hesap ayarlarınız aracılığıyla planınızı kolayca yükseltebilirsiniz."
+    },
+    {
+      "question": "Aboneliğimi herhangi bir zamanda iptal edebilir miyim?",
+      "answer": "Evet, aboneliğinizi istediğiniz zaman iptal edebilirsiniz. Aylık yenilenen bir plandaysanız, mevcut faturalandırma döngünüz bittikten sonra iptal yürürlüğe girecektir."
+    },
+    {
+      "question": "Destekle nasıl iletişime geçebilirim?",
+      "answer": "Canlı sohbet özelliğimiz aracılığıyla veya uygulamada bulunan destek formunu doldurarak destekle iletişime geçebilirsiniz. Bir fabrika, franchise veya Citadel planı kullanıyorsanız, öncelik desteğine erişebilirsiniz."
+    },
+    {
+      "question": "'Özel CSV' seçeneği nedir?",
+      "answer": "'Özel CSV' seçeneği, kendi özel CSV dosya biçiminizi kullanarak ürün verilerini içe aktarmanıza ve dışa aktarmanıza olanak tanır. Bu, belirli veri yapılarına sahip veya standart entegrasyonların dışında birden fazla platform kullanan işletmeler için idealdir."
+    }
+  ],
+  "feedback": {
+    "title": "Bize bir inceleme bırakmayı düşünüyor musunuz?",
+    "message": "Geri bildiriminizi duymak isteriz! Lütfen bir inceleme bırakmak ve hizmetimizi geliştirmemize yardımcı olmak için bir dakikanızı ayırın.",
+    "link_text": "SBIT hakkında daha fazla bilgi edinin - Toplu Veri Yükleme"
+  },
+  "import": {
+    "title": "İthalat Ürünleri",
+    "history": "İthalat Geçmişi",
+    "no_history": "İthalat geçmişi bulunamadı.",
+    "source": "Kaynak",
+    "date": "Tarih",
+    "data_type": "Veri türü",
+    "imported": "İthal",
+    "report": "Rapor",
+    "status": "Durum",
+    "view_issues": "Sorunları Görüntüle",
+    "pending": "Askıda olması",
+    "processing": "İşleme",
+    "complete": "Tamamlamak",
+    "import_issues_for": "İçin ithal sorunları",
+    "updated": "Güncellenmiş",
+    "loading_issues": "Yükleme sorunları",
+    "product_name": "Ürün adı",
+    "details": "Detaylar",
+    "importing": "İthal etme",
+    "of": "ile ilgili",
+    "products": "ürünler",
+    "select_source": "Kaynak dosyanızı seçin",
+    "upload_csv": "CSV yükle",
+    "start_import": "İthalat başlat",
+    "import_success": "İthalat başarılı!",
+    "import_error": "İthalat başarısız oldu. Lütfen tekrar deneyin.",
+    "choose_file": "Dosya Seçin",
+    "drop_csv": "CSV dosyanızı buraya bırakın veya yüklemek için tıklayın.",
+    "download_sample": "Örnek CSV indir",
+    "instructions": "Talimatlar",
+    "step1": "Adım 1: Ürün listenizi (CSV) e -ticaret platformunuzdan indirin.",
+    "step2": "2. Adım: Kaynak platformunuzu seçin.",
+    "step3": "Adım 3: Ürün dosyanızı yükleyin.",
+    "need_help": "Yardıma mı ihtiyacınız var? İletişim desteği.",
+    "quick_tutorials": "Hızlı öğreticiler",
+    "quick_tutorials_subheading": "Uygulamayı hızlı bir şekilde nasıl kullanacağınızı öğrenin",
+    "watch_video": "Video izle",
+    "read_instruction": "Talimat Oku",
+    "need_help_or_import": "Yardıma mı yoksa içe aktarmaya mı ihtiyacınız var?",
+    "get_email_support": "E -posta Desteği Alın",
+    "email_support_description": "Bize e -posta gönderin, en kısa zamanda size geri dönelim.",
+    "start_live_chat": "Canlı Sohbete Başla",
+    "live_chat_description": "Sorunuzla ilgili yardım almak için doğrudan canlı sohbet yoluyla bizimle konuşun.",
+    "help_docs": "Dokümanlar Yardım",
+    "help_docs_description": "Belgeler ve öğreticilerle ilgili sorununuz için bir çözüm bulun.",
+    "select_source_file": "Kaynak dosyasını seçin",
+    "import_products_by_csv": "CSV tarafından ürünleri içe aktarın",
+    "add_files": "Dosya ekle",
+    "accepts_csv": "Yalnızca CSV dosyalarını kabul eder",
+    "cancel": "İptal etmek"
+  },
+  "export": {
+    "title": "İhracat ürünleri",
+    "format": "Dışa aktarma biçimi",
+    "select_format": "Dışa Aktar formatını seçin",
+    "export_csv": "CSV ihraç etmek",
+    "export_success": "İhracat başarılı!",
+    "export_error": "İhracat başarısız oldu. Lütfen tekrar deneyin.",
+    "download": "İndirmek",
+    "recent_exports": "Son İhracat",
+    "no_exports": "İhracat geçmişi bulunamadı.",
+    "all": "Tüm",
+    "active": "Aktif",
+    "draft": "Taslak",
+    "archived": "Arşivlenmiş",
+    "search": "Arama Ürünleri",
+    "filters": "Filtreler",
+    "clear_filters": "Tüm filtreleri temizle",
+    "exporting": "İhracat ..."
+  },
+  "contact": {
+    "title": "İletişim desteği",
+    "your_name": "Adınız",
+    "your_email": "E -postanız",
+    "collab_code": "İşbirliği Kodu",
+    "store_password": "Şifre depolayın",
+    "reason": "Sebep",
+    "message": "Mesaj",
+    "send": "Göndermek",
+    "cancel": "İptal etmek",
+    "success": "Mesajınız gönderildi!",
+    "error": "Mesaj gönderemedi. Lütfen tekrar deneyin.",
+    "required": "Lütfen gerekli tüm alanları doldurun",
+    "help_text": "Hesabınız hakkında sizinle iletişime geçmemiz gerekirse bu adresi kullanacağız.",
+    "technical": "Teknik mesele",
+    "billing": "Faturalandırma",
+    "feature": "Özellik isteği",
+    "other": "Diğer",
+    "storeInformation": "Mağaza Bilgileri",
+    "collaborator_request_code": "İşbirliği Talep Kodu",
+    "code_instructions": "4 haneli erişim kodunu bulmak için lütfen aşağıdaki adımları izleyin: Shopify Store Yöneticisi> Ayarlar> Kullanıcılar> Güvenlik> Mağaza Güvenliği> İşbirlikçileri ve Kodunuz var!",
+    "password_instructions": "Varsa web sitesine erişmek için şifre",
+    "contact_reason": "İletişim Nedeni",
+    "reason_for_contacting": "İletişim kurma nedeni",
+    "page_information": "Sayfa Bilgileri",
+    "page_help_text": "Sayfa başlığı, sayfa url gibi sorun yaşadığınız sayfa hakkında bilgi",
+    "message_help_text": "Sayfa başlığı, sayfa url gibi sorun yaşadığınız sayfa hakkında bilgi"
+  },
+  "billing": {
+    "title": "Fiyatlandırma planları",
+    "current_plan": "Mevcut plan",
+    "upgrade": "Güncelleme",
+    "features": "Özellikler",
+    "price": "Fiyat",
+    "period": "Dönem",
+    "choose_plan": "Planı Seçin",
+    "free": "Özgür",
+    "shop_plan": "Mağaza planı",
+    "warehouse_plan": "Depo Planı",
+    "factory_plan": "Fabrika planı",
+    "franchise_plan": "Franchise planı",
+    "citadel_plan": "Kale planı",
+    "warning_cookies": "Uyarı: Çerezler devre dışı bırakılır veya engellenir. Lütfen tarayıcınızdaki üçüncü taraf çerezleri etkinleştirin ve çerezleri engelleyen bir tünel kullanmadığınızdan emin olun (bazı Cloudflare/NGROK kurulumları gibi). Shopify gömülü uygulamalar çerezlerin doğru çalışmasını gerektirir.",
+    "plan_details": "Plan ayrıntıları",
+    "plan_limits": "Plan sınırları",
+    "import_limit": "İthalat limiti",
+    "export_limit": "İhracat sınırı",
+    "platforms": "Desteklenen Platformlar",
+    "subscription_status": "Abonelik durumu",
+    "start_date": "Başlangıç ​​Tarihi",
+    "end_date": "Bitiş tarihi",
+    "active": "Aktif",
+    "inactive": "Aktif olmayan",
+    "cancel": "Aboneliği iptal et",
+    "renew": "Aboneliği Yenileyin",
+    "billing_cycle": "Faturalandırma döngüsü",
+    "monthly": "Aylık",
+    "annually": "Her yıl",
+    "payment_method": "Ödeme yöntemi",
+    "update_payment": "Ödeme Yöntemini Güncelle",
+    "invoice_history": "Fatura geçmişi",
+    "download_invoice": "Faturayı indir",
+    "no_invoices": "Fatura bulunamadı.",
+    "next_billing": "Sonraki Fatura Tarihi",
+    "plan": "Planlamak",
+    "status": "Durum",
+    "actions": "Eylem",
+    "does_not_renew": "Yenilemiyor",
+    "renews_monthly": "Aylık Yeniliyor",
+    "contact_us_to_upgrade": "Yükseltmek için bizimle iletişime geçin",
+    "upgrading": "Yükseltme ...",
+    "platforms_shop": "Shopify, WooCommerce",
+    "platforms_shop_plus": "Shopify, WooCommerce, Wix, Bigcommerce, Squarespace",
+    "platforms_warehouse": "Shopify, WooCommerce, Wix, Bigcommerce, Squarespace, Amazon, Alibaba, Özel Sayfa",
+    "platforms_factory": "Shopify, WooCommerce, Wix, Bigcommerce, Squarespace, Amazon, Alibaba, Özel Sayfa, Aliexpress, Etsy",
+    "platforms_franchise": "Shopify, WooCommerce, Wix, Bigcommerce, Squarespace, Amazon, Alibaba, Özel Sayfa, Aliexpress, Etsy, Ebay",
+    "platforms_citadel": "Shopify, WooCommerce, Wix, Bigcommerce, Squarespace, Amazon, Alibaba, Özel Sayfa, Aliexpress, Etsy, Ebay",
+    "priority_support": "Öncelik desteği",
+    "import_export_20": "20 Ürün İthalat ve İhracat",
+    "import_export_100": "100 Ürün İthalat ve İhracat",
+    "import_export_300": "300 Ürün İthalat ve İhracat",
+    "import_export_1000": "1.000 ürün ithal ve ihracat",
+    "import_export_3000": "3.000 ürün ithal ve ihracat",
+    "import_export_50000": "50.000 ürün ithal ve ihracat"
+  },
+  "stats": {
+    "total_product": "Toplam Ürün",
+    "import": "İçe aktarmak",
+    "export": "İhracat"
+  },
+  "review_banner": {
+    "title": "Bize bir inceleme bırakmayı düşünüyor musunuz?",
+    "message": "Geri bildiriminizi duymak isteriz! Lütfen bir inceleme bırakmak ve hizmetimizi geliştirmemize yardımcı olmak için bir dakikanızı ayırın.",
+    "leave_review": "İnceleme Bırakın"
+  }
+}

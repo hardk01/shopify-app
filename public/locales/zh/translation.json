@@ -1,0 +1,332 @@
+
+{
+  "welcome": "欢迎",
+  "logout": "注销",
+  "language": "语言",
+  "select_language": "选择您的语言",
+  "profile": {
+    "title": "欢迎使用该应用程序！",
+    "owner": {
+      "name": "萨曼莎",
+      "description": "萨曼莎（Samantha）是三家蓬勃发展的Shopify商店的所有者。通过了解她如何找到要销售的产品，开始您的产品探索。"
+    }
+  },
+  "intro": {
+    "greeting": null,
+    "welcome_message": "欢迎来",
+    "app_name": "SBIT-散装产品上传"
+  },
+  "info": {
+    "status": "自由的",
+    "export_step": "出口"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": null,
+      "title": "导出您的批量产品文件",
+      "description": "从Shopify，WooCommerce，Magento或BigCommerce等任何电子商务平台下载您的产品列表（CSV）。",
+      "button": "需要完整的说明"
+    },
+    {
+      "step_number": 2,
+      "emoji": null,
+      "title": "选择您的源平台",
+      "description": "选择导出产品文件的平台。这有助于我们自动优化导入设置。",
+      "button": "选择平台"
+    },
+    {
+      "step_number": 3,
+      "emoji": null,
+      "title": "上传您的产品文件",
+      "description": "只需在此处上传导出的文件。我们将处理您的产品，并为它们准备无缝迁移到您的Shopify商店。",
+      "button": "上传文件"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "购物",
+      "description": "Shopify是一个电子商务平台，可让您创建一个在线商店销售产品。"
+    },
+    {
+      "name": "WooCommerce",
+      "description": "WooCommerce是建立在WordPress的开源，可自定义的电子商务平台。"
+    },
+    {
+      "name": "Magento",
+      "description": "Magento是一个用PHP编写的开源电子商务平台，并具有强大的工具来管理您的在线业务。"
+    },
+    {
+      "name": "BigCommerce",
+      "description": "BigCommerce是一个领先的SaaS电子商务平台，专为快速发展的企业而设计。"
+    }
+  ],
+  "quick_tutorials": {
+    "title": "快速教程",
+    "subtitle": "这是可选子标题可以进行的",
+    "tutorials": [
+      {
+        "title": "Shopify Polaris入门",
+        "description": "了解如何使用Polaris设计系统设置第一个Shopify应用程序。",
+        "watch_video": "观看视频",
+        "read_instruction": "阅读指令"
+      },
+      {
+        "title": "如何将自定义字段添加到产品",
+        "description": "本教程向您展示了如何在Shopify产品中添加和管理自定义字段。",
+        "watch_video": "观看视频",
+        "read_instruction": "阅读指令"
+      },
+      {
+        "title": "上传您的产品文件",
+        "description": "只需在此处上传导出的文件。我们将处理您的产品，并为它们准备无缝迁移到您的Shopify商店。",
+        "watch_video": "观看视频",
+        "read_instruction": "阅读指令"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "验证产品",
+    "secondary_action": "了解更多",
+    "description": "萨曼莎（Samantha）是3家蓬勃发展的Shopify商店的所有者。通过了解她如何找到要销售的产品，开始您的产品探索。",
+    "dismiss": "解雇"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "需要帮助还是进口？",
+        "description": "获得电子邮件支持",
+        "info": "给我们发电子邮件，我们会尽快与您联系。"
+      },
+      "live_chat": {
+        "title": "开始实时聊天",
+        "description": "直接通过实时聊天与我们交谈，以获取您的问题。"
+      },
+      "help_docs": {
+        "title": "帮助文档",
+        "description": "在文档和教程中找到解决问题的解决方案。"
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "什么是批量上传应用程序？",
+      "answer": "大量产品上传应用程序使您可以轻松地在多个电子商务平台上导入和导出产品，包括Shopify，WooCommerce，Amazon，Walmart，Etsy，Etsy，BigCommerce等。借助我们的应用程序，您可以简化产品管理流程并毫不费力地在平台之间移动数据。"
+    },
+    {
+      "question": "产品进出口支持哪些平台？",
+      "answer": "我们的应用程序支持以下产品进出口的平台：\n\n -  Shopify\n - 亚马逊卖家\n - 沃尔玛卖家\n -  eBay卖家\n -  aliexpress\n -  WooCommerce\n-Wix卖家\n - 阿里巴巴\n -  Etsy\n - 方形\n - 大型商业\n - 自定义CSV"
+    },
+    {
+      "question": "如何将产品进口到我的商店？",
+      "answer": "要导入产品，请选择所需的平台（例如Shopify，Amazon等），上传包含产品详细信息的CSV文件，该应用程序将自动将产品导入您的商店。"
+    },
+    {
+      "question": "如何将产品从Shopify出口到其他平台？",
+      "answer": "要从Shopify导出产品，只需选择所需的平台（例如，亚马逊，eBay等），然后选择“导出”选项。我们的应用程序将生成一个可以上传到所选平台的CSV文件。"
+    },
+    {
+      "question": "有哪些类型的计划可用？",
+      "answer": "我们提供多种订阅计划以满足您的需求：\n\n免费：20种产品进出口（Shopify，WooCommerce）$ 0/月。不续签。\n商店计划：100个产品进出口（Shopify，WooCommerce，Wix，BigCommerce，Squarespace）$ 9.99/月。每月更新。\n仓库计划：300个产品进出口（Shopify，WooCommerce，Squarespace，Amazon，Alibaba，Alibaba，Custom Shect）的300个产品每月$ 14.99/月）。每月更新。\n工厂计划：1,000个产品进出口的工厂计划：$ 49.99/月（Shopify，WooCommerce，Wix，BigCommerce，Squarespace，Squarespace，Amazon，Alibaba，Alibaba，Custom Shect，Aliexpress，Etsy）。包括优先支持。每月更新。\n特许经营计划：3,000个产品进出口的$ 129.99/月（Shopify，WooCommerce，Wix，BigCommerce，Squarespace，Amazon，Amazon，Alibaba，Custom Shect，Aliexpress，aliexpress，Etsy，eBay）。包括优先支持。每月更新。\n城堡计划：50,000个产品进出口的$ 499.99/月（Shopify，WooCommerce，Wix，BigCommerce，Squarespace，Amazon，Amazon，Alibaba，Custom Shect，Aliexpress，Etsy，Etsy，eBay）。包括优先支持。每月更新。"
+    },
+    {
+      "question": "计划有什么区别？",
+      "answer": "计划之间的主要区别是您可以进出的产品数量和支持的平台。高级计划允许更大的产品进口和更多的平台集成。此外，工厂，特许经营和城堡计划包括优先支持。"
+    },
+    {
+      "question": "如果我需要该应用程序的帮助，我会得到支持吗？",
+      "answer": "是的，我们通过实时聊天和支持表格提供客户支持。您可以在面临的任何问题方面取得帮助。我们的优先支持可用于工厂，特许经营和城堡计划。"
+    },
+    {
+      "question": "我需要提供哪些信息来支持？",
+      "answer": "为了支持，请提供您的姓名，电子邮件ID，协作代码，商店密码（出于以前的原因）以及描述您问题的详细消息。"
+    },
+    {
+      "question": "如果我超过计划的产品限制会发生什么？",
+      "answer": "如果您超过了当前计划的产品限制，则需要升级到支持大量产品的高级计划。您可以通过帐户设置轻松升级计划。"
+    },
+    {
+      "question": "我可以随时取消订阅吗？",
+      "answer": "是的，您可以随时取消订阅。如果您正在按月进行续签计划，则在您当前的计费周期结束后，取消将生效。"
+    },
+    {
+      "question": "我如何联系支持？",
+      "answer": "您可以通过我们的实时聊天功能或填写应用程序中可用的支持表格与支持。如果您使用的是工厂，特许经营或城堡计划，则可以访问优先支持。"
+    },
+    {
+      "question": "什么是“自定义CSV”选项？",
+      "answer": "“自定义CSV”选项允许您使用自己的自定义CSV文件格式导入和导出产品数据。这对于具有特定数据结构或在标准集成以外的多个平台的企业来说是理想的选择。"
+    }
+  ],
+  "feedback": {
+    "title": "您会考虑给我们评论吗？",
+    "message": "我们很想听听您的反馈！请花点时间留下审查，并帮助我们改善服务。",
+    "link_text": "了解有关SBIT的更多信息 - 大量数据上传"
+  },
+  "import": {
+    "title": "进口产品",
+    "history": "进口历史",
+    "no_history": "找不到进口历史。",
+    "source": "来源",
+    "date": "日期",
+    "data_type": "数据类型",
+    "imported": "进口",
+    "report": "报告",
+    "status": "地位",
+    "view_issues": "查看问题",
+    "pending": "待办的",
+    "processing": "加工",
+    "complete": "完全的",
+    "import_issues_for": "导入问题",
+    "updated": "更新",
+    "loading_issues": "加载问题",
+    "product_name": "产品名称",
+    "details": "细节",
+    "importing": "输入",
+    "of": "的",
+    "products": "产品",
+    "select_source": "选择您的源文件",
+    "upload_csv": "上传CSV",
+    "start_import": "开始导入",
+    "import_success": "进口成功！",
+    "import_error": "导入失败。请重试。",
+    "choose_file": "选择文件",
+    "drop_csv": "在此处放置CSV文件或单击上传。",
+    "download_sample": "下载样本CSV",
+    "instructions": "指示",
+    "step1": "步骤1：从您的电子商务平台下载产品列表（CSV）。",
+    "step2": "步骤2：选择您的源平台。",
+    "step3": "步骤3：上传您的产品文件。",
+    "need_help": "需要帮助吗？联系支持。",
+    "quick_tutorials": "快速教程",
+    "quick_tutorials_subheading": "了解如何快速使用该应用程序",
+    "watch_video": "观看视频",
+    "read_instruction": "阅读指令",
+    "need_help_or_import": "需要帮助还是进口？",
+    "get_email_support": "获得电子邮件支持",
+    "email_support_description": "给我们发电子邮件，我们会尽快与您联系。",
+    "start_live_chat": "开始实时聊天",
+    "live_chat_description": "直接通过实时聊天与我们交谈，以获取您的问题。",
+    "help_docs": "帮助文档",
+    "help_docs_description": "在文档和教程中找到解决问题的解决方案。",
+    "select_source_file": "选择源文件",
+    "import_products_by_csv": "CSV进口产品",
+    "add_files": "添加文件",
+    "accepts_csv": "仅接受CSV文件",
+    "cancel": "取消"
+  },
+  "export": {
+    "title": "出口产品",
+    "format": "导出格式",
+    "select_format": "选择导出格式",
+    "export_csv": "出口CSV",
+    "export_success": "出口成功！",
+    "export_error": "导出失败。请重试。",
+    "download": "下载",
+    "recent_exports": "最近的出口",
+    "no_exports": "找不到出口历史。",
+    "all": "全部",
+    "active": "积极的",
+    "draft": "草稿",
+    "archived": "存档",
+    "search": "搜索产品",
+    "filters": "过滤器",
+    "clear_filters": "清除所有过滤器",
+    "exporting": "出口..."
+  },
+  "contact": {
+    "title": "联系支持",
+    "your_name": "你的名字",
+    "your_email": "您的电子邮件",
+    "collab_code": "协作代码",
+    "store_password": "存储密码",
+    "reason": "原因",
+    "message": "信息",
+    "send": "发送",
+    "cancel": "取消",
+    "success": "您的消息已发送！",
+    "error": "无法发送消息。请重试。",
+    "required": "请填写所有必需的字段",
+    "help_text": "如果我们需要与您的帐户联系，我们将使用此地址。",
+    "technical": "技术问题",
+    "billing": "计费",
+    "feature": "功能请求",
+    "other": "其他",
+    "storeInformation": "存储信息",
+    "collaborator_request_code": "合作者请求代码",
+    "code_instructions": "要查找4位访问代码，请按照以下步骤操作：导航到您的Shopify商店管理员>设置>设置>用户>安全>商店安全>协作者，并且有您的代码！",
+    "password_instructions": "密码以访问网站（如果可用）",
+    "contact_reason": "联系原因",
+    "reason_for_contacting": "联系的原因",
+    "page_information": "页面信息",
+    "page_help_text": "有关您在页面标题，页面URL等页面问题的信息",
+    "message_help_text": "有关您在页面标题，页面URL等页面问题的信息"
+  },
+  "billing": {
+    "title": "定价计划",
+    "current_plan": "当前计划",
+    "upgrade": "升级",
+    "features": "特征",
+    "price": "价格",
+    "period": "时期",
+    "choose_plan": "选择计划",
+    "free": "自由的",
+    "shop_plan": "商店计划",
+    "warehouse_plan": "仓库计划",
+    "factory_plan": "工厂计划",
+    "franchise_plan": "特许经营计划",
+    "citadel_plan": "城堡计划",
+    "warning_cookies": "警告：饼干被禁用或阻止。请在浏览器中启用第三方cookie，并确保您不使用阻止cookie的隧道（例如某些Cloudflare/Ngrok设置）。 Shopify嵌入式应用需要cookie才能正常工作。",
+    "plan_details": "计划详细信息",
+    "plan_limits": "计划限制",
+    "import_limit": "导入限制",
+    "export_limit": "出口限制",
+    "platforms": "支持的平台",
+    "subscription_status": "订阅状态",
+    "start_date": "开始日期",
+    "end_date": "结束日期",
+    "active": "积极的",
+    "inactive": "不活动",
+    "cancel": "取消订阅",
+    "renew": "续订订阅",
+    "billing_cycle": "计费周期",
+    "monthly": "每月",
+    "annually": "每年",
+    "payment_method": "付款方式",
+    "update_payment": "更新付款方式",
+    "invoice_history": "发票历史",
+    "download_invoice": "下载发票",
+    "no_invoices": "找不到发票。",
+    "next_billing": "下一个计费日期",
+    "plan": "计划",
+    "status": "地位",
+    "actions": "动作",
+    "does_not_renew": "不续约",
+    "renews_monthly": "每月更新",
+    "contact_us_to_upgrade": "与我们联系以升级",
+    "upgrading": "升级...",
+    "platforms_shop": "Shopify，WooCommerce",
+    "platforms_shop_plus": "Shopify，WooCommerce，Wix，BigCommerce，Squarespace",
+    "platforms_warehouse": "Shopify，WooCommerce，Wix，BigCommerce，Squarespace，Amazon，Alibaba，自定义表",
+    "platforms_factory": "Shopify，WooCommerce，Wix，BigCommerce，Squarespace，Amazon，Alibaba，自定义表，Aliexpress，Etsy",
+    "platforms_franchise": "Shopify，WooCommerce，Wix，BigCommerce，Squarespace，Amazon，Alibaba，自定义表，Aliexpress，Etsy，Ebay",
+    "platforms_citadel": "Shopify，WooCommerce，Wix，BigCommerce，Squarespace，Amazon，Alibaba，自定义表，Aliexpress，Etsy，Ebay",
+    "priority_support": "优先支持",
+    "import_export_20": "20种产品进出口",
+    "import_export_100": "100种产品进出口",
+    "import_export_300": "300种产品进出口",
+    "import_export_1000": "1,000种产品进出口",
+    "import_export_3000": "3,000种产品进出口",
+    "import_export_50000": "50,000种产品进出口"
+  },
+  "stats": {
+    "total_product": "总产品",
+    "import": "进口",
+    "export": "出口"
+  },
+  "review_banner": {
+    "title": "您会考虑给我们评论吗？",
+    "message": "我们很想听听您的反馈！请花点时间留下审查，并帮助我们改善服务。",
+    "leave_review": "留下评论"
+  }
+}

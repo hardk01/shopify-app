@@ -1,0 +1,331 @@
+{
+  "welcome": "Welkom",
+  "logout": "Uitloggen",
+  "language": "Taal",
+  "select_language": "Selecteer uw taal",
+  "profile": {
+    "title": "Welkom bij de app!",
+    "owner": {
+      "name": "Samantha",
+      "description": "Samantha is de eigenaar van drie bloeiende Shopify -winkels. Begin uw productverkenning door te leren hoe ze producten vindt om te verkopen."
+    }
+  },
+  "intro": {
+    "greeting": null,
+    "welcome_message": "Welkom bij",
+    "app_name": "Sbit - Bulk -product upload"
+  },
+  "info": {
+    "status": "Vrij",
+    "export_step": "Exporteren"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": null,
+      "title": "Exporteer uw bulkproductbestand",
+      "description": "Download uw productlijst (CSV) van elk e -commerceplatform zoals Shopify, WooCommerce, Magento of BigCommerce.",
+      "button": "Volledige instructies nodig"
+    },
+    {
+      "step_number": 2,
+      "emoji": null,
+      "title": "Selecteer uw bronplatform",
+      "description": "Kies het platform waaruit uw productbestand is geëxporteerd. Dit helpt ons om de importinstellingen automatisch te optimaliseren.",
+      "button": "Selecteer platform"
+    },
+    {
+      "step_number": 3,
+      "emoji": null,
+      "title": "Upload uw productbestand",
+      "description": "Upload gewoon het geëxporteerde bestand hier. We verwerken uw producten en bereiden ze voor op naadloze migratie naar uw Shopify -winkel.",
+      "button": "Uploadbestand uploaden"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Shopify",
+      "description": "Shopify is een e -commerceplatform waarmee u een online winkel kunt maken om producten te verkopen."
+    },
+    {
+      "name": "Woocommerce",
+      "description": "WooCommerce is een open-source, aanpasbaar e-commerceplatform gebouwd op WordPress."
+    },
+    {
+      "name": "Magento",
+      "description": "Magento is een open-source e-commerceplatform geschreven in PHP, met krachtige tools om uw online bedrijf te beheren."
+    },
+    {
+      "name": "BigCommerce",
+      "description": "BigCommerce is een toonaangevend SaaS-e-commerceplatform dat is ontworpen voor snelgroeiende bedrijven."
+    }
+  ],
+  "quick_tutorials": {
+    "title": "Snelle tutorials",
+    "subtitle": "Dit is waar een optionele onderling kan gaan",
+    "tutorials": [
+      {
+        "title": "Aan de slag met Shopify Polaris",
+        "description": "Leer hoe u uw eerste Shopify -app kunt instellen met behulp van het Polaris -ontwerpsysteem.",
+        "watch_video": "Bekijk video",
+        "read_instruction": "Lees instructie"
+      },
+      {
+        "title": "Hoe u aangepaste velden toevoegt aan producten",
+        "description": "Deze zelfstudie laat zien hoe u aangepaste velden kunt toevoegen en beheren in uw Shopify -producten.",
+        "watch_video": "Bekijk video",
+        "read_instruction": "Lees instructie"
+      },
+      {
+        "title": "Upload uw productbestand",
+        "description": "Upload gewoon het geëxporteerde bestand hier. We verwerken uw producten en bereiden ze voor op naadloze migratie naar uw Shopify -winkel.",
+        "watch_video": "Bekijk video",
+        "read_instruction": "Lees instructie"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "Product valideren",
+    "secondary_action": "Leer meer",
+    "description": "Samantha is de eigenaar van 3 Thiving Shopify -winkels. Begin uw productverkenning door te leren hoe ze producten vindt om te verkopen.",
+    "dismiss": "Afwijzen"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "Hulp nodig of importeren?",
+        "description": "Ontvang e -mailondersteuning",
+        "info": "E -mail ons en we nemen zo snel mogelijk contact met u op."
+      },
+      "live_chat": {
+        "title": "Start live chat",
+        "description": "Praat rechtstreeks met ons via live chat om hulp te krijgen bij uw vraag."
+      },
+      "help_docs": {
+        "title": "Help docs",
+        "description": "Zoek een oplossing voor uw probleem met documenten en tutorials."
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "Wat is de bulkproductupload -app?",
+      "answer": "Met de Bulk Product Uploading -app kunt u eenvoudig producten importeren en exporteren op meerdere e -commerceplatforms, waaronder Shopify, WooCommerce, Amazon, Walmart, Etsy, BigCommerce en meer. Met onze app kunt u uw productbeheerproces stroomlijnen en moeiteloos gegevens tussen platforms verplaatsen."
+    },
+    {
+      "question": "Welke platforms worden ondersteund voor het importeren en exporteren van producten?",
+      "answer": "Onze app ondersteunt de volgende platforms voor het importeren en exporteren van producten:\n\n- Shopify\n- Amazon -verkoper\n- Walmart -verkoper\n- eBay -verkoper\n- AliExpress\n- woocommerce\n- Wix -verkoper\n- Alibaba\n- Etsy\n- Squarespace\n- BigCommerce\n- Aangepaste CSV"
+    },
+    {
+      "question": "Hoe importeer ik producten in mijn winkel?",
+      "answer": "Om producten te importeren, selecteert u uw gewenste platform (bijv. Shopify, Amazon, enz.) Uw CSV -bestand met de productdetails uploaden en de app zal de producten automatisch in uw winkel importeren."
+    },
+    {
+      "question": "Hoe exporteer ik producten van Shopify naar andere platforms?",
+      "answer": "Om uw producten uit Shopify te exporteren, selecteert u eenvoudig het gewenste platform (bijv. Amazon, eBay, enz.) En kies de exportoptie. Onze app genereert een CSV -bestand dat u naar het gekozen platform kunt uploaden."
+    },
+    {
+      "question": "Welke soorten plannen zijn beschikbaar?",
+      "answer": "We bieden meerdere abonnementsplannen die aan uw behoeften voldoen:\n\nGratis: $ 0/maand voor 20 producten import en exporteren (Shopify, WooCommerce). Vernieuwt niet.\nWinkelplan: $ 9,99/maand voor 100 producten Import & Export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace). Vernieuwt maandelijks.\nWarehouse Plan: $ 14,99/maand voor 300 producten Import & Export (Shopify, WooCommerce, Squarespace, Amazon, Alibaba, aangepast blad). Vernieuwt maandelijks.\nFabrieksplan: $ 49,99/maand voor 1.000 producten Import & Export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy). Bevat prioriteitsondersteuning. Vernieuwt maandelijks.\nFranchiseplan: $ 129,99/maand voor 3.000 producten Import & Export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, Ebay). Bevat prioriteitsondersteuning. Vernieuwt maandelijks.\nCitadel Plan: $ 499,99/maand voor 50.000 producten Import & Export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, Ebay). Bevat prioriteitsondersteuning. Vernieuwt maandelijks."
+    },
+    {
+      "question": "Wat is het verschil tussen de plannen?",
+      "answer": "De belangrijkste verschillen tussen de plannen zijn het aantal producten dat u kunt importeren/exporteren en de ondersteunde platforms. Plannen met een hogere tier zorgen voor grotere productimport en meer platformintegraties. Bovendien omvatten de plannen van de fabriek, de franchise en Citadel prioritaire ondersteuning."
+    },
+    {
+      "question": "Krijg ik ondersteuning als ik hulp nodig heb bij de app?",
+      "answer": "Ja, we bieden klantenondersteuning via live chat en een ondersteuningsformulier. U kunt hulp bij alle problemen waarmee u wordt geconfronteerd. Onze prioriteitsondersteuning is beschikbaar voor de plannen voor de fabriek, franchise en Citadel."
+    },
+    {
+      "question": "Welke informatie moet ik bieden voor ondersteuning?",
+      "answer": "Geef voor ondersteuning uw naam, e -mail -ID, samenwerkingscode, winkel wachtwoord (om eerdere redenen) en een gedetailleerd bericht dat uw probleem beschrijft."
+    },
+    {
+      "question": "Wat gebeurt er als ik de productlimieten van mijn plan overschrijdt?",
+      "answer": "Als u de productlimieten van uw huidige plan overschrijdt, moet u upgraden naar een hoger plan dat een groter aantal producten ondersteunt. U kunt uw plan eenvoudig upgraden via uw accountinstellingen."
+    },
+    {
+      "question": "Kan ik mijn abonnement op elk moment annuleren?",
+      "answer": "Ja, u kunt uw abonnement op elk gewenst moment annuleren. Als u een maandelijks vernieuwingplan bevindt, wordt de annulering van kracht nadat uw huidige factureringscyclus is afgelopen."
+    },
+    {
+      "question": "Hoe neem ik contact op met ondersteuning?",
+      "answer": "U kunt contact opnemen met ondersteuning via onze live chatfunctie of door het ondersteuningsformulier in de app in te vullen. Als u een fabrieks-, franchise- of Citadel -plan gebruikt, hebt u toegang tot prioriteitsondersteuning."
+    },
+    {
+      "question": "Wat is de optie 'Custom CSV'?",
+      "answer": "Met de optie 'Custom CSV' kunt u productgegevens importeren en exporteren met behulp van uw eigen aangepaste CSV -bestandsindeling. Dit is ideaal voor bedrijven die specifieke gegevensstructuren hebben of meerdere platforms gebruiken buiten de standaardintegraties."
+    }
+  ],
+  "feedback": {
+    "title": "Zou u overwegen ons een recensie achter te laten?",
+    "message": "We horen graag uw feedback! Neem even de tijd om een ​​recensie achter te laten en ons te helpen onze service te verbeteren.",
+    "link_text": "Meer informatie over SBIT - Bulk Data Upload"
+  },
+  "import": {
+    "title": "Producten importeren",
+    "history": "Importgeschiedenis",
+    "no_history": "Geen importgeschiedenis gevonden.",
+    "source": "Bron",
+    "date": "Datum",
+    "data_type": "Gegevenstype",
+    "imported": "Geïmporteerd",
+    "report": "Rapport",
+    "status": "Status",
+    "view_issues": "Bekijk problemen",
+    "pending": "In behandeling",
+    "processing": "Verwerking",
+    "complete": "Compleet",
+    "import_issues_for": "Problemen importeren voor",
+    "updated": "Bijgewerkt",
+    "loading_issues": "Laadproblemen",
+    "product_name": "Productnaam",
+    "details": "Details",
+    "importing": "Importeren",
+    "of": "van",
+    "products": "producten",
+    "select_source": "Selecteer uw bronbestand",
+    "upload_csv": "Upload CSV",
+    "start_import": "Start import",
+    "import_success": "Succesvol import!",
+    "import_error": "Import is mislukt. Probeer het opnieuw.",
+    "choose_file": "Kies bestand",
+    "drop_csv": "Laat hier uw CSV -bestand vallen of klik om te uploaden.",
+    "download_sample": "Download voorbeeld CSV",
+    "instructions": "Instructies",
+    "step1": "Stap 1: Download uw productlijst (CSV) van uw e -commerceplatform.",
+    "step2": "Stap 2: Selecteer uw bronplatform.",
+    "step3": "Stap 3: Upload uw productbestand.",
+    "need_help": "Hulp nodig? Contactondersteuning.",
+    "quick_tutorials": "Snelle tutorials",
+    "quick_tutorials_subheading": "Leer snel hoe u de app kunt gebruiken",
+    "watch_video": "Bekijk video",
+    "read_instruction": "Lees instructie",
+    "need_help_or_import": "Hulp nodig of importeren?",
+    "get_email_support": "Ontvang e -mailondersteuning",
+    "email_support_description": "E -mail ons en we nemen zo snel mogelijk contact met u op.",
+    "start_live_chat": "Start live chat",
+    "live_chat_description": "Praat rechtstreeks met ons via live chat om hulp te krijgen bij uw vraag.",
+    "help_docs": "Help docs",
+    "help_docs_description": "Zoek een oplossing voor uw probleem met documenten en tutorials.",
+    "select_source_file": "Selecteer Bronbestand",
+    "import_products_by_csv": "Producten importeren door CSV",
+    "add_files": "Bestanden toevoegen",
+    "accepts_csv": "Accepteert alleen CSV -bestanden",
+    "cancel": "Annuleren"
+  },
+  "export": {
+    "title": "Exporteren producten",
+    "format": "Exportindeling exporteren",
+    "select_format": "Selecteer exportformaat",
+    "export_csv": "Exporteer CSV",
+    "export_success": "Exporteer succesvol!",
+    "export_error": "Export mislukt. Probeer het opnieuw.",
+    "download": "Downloaden",
+    "recent_exports": "Recente export",
+    "no_exports": "Geen exportgeschiedenis gevonden.",
+    "all": "Alle",
+    "active": "Actief",
+    "draft": "Voorlopige versie",
+    "archived": "Gearchiveerd",
+    "search": "Zoekproducten",
+    "filters": "Filters",
+    "clear_filters": "Wis alle filters",
+    "exporting": "Exporteren ..."
+  },
+  "contact": {
+    "title": "Contactondersteuning",
+    "your_name": "Uw naam",
+    "your_email": "Uw e -mail",
+    "collab_code": "Samenwerkingscode",
+    "store_password": "Wachtwoord opslaan",
+    "reason": "Reden",
+    "message": "Bericht",
+    "send": "Versturen",
+    "cancel": "Annuleren",
+    "success": "Uw bericht is verzonden!",
+    "error": "Kan het bericht niet verzenden. Probeer het opnieuw.",
+    "required": "Vul alle vereiste velden in",
+    "help_text": "We gebruiken dit adres als we contact met u moeten opnemen over uw account.",
+    "technical": "Technische kwestie",
+    "billing": "Het factureren",
+    "feature": "Functieaanvraag",
+    "other": "Ander",
+    "storeInformation": "Informatie opslaan",
+    "collaborator_request_code": "Medewerkeraanvraagcode",
+    "code_instructions": "Om de 4-cijferige toegangscode te vinden, volgt u de onderstaande stappen: Navigeer naar uw Shopify Store Admin> Instellingen> Gebruikers> Beveiliging> Beveiliging opslaan> medewerkers, en er is uw code!",
+    "password_instructions": "Wachtwoord voor toegang tot de website indien beschikbaar",
+    "contact_reason": "Neem contact op met de rede",
+    "reason_for_contacting": "Reden om contact op te nemen",
+    "page_information": "Pagina -informatie",
+    "page_help_text": "Informatie over de pagina waarmee u problemen heeft, zoals paginatitel, Page URL",
+    "message_help_text": "Informatie over de pagina waarmee u problemen heeft, zoals paginatitel, Page URL"
+  },
+  "billing": {
+    "title": "Prijsplannen",
+    "current_plan": "Huidig ​​plan",
+    "upgrade": "Upgraden",
+    "features": "Functies",
+    "price": "Prijs",
+    "period": "Periode",
+    "choose_plan": "Kies plan",
+    "free": "Vrij",
+    "shop_plan": "Winkelplan",
+    "warehouse_plan": "Magazijnplan",
+    "factory_plan": "Fabrieksplan",
+    "franchise_plan": "Franchiseplan",
+    "citadel_plan": "Citadelplan",
+    "warning_cookies": "Waarschuwing: cookies zijn uitgeschakeld of geblokkeerd. Schakel cookies van derden in uw browser in en zorg ervoor dat u geen tunnel gebruikt die cookies blokkeert (zoals sommige cloudflare/ngrok-setups). Shopify ingebedde apps vereisen dat cookies correct werken.",
+    "plan_details": "Plan details",
+    "plan_limits": "Plan limieten",
+    "import_limit": "Importlimiet",
+    "export_limit": "Exportlimiet",
+    "platforms": "Ondersteunde platforms",
+    "subscription_status": "Abonnementstatus",
+    "start_date": "Startdatum",
+    "end_date": "Einddatum",
+    "active": "Actief",
+    "inactive": "Inactief",
+    "cancel": "Annuleer het abonnement",
+    "renew": "Vernieuw abonnement",
+    "billing_cycle": "Factureringscyclus",
+    "monthly": "Maandelijks",
+    "annually": "Jaarlijks",
+    "payment_method": "Betaalmethode",
+    "update_payment": "Update betaalmethode",
+    "invoice_history": "Factuurgeschiedenis",
+    "download_invoice": "Download factuur",
+    "no_invoices": "Geen facturen gevonden.",
+    "next_billing": "Volgende factuurdatum",
+    "plan": "Plan",
+    "status": "Status",
+    "actions": "Acties",
+    "does_not_renew": "Vernieuwt niet",
+    "renews_monthly": "Vernieuwt maandelijks",
+    "contact_us_to_upgrade": "Neem contact met ons op om te upgraden",
+    "upgrading": "Upgraden ...",
+    "platforms_shop": "Shopify, woocommerce",
+    "platforms_shop_plus": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace",
+    "platforms_warehouse": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, aangepaste blad",
+    "platforms_factory": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy",
+    "platforms_franchise": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, Ebay",
+    "platforms_citadel": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, Ebay",
+    "priority_support": "Prioriteitssteun",
+    "import_export_20": "20 producten import en exporteren",
+    "import_export_100": "100 producten import en exporteren",
+    "import_export_300": "300 producten import en exporteren",
+    "import_export_1000": "1.000 producten import en exporteren",
+    "import_export_3000": "3.000 producten import en exporteren",
+    "import_export_50000": "50.000 producten import en exporteren"
+  },
+  "stats": {
+    "total_product": "Totaal product",
+    "import": "Importeren",
+    "export": "Exporteren"
+  },
+  "review_banner": {
+    "title": "Zou u overwegen ons een recensie achter te laten?",
+    "message": "We horen graag uw feedback! Neem even de tijd om een ​​recensie achter te laten en ons te helpen onze service te verbeteren.",
+    "leave_review": "Laat een recensie achter"
+  }
+}

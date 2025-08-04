@@ -1,0 +1,331 @@
+{
+  "welcome": "Vítejte",
+  "logout": "Odhlášení",
+  "language": "Jazyk",
+  "select_language": "Vyberte svůj jazyk",
+  "profile": {
+    "title": "Vítejte v aplikaci!",
+    "owner": {
+      "name": "Samantha",
+      "description": "Samantha je vlastníkem tří prosperujících obchodů Shopify. Začněte průzkum produktů dozvědět se o tom, jak najde produkty k prodeji."
+    }
+  },
+  "intro": {
+    "greeting": null,
+    "welcome_message": "Vítejte",
+    "app_name": "SBIT - hromadný produkt"
+  },
+  "info": {
+    "status": "Uvolnit",
+    "export_step": "Vývozní"
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "emoji": null,
+      "title": "Exportujte svůj hromadný soubor produktu",
+      "description": "Stáhněte si seznam produktů (CSV) z jakékoli platformy elektronického obchodování, jako je Shopify, WooCommerce, Magento nebo BigCommerce.",
+      "button": "Potřebují úplné pokyny"
+    },
+    {
+      "step_number": 2,
+      "emoji": null,
+      "title": "Vyberte svou zdrojovou platformu",
+      "description": "Vyberte platformu, ze které byl exportován soubor vašeho produktu. To nám pomáhá automaticky optimalizovat nastavení importu.",
+      "button": "Vyberte platformu"
+    },
+    {
+      "step_number": 3,
+      "emoji": null,
+      "title": "Nahrajte soubor produktu",
+      "description": "Jednoduše nahrajte exportovaný soubor zde. Zpracováváme vaše produkty a připravíme je na bezproblémovou migraci do vašeho obchodu Shopify.",
+      "button": "Nahrát soubor"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Shopify",
+      "description": "Shopify je platforma elektronického obchodování, která vám umožní vytvořit internetový obchod pro prodej produktů."
+    },
+    {
+      "name": "WooCommerce",
+      "description": "WooCommerce je open-source, přizpůsobitelná platforma elektronického obchodu postavená na WordPress."
+    },
+    {
+      "name": "Magento",
+      "description": "Magento je platforma elektronického obchodování s otevřeným zdrojovým kódem napsaná v PHP s výkonnými nástroji pro správu vašeho online podnikání."
+    },
+    {
+      "name": "BigCommerce",
+      "description": "BigCommerce je přední platforma ECommerce SaaS určená pro rychle rostoucí podniky."
+    }
+  ],
+  "quick_tutorials": {
+    "title": "Rychlé návody",
+    "subtitle": "To je místo, kde může jít volitelná podlata",
+    "tutorials": [
+      {
+        "title": "Začínáme s Shopify Polaris",
+        "description": "Naučte se, jak nastavit svou první aplikaci Shopify pomocí systému Polaris Design System.",
+        "watch_video": "Sledujte video",
+        "read_instruction": "Přečtěte si pokyny"
+      },
+      {
+        "title": "Jak přidat vlastní pole do produktů",
+        "description": "Tento tutoriál ukazuje, jak přidat a spravovat vlastní pole ve vašich produktech Shopify.",
+        "watch_video": "Sledujte video",
+        "read_instruction": "Přečtěte si pokyny"
+      },
+      {
+        "title": "Nahrajte soubor produktu",
+        "description": "Jednoduše nahrajte exportovaný soubor zde. Zpracováváme vaše produkty a připravíme je na bezproblémovou migraci do vašeho obchodu Shopify.",
+        "watch_video": "Sledujte video",
+        "read_instruction": "Přečtěte si pokyny"
+      }
+    ]
+  },
+  "banner": {
+    "primary_action": "Ověřit produkt",
+    "secondary_action": "Další informace",
+    "description": "Samantha je vlastníkem 3 prosperujících obchodů Shopify. Začněte průzkum produktů dozvědět se o tom, jak najde produkty k prodeji.",
+    "dismiss": "Propustit"
+  },
+  "support": {
+    "help_options": {
+      "email_support": {
+        "title": "Potřebujete pomoc nebo importu?",
+        "description": "Získejte e -mailovou podporu",
+        "info": "Pošlete nám e -mail a my se k vám vrátíme co nejdříve."
+      },
+      "live_chat": {
+        "title": "Začněte živý chat",
+        "description": "Promluvte si s námi přímo prostřednictvím živého chatu a získejte pomoc s vaší otázkou."
+      },
+      "help_docs": {
+        "title": "Pomozte dokumentům",
+        "description": "Najděte řešení pro svůj problém s dokumenty a tutoriály."
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "Jaká je objemová aplikace nahrávání produktů?",
+      "answer": "Aplikace pro nahrávání hromadných produktů umožňuje snadno importovat a exportovat produkty na více platformách elektronického obchodování, včetně Shopify, WooCommerce, Amazon, Walmart, Etsy, BigCommerce a dalších. S naší aplikací můžete bez námahy zefektivnit proces správy produktů a přesunout data mezi platformami."
+    },
+    {
+      "question": "Které platformy jsou podporovány pro import a export produktů?",
+      "answer": "Naše aplikace podporuje následující platformy pro import a export produktu:\n\n- Shopify\n- Prodejce Amazonu\n- Prodejce Walmart\n- Prodejce eBay\n- Aliexpress\n- WooCommerce\n- Prodejce Wix\n- Alibaba\n- Etsy\n- Squarespace\n- BigCommerce\n- Vlastní CSV"
+    },
+    {
+      "question": "Jak importuji produkty do svého obchodu?",
+      "answer": "Chcete -li importovat produkty, vyberte požadovanou platformu (např. Shopify, Amazon atd.), Nahrajte soubor CSV obsahující podrobnosti o produktu a aplikace automaticky importuje produkty do vašeho obchodu."
+    },
+    {
+      "question": "Jak mohu exportovat produkty ze Shopify na jiné platformy?",
+      "answer": "Chcete -li exportovat své produkty z Shopify, jednoduše vyberte požadovanou platformu (např. Amazon, eBay atd.) A vyberte možnost Export. Naše aplikace vygeneruje soubor CSV, který můžete nahrát na vybranou platformu."
+    },
+    {
+      "question": "Jaké typy plánů jsou k dispozici?",
+      "answer": "Nabízíme více plánů předplatného, ​​aby vyhovovaly vašim potřebám:\n\nZdarma: 0 $/měsíc za 20 produktů Import & Export (Shopify, WooCommerce). Se neobnovuje.\nPlán obchodu: 9,99 $/měsíc za 100 produktů Import & Export (Shopify, WooCommerce, WIX, BigCommerce, Squarespace). Obnovuje měsíčně.\nPlán skladu: 14,99 $/měsíc pro 300 produktů Import & Export (Shopify, WooCommerce, Squarespace, Amazon, Alibaba, vlastní list). Obnovuje měsíčně.\nFactory Plan: 49,99 $/měsíc za 1 000 produktů Import & Export (Shopify, WooCommerce, WIX, BigCommerce, Squarespace, Amazon, Alibaba, Custom List, Aliexpress, Etsy). Zahrnuje podporu priority. Obnovuje měsíčně.\nFRANCHISE PLÁN: 129,99 $/měsíc za 3 000 produktů Import & Export (Shopify, WooCommerce, WIX, BigCommerce, Squarespace, Amazon, Alibaba, Custom List, Aliexpress, Etsy, eBay). Zahrnuje podporu priority. Obnovuje měsíčně.\nCitadel Plan: 499,99 $/měsíc pro 50 000 produktů Import & Export (Shopify, WooCommerce, WIX, BigCommerce, Squarespace, Amazon, Alibaba, Custom List, Aliexpress, Etsy, eBay). Zahrnuje podporu priority. Obnovuje měsíčně."
+    },
+    {
+      "question": "Jaký je rozdíl mezi plány?",
+      "answer": "Hlavními rozdíly mezi plány jsou počet produktů, které můžete importovat/exportovat, a podporované platformy. Plány vyšší úrovně umožňují větší import produktů a více integrace platformy. Kromě toho plány továrny, franšízy a citadely zahrnují podporu priority."
+    },
+    {
+      "question": "Dostanu podporu, pokud potřebuji pomoc s aplikací?",
+      "answer": "Ano, nabízíme zákaznickou podporu prostřednictvím živého chatu a formuláře podpory. Můžete oslovit pomoc s jakýmikoli problémy, kterým čelíte. Naše podpora priority je k dispozici pro továrnu, franšízové ​​a Citadelové plány."
+    },
+    {
+      "question": "Jaké informace musím poskytnout podporu?",
+      "answer": "Pro podporu poskytujte své jméno, e -mailové ID, kód spolupráce, heslo pro skladování (z předchozích důvodů) a podrobnou zprávu popisující váš problém."
+    },
+    {
+      "question": "Co se stane, když překročím limity produktu mého plánu?",
+      "answer": "Pokud překročíte limity produktu vašeho aktuálního plánu, budete muset upgradovat na vyšší plán, který podporuje větší počet produktů. Plán můžete snadno upgradovat prostřednictvím nastavení účtu."
+    },
+    {
+      "question": "Mohu zrušit své předplatné kdykoli?",
+      "answer": "Ano, své předplatné můžete kdykoli zrušit. Pokud jste na měsíčním plánu obnovy, zrušení nabude účinku po skončení aktuálního fakturačního cyklu."
+    },
+    {
+      "question": "Jak mohu kontaktovat podporu?",
+      "answer": "Podpora můžete kontaktovat prostřednictvím naší funkce Live Chat nebo vyplněním formuláře podpory dostupného v aplikaci. Pokud používáte továrnu, franšízovou nebo Citadelovou plán, budete mít přístup k prioritní podpoře."
+    },
+    {
+      "question": "Jaká je možnost „Custom CSV“?",
+      "answer": "Možnost „Custom CSV“ umožňuje importovat a exportovat data produktu pomocí vlastního formátu souboru CSV. To je ideální pro podniky, které mají specifické datové struktury nebo používají více platforem mimo standardní integraci."
+    }
+  ],
+  "feedback": {
+    "title": "Uvažovali byste o tom, že jste nás nechali recenzi?",
+    "message": "Rádi bychom slyšeli vaši zpětnou vazbu! Udělejte si prosím chvilku opustit recenzi a pomoci nám zlepšit naše služby.",
+    "link_text": "Další informace o SBIT - hromadné nahrávání dat"
+  },
+  "import": {
+    "title": "Import produktů",
+    "history": "Historie importu",
+    "no_history": "Nalezena žádná historie importu.",
+    "source": "Zdroj",
+    "date": "Datum",
+    "data_type": "Typ dat",
+    "imported": "Importováno",
+    "report": "Zpráva",
+    "status": "Postavení",
+    "view_issues": "Zobrazit problémy",
+    "pending": "Čekající",
+    "processing": "Zpracování",
+    "complete": "Kompletní",
+    "import_issues_for": "Import problémy pro",
+    "updated": "Aktualizováno",
+    "loading_issues": "Načítání problémů",
+    "product_name": "Název produktu",
+    "details": "Podrobnosti",
+    "importing": "Import",
+    "of": "z",
+    "products": "produkty",
+    "select_source": "Vyberte zdrojový soubor",
+    "upload_csv": "Nahrajte CSV",
+    "start_import": "Začněte import",
+    "import_success": "Import úspěšný!",
+    "import_error": "Import selhal. Zkuste to prosím znovu.",
+    "choose_file": "Vyberte soubor",
+    "drop_csv": "Zde nahrajte soubor CSV nebo kliknutím.",
+    "download_sample": "Stáhnout Ukázka CSV",
+    "instructions": "Instrukce",
+    "step1": "Krok 1: Stáhněte si seznam produktů (CSV) z vaší platformy elektronického obchodování.",
+    "step2": "Krok 2: Vyberte zdrojovou platformu.",
+    "step3": "Krok 3: Nahrajte soubor produktu.",
+    "need_help": "Potřebujete pomoc? Kontaktní podpora.",
+    "quick_tutorials": "Rychlé návody",
+    "quick_tutorials_subheading": "Naučte se, jak rychle používat aplikaci",
+    "watch_video": "Sledujte video",
+    "read_instruction": "Přečtěte si pokyny",
+    "need_help_or_import": "Potřebujete pomoc nebo importu?",
+    "get_email_support": "Získejte e -mailovou podporu",
+    "email_support_description": "Zašlete nám e -mail a my se k vám vrátíme co nejdříve.",
+    "start_live_chat": "Začněte živý chat",
+    "live_chat_description": "Promluvte si s námi přímo prostřednictvím živého chatu a získejte pomoc s vaší otázkou.",
+    "help_docs": "Pomozte dokumentům",
+    "help_docs_description": "Najděte řešení pro svůj problém s dokumenty a tutoriály.",
+    "select_source_file": "Vyberte soubor zdroje",
+    "import_products_by_csv": "Importovat produkty podle CSV",
+    "add_files": "Přidejte soubory",
+    "accepts_csv": "Přijímá pouze soubory CSV",
+    "cancel": "Zrušit"
+  },
+  "export": {
+    "title": "Exportní produkty",
+    "format": "Formát exportu",
+    "select_format": "Vyberte Formát exportu",
+    "export_csv": "Export CSV",
+    "export_success": "Export úspěšný!",
+    "export_error": "Export selhal. Zkuste to prosím znovu.",
+    "download": "Stáhnout",
+    "recent_exports": "Nedávný vývoz",
+    "no_exports": "Žádná historie exportu.",
+    "all": "Vše",
+    "active": "Aktivní",
+    "draft": "Návrh",
+    "archived": "Archivované",
+    "search": "Hledat produkty",
+    "filters": "Filtry",
+    "clear_filters": "Vymažte všechny filtry",
+    "exporting": "Export ..."
+  },
+  "contact": {
+    "title": "Kontaktní podpora",
+    "your_name": "Vaše jméno",
+    "your_email": "Váš e -mail",
+    "collab_code": "Kód spolupráce",
+    "store_password": "Uložit heslo",
+    "reason": "Důvod",
+    "message": "Zpráva",
+    "send": "Poslat",
+    "cancel": "Zrušit",
+    "success": "Vaše zpráva byla odeslána!",
+    "error": "Nepodařilo se odeslat zprávu. Zkuste to prosím znovu.",
+    "required": "Vyplňte prosím všechna požadovaná pole",
+    "help_text": "Tuto adresu použijeme, pokud vás potřebujeme kontaktovat ohledně vašeho účtu.",
+    "technical": "Technický problém",
+    "billing": "Fakturaci",
+    "feature": "Požadavek na funkci",
+    "other": "Ostatní",
+    "storeInformation": "Ukládat informace",
+    "collaborator_request_code": "Kód žádosti o spolupracovníka",
+    "code_instructions": "Chcete-li najít čtyřmístný přístupový kód, postupujte podle níže uvedených kroků: Přejděte do správce obchodu Shopify> Nastavení> Uživatelé> Zabezpečení> Zabezpečení obchodu> Spolupracovníci a je zde váš kód!",
+    "password_instructions": "Heslo pro přístup k webu, pokud je k dispozici",
+    "contact_reason": "Kontaktní důvod",
+    "reason_for_contacting": "Důvod kontaktu",
+    "page_information": "Informace o stránce",
+    "page_help_text": "Informace o stránce, se kterou máte problémy, jako je název stránky, URL stránky",
+    "message_help_text": "Informace o stránce, se kterou máte problémy, jako je název stránky, URL stránky"
+  },
+  "billing": {
+    "title": "Plány cen",
+    "current_plan": "Aktuální plán",
+    "upgrade": "Upgrade",
+    "features": "Funkce",
+    "price": "Cena",
+    "period": "Období",
+    "choose_plan": "Vyberte si plán",
+    "free": "Uvolnit",
+    "shop_plan": "Plán obchodu",
+    "warehouse_plan": "Skladový plán",
+    "factory_plan": "Tovární plán",
+    "franchise_plan": "Franšízový plán",
+    "citadel_plan": "Plán Citadel",
+    "warning_cookies": "VAROVÁNÍ: Soubory cookie jsou deaktivovány nebo blokovány. Povolte prosím cookies třetích stran ve svém prohlížeči a ujistěte se, že nepoužíváte tunel, který blokuje cookies (jako je některá nastavení CloudFlare/Ngrok). Společnost Shopify Embedded Apps vyžadují, aby soubory cookie fungovaly správně.",
+    "plan_details": "Plánujte podrobnosti",
+    "plan_limits": "Limity plánu",
+    "import_limit": "Limit importu",
+    "export_limit": "Limit exportu",
+    "platforms": "Podporované platformy",
+    "subscription_status": "Stav předplatného",
+    "start_date": "Datum zahájení",
+    "end_date": "Datum ukončení",
+    "active": "Aktivní",
+    "inactive": "Neaktivní",
+    "cancel": "Zrušit předplatné",
+    "renew": "Obnovit předplatné",
+    "billing_cycle": "Fakturační cyklus",
+    "monthly": "Měsíční",
+    "annually": "Každoročně",
+    "payment_method": "Metoda platby",
+    "update_payment": "Aktualizovat metodu platby",
+    "invoice_history": "Historie faktur",
+    "download_invoice": "Stáhněte si fakturu",
+    "no_invoices": "Nalezeny žádné faktury.",
+    "next_billing": "Další datum fakturace",
+    "plan": "Plán",
+    "status": "Postavení",
+    "actions": "Akce",
+    "does_not_renew": "Neobnovuje se",
+    "renews_monthly": "Obnovuje měsíčně",
+    "contact_us_to_upgrade": "Kontaktujte nás a upgradujte",
+    "upgrading": "Upgrade ...",
+    "platforms_shop": "Shopify, WooCommerce",
+    "platforms_shop_plus": "Shopify, WooCommerce, Wix, Bigcommerce, Squarespace",
+    "platforms_warehouse": "Shopify, WooCommerce, Wix, Bigcommerce, Squarespace, Amazon, Alibaba, vlastní list",
+    "platforms_factory": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom List, Aliexpress, Etsy",
+    "platforms_franchise": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom List, Aliexpress, Etsy, eBay",
+    "platforms_citadel": "Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom List, Aliexpress, Etsy, eBay",
+    "priority_support": "Prioritní podpora",
+    "import_export_20": "20 produktů Import & Export",
+    "import_export_100": "100 produktů import a export",
+    "import_export_300": "Import a export 300 produktů",
+    "import_export_1000": "Import a export 1 000 produktů",
+    "import_export_3000": "Import a export 3 000 produktů",
+    "import_export_50000": "Import a export 50 000 produktů"
+  },
+  "stats": {
+    "total_product": "Celkový produkt",
+    "import": "Importovat",
+    "export": "Vývozní"
+  },
+  "review_banner": {
+    "title": "Uvažovali byste o tom, že jste nás nechali recenzi?",
+    "message": "Rádi bychom slyšeli vaši zpětnou vazbu! Udělejte si prosím chvilku opustit recenzi a pomoci nám zlepšit naše služby.",
+    "leave_review": "Zanechat recenzi"
+  }
+}

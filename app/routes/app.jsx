@@ -10,12 +10,9 @@ import {
 } from "@shopify/polaris";
 import "@shopify/polaris/build/esm/styles.css";
 import en from "@shopify/polaris/locales/en.json";
-
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
-
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
-
   return json({
     apiKey: process.env.SHOPIFY_API_KEY,
     shop: session.shop,
@@ -24,16 +21,18 @@ export const loader = async ({ request }) => {
 
 export default function App() {
   const { apiKey } = useLoaderData();
-
   return (
     <PolarisProvider i18n={en}>
       <AppProvider isEmbeddedApp apiKey={apiKey}>
         <NavMenu>
-          <Link to="/app" rel="home">
-            Home
+          <Link to="/app/images" rel="Image Compres">
+          Image Compres
           </Link>
-          <Link to="/app/images">Images</Link>
-          <Link to="/app/additional">Additional</Link>
+          {/* <Link to="/app/images">Images</Link> */}
+          <Link to="/app/alt">Set alt Tag</Link>
+          <Link to="/app/webP">WebP</Link>
+          <Link to="/app/billing">Pricing</Link>
+          <Link to="/app/contact">Contact Us</Link>
         </NavMenu>
         <Outlet />
       </AppProvider>

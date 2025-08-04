@@ -43,6 +43,7 @@ import FaqSection from '../components/FaqSection';
 import tutorialIcon from '../assets/tutorialIcon.png';
 import { Shop } from '../models/Shop';
 import { Subscription } from '../models/subscription';
+import { getSubscriptionData, getPlanLimits } from '../utils/subscriptionUtils';
 
 const LANGUAGE_OPTIONS = [
   { code: 'cs', label: 'Czech', country: 'CZ' },
@@ -113,51 +114,116 @@ export async function loader({ request }) {
         error: 'Database not available, using fallback data.'
       });
     }
+    
     // Authenticate the user/session
-    const { session, admin } = await authenticate.admin(request);
+    let session, admin;
+    
+    try {
+      const authResult = await authenticate.admin(request);
+      session = authResult.session;
+      admin = authResult.admin;
+    } catch (authError) {
+      console.error('❌ Authentication failed:', authError.message);
+      return json({ 
+        error: "Authentication failed: " + authError.message,
+        shop: 'unknown',
+        plan: 'FREE',
+        language: 'en'
+      }, { status: 401 });
+    }
+    
     const shopDomain = session.shop;
     const accessToken = session.accessToken;
+    
     if (!shopDomain) {
       return json({ error: "Missing shop parameter" }, { status: 400 });
     }
+    
+    if (!accessToken) {
+      return json({ error: "Missing access token" }, { status: 401 });
+    }
+    
     // Always ensure shop and FREE plan on load
     await ensureShopAndFreePlan(session);
-    // Fetch shop and subscription for return
+    
+    // Get subscription data from Shopify GraphQL with database fallback
+    let subscriptionData;
+    
+    try {
+      subscriptionData = await getSubscriptionData(admin, shopDomain, Shop, Subscription);
+    } catch (subError) {
+      // Fallback to database-only mode
+      subscriptionData = {
+        plan: 'FREE',
+        status: 'active',
+        shopifySubscription: null
+      };
+    }
+    
+    // Get usage counts and shop data from database (these are still tracked locally)
     let shop = await Shop.findOne({ shop: shopDomain });
-    let subscription = await Subscription.findOne({ shopId: shop._id });
-    const planLimits = subscription.getPlanLimits();
+    let usageCounts = { imageCompressCount: 0, webPConvertCount: 0, altTextCount: 0 };
+    let language = 'en';
+    
+    if (shop) {
+      language = shop.language || 'en';
+      let subscription = await Subscription.findOne({ shopId: shop._id });
+      if (subscription) {
+        usageCounts = {
+          imageCompressCount: subscription.imageCompressCount || 0,
+          webPConvertCount: subscription.webPConvertCount || 0,
+          altTextCount: subscription.altTextCount || 0,
+        };
+      }
+    }
+    
+    const planLimits = getPlanLimits(subscriptionData.plan);
 
-    // Fetch product and image counts from Shopify
-    const productsResponse = await admin.graphql(`
-      {
-        products(first: 250) {
-          edges {
-            node {
-              id
-              images(first: 100) {
-                edges { node { id } }
+    // Fetch product and image counts from Shopify with error handling
+    let totalProduct = 0;
+    let totalImages = 0;
+    
+    // Only fetch if we have a valid admin client and access token
+    if (admin && admin.graphql && accessToken) {
+      try {
+        const productsResponse = await admin.graphql(`
+          {
+            products(first: 250) {
+              edges {
+                node {
+                  id
+                  images(first: 100) {
+                    edges { node { id } }
+                  }
+                }
               }
             }
           }
+        `);
+        const productsData = await productsResponse.json();
+        
+        if (productsData?.data?.products?.edges) {
+          const products = productsData.data.products.edges;
+          totalProduct = products.length;
+          totalImages = products.reduce((sum, p) => sum + (p.node.images.edges.length), 0);
         }
+      } catch (productError) {
+        // Continue with 0 values for totalProduct and totalImages
       }
-    `);
-    const productsData = await productsResponse.json();
-    const products = productsData.data.products.edges || [];
-    const totalProduct = products.length;
-    const totalImages = products.reduce((sum, p) => sum + (p.node.images.edges.length), 0);
+    }
 
-    return json({
+    const responseData = {
       shop: shopDomain,
-      plan: subscription.plan,
-      language: shop.language || 'en',
-      imageCompressCount: subscription.imageCompressCount,
-      webPConvertCount: subscription.webPConvertCount,
-      altTextCount: subscription.altTextCount,
+      plan: subscriptionData.plan,
+      language: language,
+      shopifySubscription: subscriptionData.shopifySubscription,
+      ...usageCounts,
       limits: planLimits,
       totalProduct,
       totalImages
-    });
+    };
+    
+    return json(responseData);
   } catch (error) {
     console.error('Error in /app/_index loader:', error);
     return json({ error: error.message || 'Unknown error in dashboard loader' }, { status: 500 });
@@ -283,6 +349,10 @@ function DashboardSkeleton() {
 export default function Dashboard() {
   const { t } = useTranslation();
   const loaderData = typeof useLoaderData === 'function' ? useLoaderData() : {};
+  
+  // Check if we have essential data loaded
+  const hasEssentialData = loaderData.shop && loaderData.plan && loaderData.hasOwnProperty('totalProduct');
+  
   const [selectedFaq, setSelectedFaq] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'en');
   const [tutorialPage, setTutorialPage] = useState(1);
@@ -296,7 +366,15 @@ export default function Dashboard() {
   const pagedTutorials = Array.isArray(tutorials)
     ? tutorials.slice((tutorialPage - 1) * TUTORIALS_PER_PAGE, tutorialPage * TUTORIALS_PER_PAGE)
     : [];
-  const [stats, setStats] = useState({ totalProduct: 0, import: 0, export: 0 });
+  const [stats, setStats] = useState({ 
+    totalProduct: 0, 
+    import: 0, 
+    export: 0,
+    imageCompressCount: 0,
+    webPConvertCount: 0,
+    altTextCount: 0
+  });
+  const [statsLoading, setStatsLoading] = useState(false);
   const [activeImports, setActiveImports] = useState([]);
   const [showBanner, setShowBanner] = useState(true);
   const navigate = useNavigate();
@@ -322,6 +400,28 @@ export default function Dashboard() {
     }
   }, [loaderData.language]);
 
+  // Add a timeout fallback in case data loading gets stuck
+  useEffect(() => {
+    let timeoutId;
+    
+    if (!hasEssentialData && !loaderData.error) {
+      timeoutId = setTimeout(() => {
+        if (loaderData.shop || loaderData.plan) {
+          setI18nReady(true); // Force show even if not complete
+        } else {
+          // Attempt to refresh the page to retry loading
+          window.location.reload();
+        }
+      }, 8000); // 8 second timeout
+    }
+    
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [hasEssentialData, loaderData.shop, loaderData.plan, loaderData.error]);
+
   // useEffect(() => {
   //   let shop = new URLSearchParams(window.location.search).get('shop');
   //   if (!shop && loaderData.shop) {
@@ -337,6 +437,98 @@ export default function Dashboard() {
   //       });
   //   }
   // }, [loaderData.shop, selectedRange]);
+
+  // Fetch activity stats when range changes
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!loaderData.shop) return;
+      
+      setStatsLoading(true);
+      try {
+        const response = await fetch(`/api/stats?shop=${encodeURIComponent(loaderData.shop)}&range=${selectedRange}`, {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setStats({
+              totalProduct: loaderData.totalProduct || 0,
+              totalImages: loaderData.totalImages || 0,
+              imageCompressCount: data.imageCompressCount || 0,
+              webPConvertCount: data.webPConvertCount || 0,
+              altTextCount: data.altTextCount || 0,
+              period: data.period || `${selectedRange} days`
+            });
+          } else {
+            console.error('Failed to fetch stats:', data.error);
+            // Fallback to loader data
+            setStats({
+              totalProduct: loaderData.totalProduct || 0,
+              totalImages: loaderData.totalImages || 0,
+              imageCompressCount: loaderData.imageCompressCount || 0,
+              webPConvertCount: loaderData.webPConvertCount || 0,
+              altTextCount: loaderData.altTextCount || 0,
+              period: `${selectedRange} days`
+            });
+          }
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error fetching activity stats:', error);
+        // Fallback to loader data
+        setStats({
+          totalProduct: loaderData.totalProduct || 0,
+          totalImages: loaderData.totalImages || 0,
+          imageCompressCount: loaderData.imageCompressCount || 0,
+          webPConvertCount: loaderData.webPConvertCount || 0,
+          altTextCount: loaderData.altTextCount || 0,
+          period: `${selectedRange} days`
+        });
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [selectedRange, loaderData.shop, loaderData.totalProduct, loaderData.totalImages, loaderData.imageCompressCount, loaderData.webPConvertCount, loaderData.altTextCount]);
+
+  // Function to refresh stats
+  const refreshStats = async () => {
+    if (!loaderData.shop) return;
+    
+    setStatsLoading(true);
+    try {
+      const response = await fetch(`/api/stats?shop=${encodeURIComponent(loaderData.shop)}&range=${selectedRange}`, {
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setStats({
+            totalProduct: loaderData.totalProduct || 0,
+            totalImages: loaderData.totalImages || 0,
+            imageCompressCount: data.imageCompressCount || 0,
+            webPConvertCount: data.webPConvertCount || 0,
+            altTextCount: data.altTextCount || 0,
+            period: data.period || `${selectedRange} days`
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing stats:', error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const loadActiveImports = async () => {
@@ -387,69 +579,25 @@ export default function Dashboard() {
   const handleImportComplete = (importId, progress) => {
     setActiveImports(prev => prev.filter(imp => imp._id !== importId));
     // Refresh stats after import completes
-    const shop = new URLSearchParams(window.location.search).get('shop') || loaderData.shop;
-    if (shop) {
-      fetch(`/api/stats?shop=${encodeURIComponent(shop)}&range=${selectedRange}`)
-        .then(res => res.json())
-        .then(data => setStats(data));
-    }
+    refreshStats();
   };
 
-  if (!i18nReady) {
+  if (!i18nReady || !hasEssentialData) {
+    // If there's an error, show it instead of loading forever
+    if (loaderData.error) {
+      return (
+        <Page title={t('dashboard.title')}>
+          <Banner status="critical">
+            <Text variant="bodyMd">
+              {t('dashboard.error_loading')}: {loaderData.error}. {t('dashboard.refresh_message')}
+            </Text>
+          </Banner>
+        </Page>
+      );
+    }
+    
     return <DashboardSkeleton />;
   }
-
-  // HelpSection logic moved here
-  const faqs = [
-    {
-      question: "What is the Bulk Product Uploading App?",
-      answer: "The Bulk Product Uploading App allows you to easily import and export products across multiple eCommerce platforms, including Shopify, WooCommerce, Amazon, Walmart, Etsy, BigCommerce, and more. With our app, you can streamline your product management process and move data between platforms effortlessly."
-    },
-    {
-      question: "Which platforms are supported for product import and export?",
-      answer: "Our app supports the following platforms for product import and export:\n\n- Shopify\n- Amazon Seller\n- Walmart Seller\n- eBay Seller\n- AliExpress\n- WooCommerce\n- Wix Seller\n- Alibaba\n- Etsy\n- Squarespace\n- BigCommerce\n- Custom CSV"
-    },
-    {
-      question: "How do I import products into my store?",
-      answer: "To import products, select your desired platform (e.g., Shopify, Amazon, etc.), upload your CSV file containing the product details, and the app will automatically import the products to your store."
-    },
-    {
-      question: "How do I export products from Shopify to other platforms?",
-      answer: "To export your products from Shopify, simply select the desired platform (e.g., Amazon, eBay, etc.) and choose the export option. Our app will generate a CSV file that you can upload to the chosen platform."
-    },
-    {
-      question: "What types of plans are available?",
-      answer: "We offer multiple subscription plans to fit your needs:\n\nFREE: $0/month for 20 products import & export (Shopify, WooCommerce). Does not renew.\nSHOP PLAN: $9.99/month for 100 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace). Renews monthly.\nWAREHOUSE PLAN: $14.99/month for 300 products import & export (Shopify, WooCommerce, Squarespace, Amazon, Alibaba, Custom Sheet). Renews monthly.\nFACTORY PLAN: $49.99/month for 1,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy). Includes priority support. Renews monthly.\nFRANCHISE PLAN: $129.99/month for 3,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, eBay). Includes priority support. Renews monthly.\nCITADEL PLAN: $499.99/month for 50,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, eBay). Includes priority support. Renews monthly."
-    },
-    {
-      question: "What is the difference between the plans?",
-      answer: "The main differences between the plans are the number of products you can import/export and the platforms supported. Higher-tier plans allow for larger product imports and more platform integrations. Additionally, the Factory, Franchise, and Citadel plans include priority support."
-    },
-    {
-      question: "Do I get support if I need help with the app?",
-      answer: "Yes, we offer customer support through live chat and a support form. You can reach out for assistance with any issues you're facing. Our priority support is available for the Factory, Franchise, and Citadel plans."
-    },
-    {
-      question: "What information do I need to provide for support?",
-      answer: "For support, please provide your name, email ID, collaboration code, store password (for previous reasons), and a detailed message describing your issue."
-    },
-    {
-      question: "What happens if I exceed the product limits of my plan?",
-      answer: "If you exceed the product limits of your current plan, you will need to upgrade to a higher-tier plan that supports a larger number of products. You can easily upgrade your plan through your account settings."
-    },
-    {
-      question: "Can I cancel my subscription at any time?",
-      answer: "Yes, you can cancel your subscription at any time. If you are on a monthly-renewing plan, the cancellation will take effect after your current billing cycle ends."
-    },
-    {
-      question: "How do I contact support?",
-      answer: "You can contact support through our live chat feature or by filling out the support form available in the app. If you are using a Factory, Franchise, or Citadel plan, you'll have access to priority support."
-    } ,
-    {
-      question: "What is the 'Custom CSV' option?",
-      answer: "The 'Custom CSV' option allows you to import and export product data using your own custom CSV file format. This is ideal for businesses that have specific data structures or use multiple platforms outside of the standard integrations."
-    }
-  ];
 
   // Utility function to format plan names
   function formatPlanName(plan) {
@@ -461,12 +609,8 @@ export default function Dashboard() {
       .join(' ');
   }
 
-  const planDisplayName = {
-    'FREE': 'Free',
-    'SHOP PLAN': 'Shop Plan',
-    'WAREHOUSE PLAN': 'Warehouse Plan',
-    'FACTORY PLAN': 'Factory Plan',
-    'CITADEL PLAN': 'Citadel Plan'
+  const getPlanDisplayName = (plan) => {
+    return t(`plans.${plan}`) || plan || 'FREE';
   };
 
   return (
@@ -511,8 +655,8 @@ export default function Dashboard() {
                   {t('intro.app_name')}
                 </Text>
               </Link>
-              <Badge status={loaderData.plan === 'FREE' ? 'info' : 'success'} tone={loaderData.plan === 'FREE' ? 'info' : 'success'}>
-                {planDisplayName[loaderData.plan] || loaderData.plan}
+              <Badge status={(loaderData.plan || 'FREE') === 'FREE' ? 'info' : 'success'} tone={(loaderData.plan || 'FREE') === 'FREE' ? 'info' : 'success'}>
+                {getPlanDisplayName(loaderData.plan || 'FREE')}
               </Badge>
             </InlineStack>
             <Box display="flex" alignItems="center" gap="200">
@@ -566,13 +710,13 @@ export default function Dashboard() {
                   <Text variant="headingSm" fontWeight="semibold">
                     Total Product
                   </Text>
-                  <Text variant="bodyLg">{loaderData.totalProduct}</Text>
+                  <Text variant="bodyLg">{loaderData.totalProduct || 0}</Text>
                 </Box>
                 <Box padding="300" background="bg-surface-secondary" borderRadius="200">
                   <Text variant="headingSm" fontWeight="semibold">
                     Total Image in your product
                   </Text>
-                  <Text variant="bodyLg">{loaderData.totalImages}</Text>
+                  <Text variant="bodyLg">{loaderData.totalImages || 0}</Text>
                 </Box>
                 <Box padding="300" background="bg-surface-secondary" borderRadius="200">
                   <Text variant="headingSm" fontWeight="semibold">
@@ -618,8 +762,11 @@ export default function Dashboard() {
 
 
         {/* Date Range Dropdown */}
-        <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
+        <Box display="flex" justifyContent="space-between" alignItems="center" paddingBlockEnd="400">
           <DateRangeDropdown selectedRange={selectedRange} setSelectedRange={setSelectedRange} />
+          {/* <Text variant="bodySm" tone="subdued">
+            {statsLoading ? 'Loading stats...' : `Showing activity for last ${selectedRange} days`}
+          </Text> */}
         </Box>
 
         {/* Stats */}
@@ -635,16 +782,19 @@ export default function Dashboard() {
                 marginBottom: 8,
               }}>
                 <div style={{ flex: 1, textAlign: 'left', fontWeight: 600, color: '#202223' }}>
-                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.total_product')}</span>
+                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.total_products')}</span>
                 </div>
                 <div style={{ flex: 1, textAlign: 'left', fontWeight: 600, color: '#202223' }}>
-                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.import')}</span>
+                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.total_images')}</span>
                 </div>
                 <div style={{ flex: 1, textAlign: 'left', fontWeight: 600, color: '#202223' }}>
-                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.compress')}</span>
+                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.images_compressed')}</span>
                 </div>
                 <div style={{ flex: 1, textAlign: 'left', fontWeight: 600, color: '#202223' }}>
-                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.tag')}</span>
+                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.webp_converted')}</span>
+                </div>
+                <div style={{ flex: 1, textAlign: 'left', fontWeight: 600, color: '#202223' }}>
+                  <span style={{ display: 'inline-block', borderBottom: '1px dotted #ccc', paddingBottom: 4 }}>{t('stats.alt_tags_added')}</span>
                 </div>
               </div>
               {/* Numbers Row */}
@@ -654,77 +804,23 @@ export default function Dashboard() {
                 alignItems: 'center',
                 gap: 48,
               }}>
-                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>{loaderData.totalProduct}</div>
-                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>{loaderData.totalImages}</div>
-                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>{loaderData.imageCompressCount || 0}</div>
-                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>{loaderData.altTextCount || 0}</div>
+                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>
+                  {statsLoading ? '...' : (stats.totalProduct || 0)}
+                </div>
+                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>
+                  {statsLoading ? '...' : (stats.totalImages || 0)}
+                </div>
+                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>
+                  {statsLoading ? '...' : (stats.imageCompressCount || 0)}
+                </div>
+                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>
+                  {statsLoading ? '...' : (stats.webPConvertCount || 0)}
+                </div>
+                <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 20, color: '#202223' }}>
+                  {statsLoading ? '...' : (stats.altTextCount || 0)}
+                </div>
               </div>
             </div>
-          </Card>
-        </Box>
-
-        {/* Tutorials */}
-        <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
-          <Card padding="500" background="bg-surface" borderRadius="2xl" paddingBlockStart="600" paddingBlockEnd="600">
-            <BlockStack gap="200">
-              <Text variant="headingMd">{t('import.quick_tutorials')}</Text>
-              <Text color="subdued">{t('import.quick_tutorials_subheading')}</Text>
-              <InlineGrid columns={{ xs: 1, sm: 2 }} gap="400">
-                {Array.isArray(pagedTutorials) && pagedTutorials.map((tut, idx) => (
-                  <Card key={idx} padding="400">
-                    <Box background="bg-surface">
-                      <div style={{ display: 'flex', gap: 5 }}>
-                        {/* Icon on the left */}
-                        <Box
-                          width="60px"
-                          height="60px"
-                          borderRadius="full"
-                          background="#8B5CF6"
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          marginInlineEnd="200"
-                        >
-                          <img src={tutorialIcon} alt="Tutorial" style={{ width: 40, height: 40 }} />
-                        </Box>
-                        {/* Content on the right */}
-                        <BlockStack gap="200">
-                          <Text variant="headingSm">{tut.title}</Text>
-                          <Text>{tut.description}</Text>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Button
-                              onClick={() => window.open(tut.video, '_blank')}
-                              variant="secondary"
-                              size="slim"
-                            >
-                              {t('import.watch_video')}
-                            </Button>
-                            <Link
-                              url={tut.instruction}
-                              external
-                              monochrome={false}
-                              removeUnderline={false}
-                              style={{ marginLeft: 12, color: '#3574F2', fontWeight: 500 }}
-                            >
-                              {t('import.read_instruction')}
-                            </Link>
-                          </div>
-                        </BlockStack>
-                      </div>
-                    </Box>
-                  </Card>
-                ))}
-              </InlineGrid>
-              <Box display="flex" alignItems="center" justifyContent="space-between" marginBlockStart="4">
-                <Pagination
-                  hasPrevious={tutorialPage > 1}
-                  onPrevious={() => setTutorialPage(tutorialPage - 1)}
-                  hasNext={tutorialPage < totalPages}
-                  onNext={() => setTutorialPage(tutorialPage + 1)}
-                  label={`${tutorialPage}/${totalPages}`}
-                />
-              </Box>
-            </BlockStack>
           </Card>
         </Box>
 
@@ -890,13 +986,11 @@ const Placeholder = ({ height = 'auto', width = 'auto', children }) => {
 };
 
 function LanguageDropdown({ selectedLanguage, setSelectedLanguage }) {
-  console.log('LanguageDropdown rendered with', selectedLanguage);
   const [active, setActive] = useState(false);
   const toggleActive = useCallback(() => setActive((active) => !active), []);
   const selected = LANGUAGE_OPTIONS.find(l => l.code === selectedLanguage) || LANGUAGE_OPTIONS[0];
 
   const handleSelect = async (lang) => {
-    console.log('LanguageDropdown: handleSelect called with', lang.code);
     setSelectedLanguage(lang.code);
     i18n.changeLanguage(lang.code);
     setActive(false);
@@ -907,7 +1001,6 @@ function LanguageDropdown({ selectedLanguage, setSelectedLanguage }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ language: lang.code })
       });
-      console.log('LanguageDropdown: Language updated in backend', lang.code);
     } catch (err) {
       console.error('LanguageDropdown: Error updating language in backend', err);
     }
@@ -960,15 +1053,16 @@ function LanguageDropdown({ selectedLanguage, setSelectedLanguage }) {
 }
 
 function DateRangeDropdown({ selectedRange, setSelectedRange }) {
+  const { t } = useTranslation();
   const [active, setActive] = useState(false);
   const toggleActive = useCallback(() => setActive((active) => !active), []);
   const ranges = [
-    { value: '7', label: 'Last 7 days' },
-    { value: '30', label: 'Last 30 days' },
+    { value: '7', label: t('dashboard.date_range.last_7_days') },
+    { value: '30', label: t('dashboard.date_range.last_30_days') },
   ];
   const activator = (
     <Button onClick={toggleActive} disclosure icon={CalendarIcon}>
-      {ranges.find(r => r.value === selectedRange)?.label || 'Select range'}
+      {ranges.find(r => r.value === selectedRange)?.label || t('dashboard.date_range.select_range')}
     </Button>
   );
   return (

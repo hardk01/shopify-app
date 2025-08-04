@@ -1,0 +1,41 @@
+query GetAppSubscription {
+  app {
+    installation {
+      activeSubscriptions {
+        id
+        name
+        status
+        currentPeriodEnd
+        trialDays
+        returnUrl
+        test
+        lineItems {
+          id
+          plan {
+            pricingDetails {
+              ... on AppRecurringPricing {
+                price {
+                  amount
+                  currencyCode
+                }
+                interval
+              }
+              ... on AppUsagePricing {
+                balanceUsed {
+                  amount
+                  currencyCode
+                }
+                cappedAmount {
+                  amount
+                  currencyCode
+                }
+                interval
+                terms
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -101,7 +101,6 @@ export const loader = async ({ request }) => {
       });
       return json({ images, shop: session.shop });
     } else {
-      console.error("Unexpected response structure:", data);
       return json({ 
         images: [],
         error: "No images found",
@@ -109,7 +108,6 @@ export const loader = async ({ request }) => {
       });
     }
   } catch (error) {
-    console.error("Error:", error);
     return json({ 
       images: [],
       error: error.message,
@@ -216,7 +214,8 @@ export default function ImagesPage() {
                 quality: compressionValue,
                 filename: resource.image.url.split('/').pop().split('?')[0],
                 originalFilename: decodeURIComponent(resource.image.url.split('/').pop().split('?')[0].split('.')[0]),
-                altText: resource.image.altText || ""
+                altText: resource.image.altText || "",
+                skipActivityLog: true  // Skip individual logging for batch operation
               })
             });
 
@@ -272,7 +271,7 @@ export default function ImagesPage() {
               
               const sizeMetafieldResult = await metafieldResponse.json();
               if (!sizeMetafieldResult.success) {
-                console.error('Error setting compressed_size metafield:', sizeMetafieldResult.error);
+                // Silent error - don't log metafield errors
               }
               
               // Also set the file format metafield
@@ -292,7 +291,7 @@ export default function ImagesPage() {
               
               const formatMetafieldResult = await formatResponse.json();
               if (!formatMetafieldResult.success) {
-                console.error('Error setting file_format metafield:', formatMetafieldResult.error);
+                // Silent error - don't log metafield errors
               }
             } else {
               // Check if it's a limit exceeded error
@@ -308,7 +307,6 @@ export default function ImagesPage() {
               });
             }
           } catch (err) {
-            console.error('Error compressing file:', err);
             failedCompressions.push({
               filename: resource.image.url.split('/').pop(),
               error: err.message
@@ -319,25 +317,52 @@ export default function ImagesPage() {
 
       setLocalImages(updatedImages);
 
+      // Log batch activity if any compressions were successful
+      if (successfulCompressions.length > 0) {
+        try {
+          console.log('Logging batch activity for compression:', successfulCompressions.length);
+          const batchResponse = await fetch('/api/batch-activity', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: 'image_compression',
+              count: successfulCompressions.length
+            })
+          });
+          
+          const batchResult = await batchResponse.json();
+          console.log('Batch activity result:', batchResult);
+          
+          if (!batchResult.success) {
+            console.error('Failed to log batch activity:', batchResult.error);
+          }
+        } catch (logError) {
+          console.error('Failed to log batch activity:', logError);
+          // Don't fail the main operation if logging fails
+        }
+      }
+
       // Show appropriate message
       if (successfulCompressions.length > 0) {
-        setToastMessage(`Successfully compressed ${successfulCompressions.length} ${
-          successfulCompressions.length === 1 ? 'image' : 'images'
-        }`);
+        setToastMessage(t('images.compressSuccess', { 
+          count: successfulCompressions.length, 
+          type: successfulCompressions.length === 1 ? t('images.image') : t('images.images')
+        }));
         setIsError(false);
         setCompressionDone(true);
       } else if (failedCompressions.length > 0) {
-        setToastMessage(`Failed to compress ${failedCompressions.length} ${
+        setToastMessage(t('images.failedToConvert', `Failed to compress ${failedCompressions.length} ${
           failedCompressions.length === 1 ? 'image' : 'images'
-        }. Please try again.`);
+        }.`) + ' ' + t('images.pleaseTryAgain'));
         setIsError(true);
         setCompressionDone(true);
       }
       setShowToast(true);
 
     } catch (error) {
-      console.error('Error in compression process:', error);
-      setToastMessage(error.message || 'Error compressing images');
+      setToastMessage(error.message || t('images.errorConvertingImages'));
       setIsError(true);
       setCompressionDone(true);
       setShowToast(true);
@@ -440,8 +465,8 @@ export default function ImagesPage() {
   const bulkActions = selectedResources.length > 0
     ? [
         {
-          content: 'Delete files',
-          onAction: () => console.log('Delete', selectedResources),
+          content: t('images.delete_files', 'Delete files'),
+          onAction: () => {}, // Removed console.log
         },
       ]
     : [];
@@ -568,7 +593,7 @@ export default function ImagesPage() {
       // Fallback to old logic if no badges
       if (!altText) {
         if (altType === "product") {
-          altText = "Product Image";
+          altText = t('images.product_image');
         } else if (altType === "store") {
           altText = storeName;
         } else {
@@ -584,7 +609,7 @@ export default function ImagesPage() {
               if (tag.type === 'product') {
                 return img.image && img.image.url
                   ? decodeURIComponent(img.image.url.split('/').pop().split('?')[0].split('.')[0])
-                  : 'Product Image';
+                  : t('images.product_image');
               }
               if (tag.type === 'store') {
                 return storeName;
@@ -605,9 +630,33 @@ export default function ImagesPage() {
           .catch(e => ({ success: false, error: e.message }));
         })
       );
-      console.log("Alt update results:", results);
       const failed = results.filter(r => !r || !r.success);
       if (failed.length === 0) {
+        // Log batch activity
+        try {
+          console.log('Logging batch activity for alt text:', resources.length);
+          const batchResponse = await fetch('/api/batch-activity', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: 'alt_text',
+              count: resources.length
+            })
+          });
+          
+          const batchResult = await batchResponse.json();
+          console.log('Batch activity result:', batchResult);
+          
+          if (!batchResult.success) {
+            console.error('Failed to log batch activity:', batchResult.error);
+          }
+        } catch (logError) {
+          console.error('Failed to log batch activity:', logError);
+          // Don't fail the main operation if logging fails
+        }
+
         // Instantly update local display
         setLocalImages(localImages.map(img => ({
           ...img,
@@ -620,7 +669,7 @@ export default function ImagesPage() {
                     if (tag.type === 'product') {
                       return img.node.image && img.node.image.url
                         ? decodeURIComponent(img.node.image.url.split('/').pop().split('?')[0].split('.')[0])
-                        : 'Product Image';
+                        : t('images.product_image');
                     }
                     if (tag.type === 'store') {
                       return storeName;
@@ -630,7 +679,7 @@ export default function ImagesPage() {
                 : (altType === "product"
                     ? (img.node.image && img.node.image.url
                         ? decodeURIComponent(img.node.image.url.split('/').pop().split('?')[0].split('.')[0])
-                        : "Product Image")
+                        : t('images.product_image'))
                   : altType === "store"
                     ? storeName
                     : customAlt)
@@ -713,7 +762,7 @@ export default function ImagesPage() {
                   onSelectionChange={handleSelectionChange}
                   headings={[
                     { title: t('images.preview', 'Preview') },
-                    { title: t('images.file_name', 'File name') },
+                    { title: t('images.fileName', 'File name') },
                     { title: t('images.alt_text', 'Alt text') },
                     { title: t('images.size', 'Size') },
                     { title: t('images.date', 'Date') },
@@ -764,11 +813,12 @@ export default function ImagesPage() {
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'flex-start',
                     alignItems: 'center',
                     padding: '16px',
-                    borderTop: '1px solid var(--p-border-subdued)',
-                    background: 'var(--p-surface)',
+                    borderTop: '1px solid #E1E3E5',
+                    background: '#FAFBFB',
+                    gap: '12px',
                   }}
                 >
                   <Pagination
@@ -776,13 +826,8 @@ export default function ImagesPage() {
                     onPrevious={() => setCurrentPage(currentPage - 1)}
                     hasNext={currentPage < totalPages}
                     onNext={() => setCurrentPage(currentPage + 1)}
+                    label={t('pagination.page_of', { current: currentPage, total: totalPages }, `Page ${currentPage} of ${totalPages}`)}
                   />
-                  <Text as="span" variant="bodySm" tone="subdued" style={{ marginLeft: '16px' }}>
-                    {t('images.pageInfo', 'Page {{current}} of {{total}}', { 
-                      current: currentPage, 
-                      total: totalPages 
-                    })}
-                  </Text>
                 </div>
               </LegacyCard>
             </div>

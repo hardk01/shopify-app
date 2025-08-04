@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "2cb9e057c38b21fef5aa452eddd0b6e4"
+client_id = "74e8091ecf85154f7cd6717315c86263"
 name = "SBit - Image Compres and webp"
-handle = "diversified-enterprise-app-13"
-application_url = "https://computed-enabled-serves-kyle.trycloudflare.com"
+handle = "sbit-image-compres-and-webp"
+application_url = "https://gore-madagascar-adjustment-mp.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "write_products,read_files,write_files,read_themes,write_themes,"
 
 [auth]
 redirect_urls = [
-  "https://computed-enabled-serves-kyle.trycloudflare.com/auth/callback",
-  "https://computed-enabled-serves-kyle.trycloudflare.com/auth/shopify/callback",
-  "https://computed-enabled-serves-kyle.trycloudflare.com/api/auth/callback"
+  "https://gore-madagascar-adjustment-mp.trycloudflare.com/auth/callback",
+  "https://gore-madagascar-adjustment-mp.trycloudflare.com/auth/shopify/callback",
+  "https://gore-madagascar-adjustment-mp.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

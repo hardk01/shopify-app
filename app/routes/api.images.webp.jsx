@@ -6,13 +6,14 @@ import { connectDatabase } from "../utilty/database.js";
 import fs from 'fs';
 import path from 'path';
 import { saveCompressedImage } from "../utils/compressedImages";
+import { logActivity } from "../utils/activityLogger.js";
 
 let sharp;
 if (typeof process !== 'undefined' && process.versions && process.versions.node) {
   import('sharp').then(module => {
     sharp = module.default;
   }).catch(err => {
-    console.error('Failed to load Sharp:', err);
+    // Sharp module fallback handling
   });
 }
 
@@ -24,7 +25,7 @@ export async function action({ request }) {
       throw new Error('Sharp module is not available');
     }
 
-    const { imageUrl, imageId } = await request.json();
+    const { imageUrl, imageId, skipActivityLog } = await request.json();
     
     if (!imageUrl || !imageId) {
       throw new Error('Image URL and ID are required');
@@ -73,61 +74,52 @@ export async function action({ request }) {
         }, { status: 403 });
       }
     } catch (dbError) {
-      console.warn('Database connection failed, proceeding without plan limits:', dbError.message);
+      // Database connection failed, proceeding without plan limits
       // Continue without plan limits if database is not available
     }
 
-    // Get original filename and create WebP filename
-    const originalFilename = decodeURIComponent(imageUrl.split('/').pop().split('?')[0]);
-    const webpFilename = `${originalFilename.split('.')[0]}.webp`;
-
-    // First delete the original file
-    let originalDeleted = false;
-    let deleteError = null;
-    try {
-      const deleteResponse = await admin.graphql(
-        `mutation fileDelete($fileIds: [ID!]!) {
-          fileDelete(fileIds: $fileIds) {
-            deletedFileIds
-            userErrors {
-              field
-              message
+    // Get original file details to preserve all associations
+    const fileDetailsResponse = await admin.graphql(
+      `query GetFile($id: ID!) {
+        node(id: $id) {
+          ... on MediaImage {
+            id
+            image {
+              url
+              originalSrc
+            }
+            alt
+            originalSource {
+              fileSize
+            }
+            status
           }
         }
       }`,
-        {
-          variables: {
-            fileIds: [imageId]
-          }
-        }
+      { variables: { id: imageId } }
     );
-      const deleteData = await deleteResponse.json();
-      if (deleteData.data?.fileDelete?.userErrors?.length > 0) {
-        const msg = deleteData.data.fileDelete.userErrors[0].message;
-        // If access denied, log and continue
-        if (msg.includes('Access denied') || msg.includes('delete files permissions')) {
-          console.warn('Could not delete original file due to permissions:', msg);
-          deleteError = msg;
-        } else if (msg.includes('does not exist')) {
-          return json({
-            success: false,
-            error: 'The image no longer exists in Shopify and could not be converted.'
-          }, { status: 404 });
-        } else {
-          throw new Error(`Failed to delete original file: ${msg}`);
-        }
-      } else {
-        originalDeleted = true;
-      }
-    } catch (err) {
-      // If access denied, log and continue
-      if (err.message && (err.message.includes('Access denied') || err.message.includes('delete files permissions'))) {
-        console.warn('Could not delete original file due to permissions:', err.message);
-        deleteError = err.message;
-      } else {
-        throw err;
-      }
+    
+    const fileDetails = await fileDetailsResponse.json();
+    const originalFile = fileDetails.data?.node;
+    
+    if (!originalFile) {
+      throw new Error('Could not retrieve original file details');
     }
+    
+    // Store the original URL and alt text for reference
+    const originalUrl = originalFile.image.url || originalFile.image.originalSrc;
+    const originalAltText = originalFile.alt || "";
+    // Process image conversion
+    
+    // Extract the original filename from the URL and preserve the base name
+    const urlParts = originalUrl.split('/');
+    const filenameWithQuery = urlParts[urlParts.length - 1];
+    const originalFilename = filenameWithQuery.split('?')[0];
+    const baseFilename = originalFilename.split('.')[0];
+    // Keep the original filename but change extension to .webp
+    const webpFilename = `${baseFilename}.webp`;
+    
+    // Convert to WebP format
 
     // Fetch original image
     const imageResponse = await fetch(imageUrl);
@@ -217,113 +209,381 @@ export async function action({ request }) {
       throw new Error(`Failed to upload file to staging: ${uploadResponse.status} ${uploadResponse.statusText}`);
     }
 
-    // Validate the upload was successful
+    // Check if we're converting to a different format (WebP conversion always needs new file)
+    const originalExtension = originalFilename.split('.').pop().toLowerCase();
+    const needsFormatChange = originalExtension !== 'webp';
+    
+    // For WebP conversion, we always need to delete and recreate (no fileUpdate approach)
+    // First, get all product references before deleting
+    let productReferences = [];
     try {
-      const uploadResult = await uploadResponse.text();
-      console.log('Upload success:', uploadResult);
-    } catch (error) {
-      console.error('Error reading upload response:', error);
-    }
-
-    // Add a small delay to ensure file is processed
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Create file in Shopify
-    const fileCreateResponse = await admin.graphql(
-      `mutation fileCreate($files: [FileCreateInput!]!) {
-        fileCreate(files: $files) {
-          files {
-            ... on MediaImage {
+      // Search through all products to find references by URL and ID
+      const referencesResponse = await admin.graphql(
+        `query GetProductImages {
+          products(first: 250) {
+            nodes {
               id
-              image {
-                url
+              title
+              images(first: 250) {
+                nodes {
+                  id
+                  url
+                  altText
+                }
               }
-              status
+              media(first: 250) {
+                nodes {
+                  ... on MediaImage {
+                    id
+                    image { url }
+                    alt
+                  }
+                }
+              }
             }
           }
-          userErrors {
-            field
-            message
+        }`
+      );
+      
+      const referencesData = await referencesResponse.json();
+      const products = referencesData.data?.products?.nodes || [];
+      
+      // Find products that reference this image URL or ID
+      for (const product of products) {
+        // Check both images and media arrays but avoid duplicates
+        const foundReferences = new Set();
+        
+        // Check product images first
+        for (const image of product.images.nodes) {
+          const imageUrl = image.url;
+          if (imageUrl) {
+            // Check if this image URL matches the original URL (ignore query params for comparison)
+            const imageUrlBase = imageUrl.split('?')[0];
+            const originalUrlBase = originalUrl.split('?')[0];
+            
+            // Also check the direct file ID match
+            if (imageUrlBase === originalUrlBase || image.id === imageId) {
+              const refKey = `${product.id}-${image.id}`;
+              if (!foundReferences.has(refKey)) {
+                foundReferences.add(refKey);
+                productReferences.push({
+                  productId: product.id,
+                  imageId: image.id,
+                  altText: image.altText || "",
+                  position: product.images.nodes.indexOf(image) // Store position for proper ordering
+                });
+              }
+            }
           }
         }
-      }`,
-      {
-        variables: {
-          files: [
-            {
-              contentType: "IMAGE",
-              originalSource: target.resourceUrl,
-              filename: webpFilename,
-              alt: ""
+        
+        // Check product media only if not already found in images
+        for (const media of product.media.nodes.filter(media => media.image)) {
+          const imageUrl = media.image.url;
+          if (imageUrl) {
+            // Check if this image URL matches the original URL (ignore query params for comparison)
+            const imageUrlBase = imageUrl.split('?')[0];
+            const originalUrlBase = originalUrl.split('?')[0];
+            
+            // Also check the direct file ID match
+            if (imageUrlBase === originalUrlBase || media.id === imageId) {
+              const refKey = `${product.id}-${media.id}`;
+              if (!foundReferences.has(refKey)) {
+                foundReferences.add(refKey);
+                productReferences.push({
+                  productId: product.id,
+                  imageId: media.id,
+                  altText: media.alt || "",
+                  position: product.media.nodes.indexOf(media) // Store position for proper ordering
+                });
+              }
             }
-          ]
+          }
         }
       }
-    );
-
-    const fileData = await fileCreateResponse.json();
-
-    // Enhanced error handling and logging
-    if (!fileData.data) {
-      console.error('Invalid response from Shopify:', fileData);
-      throw new Error('Invalid response from Shopify API');
+      
+    } catch (error) {
+      // Continue without product references if search fails
     }
-
-    if (fileData.data?.fileCreate?.userErrors?.length > 0) {
-      const errors = fileData.data.fileCreate.userErrors;
-      console.error('File creation errors:', errors);
-      throw new Error(`Failed to create file: ${errors.map(e => e.message).join(', ')}`);
+    
+    // Remove duplicate references (same product, regardless of image ID - group by product only)
+    const uniqueReferences = [];
+    const seenProducts = new Set();
+    for (const ref of productReferences) {
+      if (!seenProducts.has(ref.productId)) {
+        seenProducts.add(ref.productId);
+        uniqueReferences.push(ref);
+      }
     }
-
-    const uploadedFile = fileData.data?.fileCreate?.files?.[0];
-    if (!uploadedFile) {
-      console.error('No file in response:', fileData);
-      throw new Error('No file returned from Shopify');
-    }
-
-    // Add retry mechanism for waiting for image processing
-    let retries = 0;
-    const maxRetries = 5;
-    let processedFile = uploadedFile;
-
-    while (!processedFile.image?.url && retries < maxRetries) {
-      console.log(`Waiting for image processing... Attempt ${retries + 1}/${maxRetries}`);
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds between retries
-
-      // Query the file status
-      const checkResponse = await admin.graphql(
-        `query GetFile($id: ID!) {
-          node(id: $id) {
-            ... on MediaImage {
-              id
-              image {
-                url
-              }
-              status
+    productReferences = uniqueReferences;
+    
+    // Delete the original file first and wait for confirmation
+    let fileDeleted = false;
+    try {
+      const deleteResponse = await admin.graphql(
+        `mutation fileDelete($fileIds: [ID!]!) {
+          fileDelete(fileIds: $fileIds) {
+            deletedFileIds
+            userErrors {
+              field
+              message
             }
           }
         }`,
         {
           variables: {
-            id: processedFile.id
+            fileIds: [imageId]
+          }
+        }
+      );
+      
+      const deleteData = await deleteResponse.json();
+      if (deleteData.data?.fileDelete?.deletedFileIds?.includes(imageId)) {
+        fileDeleted = true;
+      }
+    } catch (error) {
+      // Continue if deletion fails
+    }
+    
+    // Wait a moment for the deletion to propagate
+    if (fileDeleted) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
+    // For WebP conversion with product references, skip standalone file creation
+    // and only create the file when adding to products to avoid duplicates
+    let finalFile = null;
+    let newFileReady = false;
+    let updateSuccessful = false;
+    
+    if (productReferences.length > 0) {
+      // Group references by product to avoid duplicate additions
+      const productGroups = {};
+      for (const ref of productReferences) {
+        if (!productGroups[ref.productId]) {
+          productGroups[ref.productId] = [];
+        }
+        productGroups[ref.productId].push(ref);
+      }
+      
+      // Process each product only once
+      for (const [productId, refs] of Object.entries(productGroups)) {
+        try {
+          // Use the first reference for alt text and position
+          const primaryRef = refs[0];
+          
+          // Add the WebP file to the product (this creates the file)
+          const createMediaResponse = await admin.graphql(
+            `mutation productCreateMedia($productId: ID!, $media: [CreateMediaInput!]!) {
+              productCreateMedia(productId: $productId, media: $media) {
+                media {
+                  ... on MediaImage {
+                    id
+                    image {
+                      url
+                    }
+                    alt
+                  }
+                }
+                mediaUserErrors {
+                  field
+                  message
+                }
+              }
+            }`,
+            {
+              variables: {
+                productId: productId,
+                media: [
+                  {
+                    originalSource: target.resourceUrl,
+                    alt: primaryRef.altText || "",
+                    mediaContentType: "IMAGE"
+                  }
+                ]
+              }
+            }
+          );
+          
+          const createResult = await createMediaResponse.json();
+          
+          if (createResult.data?.productCreateMedia?.media?.length > 0) {
+            updateSuccessful = true;
+            
+            // Store the file info from the first successful creation
+            if (!finalFile) {
+              finalFile = createResult.data.productCreateMedia.media[0];
+              newFileReady = true;
+            }
+            
+            // Successfully created new media reference
+            const newMedia = createResult.data.productCreateMedia.media[0];
+            
+            // Reorder the images to maintain the original position if needed
+            if (primaryRef.position !== undefined && primaryRef.position > 0) {
+              await admin.graphql(
+                `mutation productReorderMedia($id: ID!, $moves: [MoveInput!]!) {
+                  productReorderMedia(id: $id, moves: $moves) {
+                    mediaUserErrors {
+                      field
+                      message
+                    }
+                  }
+                }`,
+                {
+                  variables: {
+                    id: productId,
+                    moves: [
+                      {
+                        id: newMedia.id,
+                        newPosition: primaryRef.position.toString()
+                      }
+                    ]
+                  }
+                }
+              );
+            }
+          }
+        } catch (error) {
+          // Continue with other products if one fails
+        }
+      }
+      
+    } else {
+      // No product references, create standalone file
+      updateSuccessful = true; // Mark as successful since conversion worked
+      const fileCreateResponse = await admin.graphql(
+        `mutation fileCreate($files: [FileCreateInput!]!) {
+          fileCreate(files: $files) {
+            files {
+              ... on MediaImage {
+                id
+                image {
+                  url
+                }
+                status
+              }
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }`,
+        {
+          variables: {
+            files: [
+              {
+                contentType: "IMAGE",
+                originalSource: target.resourceUrl,
+                filename: webpFilename,
+                alt: originalAltText
+              }
+            ]
           }
         }
       );
 
-      const checkData = await checkResponse.json();
-      processedFile = checkData.data?.node;
-      
-      if (!processedFile) {
-        throw new Error('Failed to check file status');
+      const fileData = await fileCreateResponse.json();
+
+      if (!fileData.data) {
+        throw new Error('Invalid response from Shopify API');
       }
-      retries++;
+
+      if (fileData.data?.fileCreate?.userErrors?.length > 0) {
+        const errors = fileData.data.fileCreate.userErrors;
+        throw new Error(`Failed to create file: ${errors.map(e => e.message).join(', ')}`);
+      }
+
+      finalFile = fileData.data?.fileCreate?.files?.[0];
+      if (!finalFile) {
+        throw new Error('No file returned from Shopify');
+      }
+      
+      // Wait for the new file to be processed
+      let fileCheckRetries = 0;
+      const maxFileCheckRetries = 10;
+      
+      while (!newFileReady && fileCheckRetries < maxFileCheckRetries) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const checkResponse = await admin.graphql(
+          `query GetFile($id: ID!) {
+            node(id: $id) {
+              ... on MediaImage {
+                id
+                image { url }
+                status
+              }
+            }
+          }`,
+          { variables: { id: finalFile.id } }
+        );
+        
+        const checkData = await checkResponse.json();
+        const checkedFile = checkData.data?.node;
+        
+        if (checkedFile?.image?.url) {
+          newFileReady = true;
+          finalFile = checkedFile;
+        }
+        
+        fileCheckRetries++;
+      }
+      
+      if (!newFileReady) {
+        throw new Error('File processing timeout');
+      }
+    }    // Final processing check
+    let processedFile = finalFile;
+
+    // Ensure the file has a valid URL before proceeding
+    if (!processedFile?.image?.url) {
+      // Add retry mechanism for waiting for image processing
+      let retries = 0;
+      const maxRetries = 10;
+
+      while ((!processedFile?.image?.url) && retries < maxRetries) {
+        // Wait for image processing
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds between retries
+
+        // Query the file status
+        const checkResponse = await admin.graphql(
+          `query GetFile($id: ID!) {
+            node(id: $id) {
+              ... on MediaImage {
+                id
+                image {
+                  url
+                }
+                status
+              }
+            }
+          }`,
+          {
+            variables: {
+              id: processedFile.id
+            }
+          }
+        );
+
+        const checkData = await checkResponse.json();
+        processedFile = checkData.data?.node;
+        
+        if (!processedFile) {
+          throw new Error('Failed to check file status');
+        }
+        
+        retries++;
+      }
+
+      if (!processedFile?.image?.url) {
+        throw new Error('Image processing timeout - please try again');
+      }
     }
 
-    if (!processedFile.image?.url) {
-      console.error('File processing timeout:', processedFile);
-      throw new Error('Image processing timeout - please try again');
-    }
-
+    // Log the URLs to verify the conversion
+    
     let compressedSizes = {};
     try {
       compressedSizes = JSON.parse(
@@ -371,6 +631,16 @@ export async function action({ request }) {
     // Increment the WebP conversion count
     if (subscription) {
       await subscription.incrementImageCount('webp', 1);
+      
+      // Log activity for statistics only if not part of a batch operation
+      if (!skipActivityLog) {
+        try {
+          await logActivity(shopRecord._id, session.shop, 'webp_conversion', 1);
+        } catch (logError) {
+          console.error('Failed to log activity:', logError);
+          // Don't fail the main operation if logging fails
+        }
+      }
     }
 
     return json({
@@ -379,8 +649,8 @@ export async function action({ request }) {
         id: processedFile.id,
         url: processedFile.image.url,
         filename: webpFilename,
-        originalDeleted,
-        deleteError,
+        originalUrl: originalUrl,
+        referencesPreserved: updateSuccessful,
         compressedSize: webpBuffer.length
       },
       usage: subscription ? {

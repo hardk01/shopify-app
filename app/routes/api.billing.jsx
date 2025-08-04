@@ -3,6 +3,7 @@ import { authenticate } from "../shopify.server";
 import { Subscription } from "../models/subscription.js";
 import { Shop } from "../models/Shop.js";
 import { connectDatabase } from "../utilty/database.js";
+import { getSubscriptionData, getPlanLimits } from '../utils/subscriptionUtils.js';
 
 const plans = {
   'FREE': { name: 'Free', price: 0, trial_days: 0 },
@@ -15,14 +16,14 @@ const plans = {
 const APP_URL = "admin.shopify.com/store/tcxceststore12345"; // <-- Set your real app URL here
 
 export const loader = async ({ request }) => {
-  const { session } = await authenticate.admin(request);
+  const { session, admin } = await authenticate.admin(request);
   
   try {
     // Try to connect to database
     try {
       await connectDatabase();
     } catch (dbError) {
-      console.warn('Database connection failed, using fallback data:', dbError.message);
+      // Database connection failed, using fallback data
       // Return fallback data if database is not available
       return json({
         subscription: {
@@ -70,16 +71,34 @@ export const loader = async ({ request }) => {
       });
     }
 
+    // Get subscription data from Shopify GraphQL with database fallback and FREE plan enforcement
+    const subscriptionData = await getSubscriptionData(admin, session.shop, Shop, Subscription);
+    
+    // Get usage counts from database (these are still tracked locally)
+    let usageCounts = { imageCompressCount: 0, webPConvertCount: 0, altTextCount: 0 };
+    try {
+      // Refresh subscription data after potential updates
+      subscription = await Subscription.findOne({ shopId: shopRecord._id });
+      if (subscription) {
+        usageCounts = {
+          imageCompressCount: subscription.imageCompressCount || 0,
+          webPConvertCount: subscription.webPConvertCount || 0,
+          altTextCount: subscription.altTextCount || 0,
+        };
+      }
+    } catch (error) {
+      // Error fetching usage counts - use defaults
+    }
+
     // Get plan limits
-    const planLimits = subscription.getPlanLimits();
+    const planLimits = getPlanLimits(subscriptionData.plan);
 
     return json({
       subscription: {
-        plan: subscription.plan,
-        status: subscription.status,
-        imageCompressCount: subscription.imageCompressCount,
-        webPConvertCount: subscription.webPConvertCount,
-        altTextCount: subscription.altTextCount,
+        plan: subscriptionData.plan,
+        status: subscriptionData.status,
+        shopifySubscription: subscriptionData.shopifySubscription,
+        ...usageCounts,
         limits: planLimits
       },
       plans: [
@@ -91,7 +110,7 @@ export const loader = async ({ request }) => {
       ]
     });
   } catch (error) {
-    console.error('Error fetching subscription:', error);
+    // Error fetching subscription - return fallback
     return json({
       subscription: {
         plan: "FREE",

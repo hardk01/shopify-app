@@ -3,6 +3,7 @@ import { authenticate } from "../shopify.server";
 import { Subscription } from "../models/subscription.js";
 import { Shop } from "../models/Shop.js";
 import { connectDatabase } from "../utilty/database.js";
+import { logActivity } from "../utils/activityLogger.js";
 
 let sharp;
 if (typeof process !== 'undefined' && process.versions && process.versions.node) {
@@ -21,7 +22,7 @@ export async function action({ request }) {
       throw new Error('Sharp module is not available');
     }
 
-    const { imageUrl, imageId, quality, filename, originalFilename, altText } = await request.json();
+    const { imageUrl, imageId, quality, filename, originalFilename, altText, skipActivityLog } = await request.json();
 
     // Try to connect to database
     let subscription = null;
@@ -292,19 +293,28 @@ export async function action({ request }) {
     // Increment the compression count
     if (subscription) {
       await subscription.incrementImageCount('compress', 1);
+      
+      // Log activity for statistics only if not part of a batch operation
+      if (!skipActivityLog) {
+        try {
+          await logActivity(shopRecord._id, session.shop, 'image_compression', 1);
+        } catch (logError) {
+          console.error('Failed to log activity:', logError);
+          // Don't fail the main operation if logging fails
+        }
+      }
     }
 
     // 5. Return the new file info
     return json({
       success: true,
-      originalFilename: originalFilename || extractedFilename.split('.')[0],
+      originalFilename: filenameOnly.split('.')[0], // Return the filename without extension
       newFile: {
         id: readyFile.id,
         url: readyFile.image.url,
         size: compressedSize,
         originalUrl: originalUrl // Include the original URL for reference
       },
-      originalFilename: filenameOnly.split('.')[0], // Return the filename without extension
       usage: subscription ? {
         current: subscription.imageCompressCount + 1,
         limit: subscription.getPlanLimits().imageCompressLimit,

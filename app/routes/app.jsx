@@ -25,14 +25,11 @@ export default function App() {
     <PolarisProvider i18n={en}>
       <AppProvider isEmbeddedApp apiKey={apiKey}>
         <NavMenu>
-          <Link to="/app/images" rel="Image Compres">
-          Image Compres
-          </Link>
-          {/* <Link to="/app/images">Images</Link> */}
-          <Link to="/app/alt">Set alt Tag</Link>
-          <Link to="/app/webP">WebP</Link>
-          <Link to="/app/billing">Pricing</Link>
+          <Link to="/app/images">Image Compression</Link>
+          <Link to="/app/webP">WebP Conversion</Link>
+          <Link to="/app/alt">Set ALT Tag</Link>
           <Link to="/app/contact">Contact Us</Link>
+          <Link to="/app/billing">Pricing</Link>
         </NavMenu>
         <Outlet />
       </AppProvider>

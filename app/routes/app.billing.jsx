@@ -26,6 +26,8 @@ import { Redirect } from '@shopify/app-bridge/actions';
 import { Subscription } from '../models/subscription.js';
 import { useTranslation } from 'react-i18next';
 import { Shop } from '../models/Shop.js';
+import '../i18n.js'; // Import i18n configuration
+import { getSubscriptionData, getPlanLimits } from '../utils/subscriptionUtils.js';
 import frame1 from '../assets/Frame (1).png';
 import frame2 from '../assets/Frame (2).png';
 import frame3 from '../assets/Frame (3).png';
@@ -87,32 +89,55 @@ async function handlePlanUpgrade({ shopDomain, accessToken, chargeId, planName }
 }
 
 export const loader = async ({ request }) => {
-  const { session } = await authenticate.admin(request);
+  const { session, admin } = await authenticate.admin(request);
   const shopDomain = session.shop;
   const accessToken = session.accessToken;
+  
   if (!shopDomain) {
     return json({ error: "Missing shop parameter" }, { status: 400 });
   }
+  
   const url = new URL(request.url);
   const chargeId = url.searchParams.get('charge_id');
   const planName = url.searchParams.get('plan');
+  
   // 1. Always ensure shop and FREE plan on load
   await ensureShopAndFreePlan(session);
+  
   // 2. If charge_id and plan, handle upgrade
   if (chargeId && planName) {
     await handlePlanUpgrade({ shopDomain, accessToken, chargeId, planName });
   }
-  // 3. Fetch latest subscription and plans
-  let shop = await Shop.findOne({ shop: shopDomain });
-  let subscription = await Subscription.findOne({ shopId: shop._id });
-  const planLimits = subscription.getPlanLimits();
+  
+  // 3. Get subscription data from Shopify GraphQL with database fallback
+  const subscriptionData = await getSubscriptionData(admin, shopDomain, Shop, Subscription);
+  
+  // Get usage counts from database (these are still tracked locally)
+  let usageCounts = { imageCompressCount: 0, webPConvertCount: 0, altTextCount: 0 };
+  try {
+    let shop = await Shop.findOne({ shop: shopDomain });
+    if (shop) {
+      let subscription = await Subscription.findOne({ shopId: shop._id });
+      if (subscription) {
+        usageCounts = {
+          imageCompressCount: subscription.imageCompressCount || 0,
+          webPConvertCount: subscription.webPConvertCount || 0,
+          altTextCount: subscription.altTextCount || 0,
+        };
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching usage counts:', error);
+  }
+  
+  const planLimits = getPlanLimits(subscriptionData.plan);
+  
   return json({
     subscription: {
-      plan: subscription.plan,
-      status: subscription.status,
-      imageCompressCount: subscription.imageCompressCount,
-      webPConvertCount: subscription.webPConvertCount,
-      altTextCount: subscription.altTextCount,
+      plan: subscriptionData.plan,
+      status: subscriptionData.status,
+      shopifySubscription: subscriptionData.shopifySubscription,
+      ...usageCounts,
       limits: planLimits
     },
     plans: [
@@ -206,8 +231,20 @@ function BillingSkeleton() {
 }
 
 export default function BillingPage() {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const { subscription, session, redirectToDashboard } = useLoaderData();
+  
+  // Fallback function for translations
+  const safeT = (key, fallback) => {
+    if (!ready) return fallback || key;
+    try {
+      const translation = t(key);
+      return translation !== key ? translation : fallback || key;
+    } catch (error) {
+      console.warn(`Translation error for key: ${key}`, error);
+      return fallback || key;
+    }
+  };
   const [toastActive, setToastActive] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [loadingPlan, setLoadingPlan] = useState(null);
@@ -287,31 +324,28 @@ export default function BillingPage() {
 
   const plansList = [
     {
-      name: t('billing.free'),
+      name: safeT('billing.free', 'Free'),
       price: '$0',
       period: '/mo',
       features: [
-        t('billing.import_export_20'),
-        t('billing.platforms_shop'),
-        t('billing.does_not_renew'),
-        // `${subscription?.limits?.imageCompressLimit || 200}${t('billing.import_export_20')}` ,
-        // `${subscription?.limits?.webPConvertLimit || 50} ${t('billing.platforms_shop')}`,
-        // `${subscription?.limits?.altTextLimit || 50} ${t('billing.does_not_renew')}`,
+        safeT('billing.import_export_20', '200 Image Compress'),
+        safeT('billing.platforms_shop', '50 webP Convert'),
+        safeT('billing.does_not_renew', '50 alt Content'),
       ],
-      button: (
+      button: subscription?.plan === 'FREE' ? (
         <Button fullWidth disabled>
-          {isCurrentPlan('Free') ? t('billing.current_plan') : t('billing.current_plan')}
+          {safeT('billing.current_plan', 'Current Plan')}
         </Button>
-      ),
+      ) : null, // Hide button if user has any other plan
     },
     {
-      name: t('billing.shop_plan'),
+      name: safeT('billing.shop_plan', 'Shop Plan'),
       price: '$9.99',
       period: '/mo',
       features: [
-        t('billing.import_export_100'),
-        t('billing.platforms_shop_plus'),
-        t('billing.renews_monthly'),
+        safeT('billing.import_export_100', '500 Image Compress'),
+        safeT('billing.platforms_shop_plus', '200 webP Convert'),
+        safeT('billing.renews_monthly', '500 alt Content'),
       ],
       button: (
         <Button
@@ -321,26 +355,26 @@ export default function BillingPage() {
           disabled={isCurrentPlan('Shop Plan') || loadingPlan === 'SHOP PLAN'}
       >
           {isCurrentPlan('Shop Plan')
-            ? t('billing.current_plan')
+            ? safeT('billing.current_plan', 'Current Plan')
             : loadingPlan === 'SHOP PLAN'
               ? (
           <InlineStack gap="200" align="center">
             <Spinner size="small" />
-            <span>{t('billing.upgrading')}</span>
+            <span>{safeT('billing.upgrading', 'Upgrading...')}</span>
           </InlineStack>
               )
-              : t('billing.upgrade')}
+              : safeT('billing.upgrade', 'Upgrade')}
         </Button>
       ),
     },
     {
-      name: t('billing.warehouse_plan'),
+      name: safeT('billing.warehouse_plan', 'Warehouse Plan'),
       price: '$14.99',
       period: '/mo',
       features: [
-        t('billing.import_export_300'),
-        t('billing.platforms_warehouse'),
-        t('billing.renews_monthly'),
+        safeT('billing.import_export_300', '1000 Image Compress'),
+        safeT('billing.platforms_warehouse', '500 webP Convert'),
+        safeT('billing.renews_monthly', '500 alt Content'),
       ],
       button: (
         <Button
@@ -350,27 +384,27 @@ export default function BillingPage() {
           disabled={isCurrentPlan('Warehouse Plan') || loadingPlan === 'WAREHOUSE PLAN'}
       >
           {isCurrentPlan('Warehouse Plan')
-            ? t('billing.current_plan')
+            ? safeT('billing.current_plan', 'Current Plan')
             : loadingPlan === 'WAREHOUSE PLAN'
               ? (
           <InlineStack gap="200" align="center">
             <Spinner size="small" />
-            <span>{t('billing.upgrading')}</span>
+            <span>{safeT('billing.upgrading', 'Upgrading...')}</span>
           </InlineStack>
               )
-              : t('billing.upgrade')}
+              : safeT('billing.upgrade', 'Upgrade')}
         </Button>
       ),
     },
     {
-      name: t('billing.factory_plan'),
+      name: safeT('billing.factory_plan', 'Factory Plan'),
       price: '$49.99',
       period: '/mo',
       features: [
-        t('billing.import_export_1000'),
-        t('billing.platforms_factory'),
-        t('billing.renews_monthly'),
-        t('billing.priority_support'),
+        safeT('billing.import_export_1000', '2000 Image Compress'),
+        safeT('billing.platforms_factory', '500 webP Convert'),
+        safeT('billing.renews_monthly', '500 alt Content'),
+        safeT('billing.priority_support', 'Priority support'),
       ],
       button: (
         <Button
@@ -380,15 +414,15 @@ export default function BillingPage() {
           disabled={isCurrentPlan('Factory Plan') || loadingPlan === 'FACTORY PLAN'}
       >
           {isCurrentPlan('Factory Plan')
-            ? t('billing.current_plan')
+            ? safeT('billing.current_plan', 'Current Plan')
             : loadingPlan === 'FACTORY PLAN'
               ? (
           <InlineStack gap="200" align="center">
             <Spinner size="small" />
-            <span>{t('billing.upgrading')}</span>
+            <span>{safeT('billing.upgrading', 'Upgrading...')}</span>
           </InlineStack>
               )
-              : t('billing.upgrade')}
+              : safeT('billing.upgrade', 'Upgrade')}
         </Button>
       ),
     },
@@ -417,16 +451,34 @@ export default function BillingPage() {
     //   </Button>,
     // },
     {
-      name: t('billing.citadel_plan'),
+      name: safeT('billing.citadel_plan', 'Citadel Plan'),
       price: '$99',
       period: '/mo',
       features: [
-        t('billing.import_export_50000'),
-        t('billing.webP_50000'),
-        t('billing.alt_export_50000'),
-        t('billing.priority_support'),
+        safeT('billing.import_export_50000', '5000 Image Compress'),
+        safeT('billing.webP_50000', '5000 webP Content'),
+        safeT('billing.alt_export_50000', '5000 alt Content'),
+        safeT('billing.priority_support', 'Priority support'),
       ],
-      button: <Button fullWidth disabled>{t('billing.contact_us_to_upgrade')}</Button>,
+      button: (
+        <Button
+          fullWidth
+          variant='primary'
+          onClick={() => handleUpgrade('CITADEL PLAN')}
+          disabled={isCurrentPlan('Citadel Plan') || loadingPlan === 'CITADEL PLAN'}
+        >
+          {isCurrentPlan('Citadel Plan')
+            ? safeT('billing.current_plan', 'Current Plan')
+            : loadingPlan === 'CITADEL PLAN'
+              ? (
+                <InlineStack gap="200" align="center">
+                  <Spinner size="small" />
+                  <span>{safeT('billing.upgrading', 'Upgrading...')}</span>
+                </InlineStack>
+              )
+              : safeT('billing.upgrade', 'Upgrade')}
+        </Button>
+      ),
     },
   ];
 
@@ -509,7 +561,7 @@ export default function BillingPage() {
             <Box paddingBlockStart="400">
               <Box paddingBlockEnd="400">
                 <Text variant="headingLg" as="h2" fontWeight="bold" alignment="left" marginBlockEnd="400">
-                  {t('billing.title')}
+                  {safeT('billing.title', 'Pricing Plans')}
                 </Text>
               </Box>
               

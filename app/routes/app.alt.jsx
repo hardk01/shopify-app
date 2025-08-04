@@ -38,6 +38,12 @@ import { TitleBar } from "@shopify/app-bridge-react";
 import Footer from '../components/Footer';
 
 export const loader = async ({ request }) => {
+  try {
+    const { admin, session } = await authenticate.admin(request);
+  } catch (authError) {
+    throw authError;
+  }
+
   const { admin, session } = await authenticate.admin(request);
 
   // Helper to check if a file URL or file name is referenced in theme settings, sections, templates, or layout files
@@ -98,7 +104,8 @@ export const loader = async ({ request }) => {
   }
 
   try {
-    const response = await admin.graphql(`
+    // Add timeout to prevent hanging
+    const queryPromise = admin.graphql(`
       query GetMediaImagesAndProducts {
         files(first: 50, query: "mediaType:IMAGE") {
           edges {
@@ -144,19 +151,18 @@ export const loader = async ({ request }) => {
             }
           }
         }
-        themes(first: 5) {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
       }
     `);
+    
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('GraphQL query timeout')), 30000)
+    );
+    
+    const response = await Promise.race([queryPromise, timeoutPromise]);
 
     const data = await response.json();
-    // Build a map of image URLs to product IDs
+    
+    // Build a map of image URLs to product IDs (simplified)
     const productImages = {};
     if (data.data && data.data.products && data.data.products.edges) {
       data.data.products.edges.forEach(productEdge => {
@@ -172,51 +178,8 @@ export const loader = async ({ request }) => {
       });
     }
 
-    // Only log product references for each image
-    if (data.data && data.data.products && data.data.products.edges) {
-      for (const edge of data.data.files.edges) {
-        const node = edge.node;
-        const fileName = node.image?.url?.split('/').pop()?.split('?')[0];
-        let isProductReferenced = false;
-        for (const productEdge of data.data.products.edges) {
-          if (!productEdge || !productEdge.node || !productEdge.node.images || !productEdge.node.images.edges) continue;
-          for (const imgEdge of productEdge.node.images.edges) {
-            if (!imgEdge || !imgEdge.node || !imgEdge.node.url) continue;
-            const prodFileName = imgEdge.node.url.split('/').pop()?.split('?')[0];
-            if (fileName && prodFileName && fileName === prodFileName) {
-              isProductReferenced = true;
-              break;
-            }
-          }
-          if (isProductReferenced) break;
-        }
-      }
-    }
-
     if (data.data && data.data.files && data.data.files.edges) {
-      // Build a map of file id/url to theme reference
-      const themeReferenceMap = {};
-      if (data.data.themes && data.data.themes.edges) {
-        for (const edge of data.data.files.edges) {
-          const node = edge.node;
-          const fileUrl = node.image?.url;
-          const fileName = fileUrl?.split('/').pop()?.split('?')[0];
-          const themeReferences = { count: 0, names: [], foundFiles: [] };
-          for (const themeEdge of data.data.themes.edges) {
-            const theme = themeEdge.node;
-            const themeId = theme.id.split('/').pop();
-            const themeName = theme.name;
-            const refResult = await isFileReferencedInThemeSettingsOrSections(admin, themeId, fileUrl, fileName);
-            if (refResult.count > 0) {
-              themeReferences.count++;
-              themeReferences.names.push(themeName);
-              themeReferences.foundFiles.push(...refResult.foundFiles);
-            }
-          }
-          themeReferenceMap[fileUrl] = themeReferences;
-        }
-      }
-      // Attach compressed size metafield to each image node and add references
+      // Simplified approach - skip theme reference checking for now to speed up loading
       const images = data.data.files.edges.map(edge => {
         const node = edge.node;
         let compressedSize = null;
@@ -228,9 +191,12 @@ export const loader = async ({ request }) => {
             compressedSize = Number(metafield.node.value);
           }
         }
+        
         let references = [];
         const fileName = node.image?.url?.split('/').pop()?.split('?')[0];
         let productCount = 0;
+        
+        // Check product references (quick)
         Object.keys(productImages).forEach(url => {
           const prodFileName = url.split('/').pop()?.split('?')[0];
           if (fileName && prodFileName && fileName === prodFileName) {
@@ -241,31 +207,22 @@ export const loader = async ({ request }) => {
           references.push({ type: 'product', count: productCount });
         }
 
-        const themeRef = themeReferenceMap[node.image?.url];
-        if (themeRef && themeRef.count > 0) {
-          references.push({ type: 'theme', count: themeRef.count, names: themeRef.names });
-        }
+        // Skip theme reference checking for faster loading
+        // TODO: Add theme references back in future optimization
+        
         return {
           ...edge,
           node: {
             ...node,
             compressedSize,
             references,
-            isThemeReferenced: themeRef ? themeRef.count > 0 : false
+            isThemeReferenced: false // Simplified for now
           }
         };
       });
-      // Log all references for each image
-      images.forEach(img => {
-        const fileName = img.node.image?.url?.split('/').pop()?.split('?')[0];
-        img.node.references.forEach(ref => {
-          if (ref.type === 'product') {
-          }
-        });
-      });
+      
       return json({ images, shop: session.shop });
     } else {
-      console.error("Unexpected response structure:", data);
       return json({
         images: [],
         error: "No images found",
@@ -273,11 +230,10 @@ export const loader = async ({ request }) => {
       });
     }
   } catch (error) {
-    console.error("Error:", error);
     return json({
       images: [],
       error: error.message,
-      shop: session.shop
+      shop: session?.shop || null
     });
   }
 };
@@ -319,6 +275,8 @@ function TableSkeleton() {
 
 export default function ImagesPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  
   const { images = [], error, shop } = useLoaderData();
   const [localImages, setLocalImages] = useState(images);
   const [altModalActive, setAltModalActive] = useState(false);
@@ -520,9 +478,9 @@ export default function ImagesPage() {
     />
   ) : null;
 
-  // if (isLoading) {
-  //   return <TableSkeleton />;
-  // }
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
   return (
     <Frame>
       <Page fullWidth
@@ -536,8 +494,7 @@ export default function ImagesPage() {
                 setCustomAlt("");
               }}
             >
-              Export All Product
-
+              {t('alt.export_all_product')}
             </Button>
             <Button
               variant="primary"
@@ -549,7 +506,7 @@ export default function ImagesPage() {
               }}
               disabled={selectedResources.length === 0}
             >
-              Add ALT Tag to Selected Products
+              {t('alt.add_alt_tag_to_selected')}
             </Button>
           </ButtonGroup>
         }
@@ -658,11 +615,12 @@ export default function ImagesPage() {
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'flex-start',
                     alignItems: 'center',
                     padding: '16px',
-                    borderTop: '1px solid var(--p-border-subdued)',
-                    background: 'var(--p-surface)',
+                    borderTop: '1px solid #E1E3E5',
+                    background: '#FAFBFB',
+                    gap: '12px',
                   }}
                 >
                   <Pagination
@@ -670,10 +628,8 @@ export default function ImagesPage() {
                     onPrevious={() => setCurrentPage(currentPage - 1)}
                     hasNext={currentPage < totalPages}
                     onNext={() => setCurrentPage(currentPage + 1)}
+                    label={`Page ${currentPage} of ${totalPages}`}
                   />
-                  <Text as="span" variant="bodySm" tone="subdued" style={{ marginLeft: '16px' }}>
-                    Page {currentPage} of {totalPages}
-                  </Text>
                 </div>
               </LegacyCard>
             </div>
@@ -682,7 +638,13 @@ export default function ImagesPage() {
         <Modal
           open={altModalActive}
           onClose={() => setAltModalActive(false)}
-          title={`Set Alt Text for ${altTarget === 'selected' ? `${selectedResources.length} Selected Products` : altTarget === 'product' ? 'All Product Images' : 'Theme Images'}`}
+          title={
+            altTarget === 'selected' 
+              ? t('alt.set_alt_text_for_selected', { count: selectedResources.length })
+              : altTarget === 'product' 
+                ? t('alt.set_alt_text_for_all_products')
+                : t('alt.set_alt_text_for_theme')
+          }
           primaryAction={{
             content: isSavingAlt ? "Saving..." : "Save",
             onAction: handleSaveAlt,
@@ -804,6 +766,18 @@ export default function ImagesPage() {
           </Modal.Section>
         </Modal>
         <Footer />
+      </Page>
+    </Frame>
+  );
+}
+
+export function ErrorBoundary() {
+  return (
+    <Frame>
+      <Page>
+        <Banner status="critical" title="Something went wrong">
+          <p>There was an error loading the alt tag page. Please refresh and try again.</p>
+        </Banner>
       </Page>
     </Frame>
   );

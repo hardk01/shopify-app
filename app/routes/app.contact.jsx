@@ -445,7 +445,7 @@ export default function Contact() {
                 </Box>
 
                 {/* Tutorials */}
-                <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
+                {/* <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
                     <Card padding="500" background="bg-surface" borderRadius="2xl" paddingBlockStart="600" paddingBlockEnd="600">
                         <BlockStack gap="200">
                             <Text variant="headingMd">{t('import.quick_tutorials')}</Text>
@@ -454,9 +454,9 @@ export default function Contact() {
                                 {Array.isArray(pagedTutorials) && pagedTutorials.map((tut, idx) => (
                                     <Card key={idx} padding="400">
                                         <Box background="bg-surface">
-                                            <div style={{ display: 'flex', gap: 5 }}>
+                                            <div style={{ display: 'flex', gap: 5 }}> */}
                                                 {/* Icon on the left */}    
-                                                <Box
+                                                {/* <Box
                                                     width="60px"
                                                     height="60px"
                                                     borderRadius="full"
@@ -467,9 +467,9 @@ export default function Contact() {
                                                     marginInlineEnd="200"
                                                 >
                                                     <img src={tutorialIcon} alt="Tutorial" style={{ width: 40, height: 40 }} />
-                                                </Box>
+                                                </Box> */}
                                                 {/* Content on the right */}
-                                                <BlockStack gap="200">
+                                                {/* <BlockStack gap="200">
                                                     <Text variant="headingSm">{tut.title}</Text>
                                                     <Text>{tut.description}</Text>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -507,7 +507,7 @@ export default function Contact() {
                             </Box>
                         </BlockStack>
                     </Card>
-                </Box>
+                </Box> */}
 
                 {/* Help Section */ /* FAQ Section */}
                 <Box ref={helpSectionRef} display="flex" justifyContent="flex-start" >

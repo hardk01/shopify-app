@@ -18,7 +18,9 @@ import {
   SkeletonBodyText,
   SkeletonDisplayText,
   SkeletonThumbnail,
-  Modal
+  Modal,
+  Pagination,
+  LegacyCard
 } from "@shopify/polaris";
 import { Icon, TextField } from "@shopify/polaris";
 import { SearchIcon } from '@shopify/polaris-icons';
@@ -32,10 +34,38 @@ export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
   try {
+    // Get pagination parameters from URL
+    const url = new URL(request.url);
+    const cursor = url.searchParams.get('cursor');
+    const direction = url.searchParams.get('direction') || 'next';
+    const limit = 20; // Items per page
+
+    // Build GraphQL query with pagination
+    let paginationArgs = `first: ${limit}`;
+    if (cursor && direction === 'next') {
+      paginationArgs = `first: ${limit}, after: "${cursor}"`;
+    } else if (cursor && direction === 'previous') {
+      paginationArgs = `last: ${limit}, before: "${cursor}"`;
+    }
+
+    // Get total count with a separate query
+    const totalResponse = await admin.graphql(
+      `query GetTotalImageCount {
+        files(first: 250, query: "mediaType:IMAGE") {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }`
+    );
+
     const response = await admin.graphql(
       `query GetMediaImages {
-        files(first: 50, query: "mediaType:IMAGE") {
+        files(${paginationArgs}, query: "mediaType:IMAGE") {
           edges {
+            cursor
             node {
               ... on MediaImage {
                 id
@@ -61,12 +91,24 @@ export const loader = async ({ request }) => {
               }
             }
           }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
         }
       }`
     );
 
     const data = await response.json();
+    const totalData = await totalResponse.json();
+    
     if (data.data && data.data.files && data.data.files.edges) {
+      // Calculate total pages
+      const totalCount = totalData.data?.files?.edges?.length || 0;
+      const totalPages = Math.ceil(totalCount / limit);
+      
       // Attach compressed size metafield to each image node
       const images = data.data.files.edges.map(edge => {
         const node = edge.node;
@@ -87,12 +129,41 @@ export const loader = async ({ request }) => {
           }
         };
       });
-      return json({ images, shop: session.shop });
+      
+      const pageInfo = data.data.files.pageInfo;
+      return json({ 
+        images, 
+        pageInfo,
+        totalPages,
+        shop: session.shop 
+      });
     } else {
-      return json({ images: [], error: "No images found", shop: session.shop });
+      return json({ 
+        images: [], 
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: null,
+          endCursor: null
+        },
+        totalPages: 0,
+        error: "No images found", 
+        shop: session.shop 
+      });
     }
   } catch (error) {
-    return json({ images: [], error: error.message, shop: session.shop });
+    return json({ 
+      images: [], 
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: null,
+        endCursor: null
+      },
+      totalPages: 0,
+      error: error.message, 
+      shop: session.shop 
+    });
   }
 };
 
@@ -128,13 +199,14 @@ function TableSkeleton() {
 
 export default function WebPPage() {
   const { t } = useTranslation();
-  const { images = [], error, shop } = useLoaderData();
+  const { images = [], pageInfo, totalPages = 0, error, shop } = useLoaderData();
   const [localImages, setLocalImages] = useState(images);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   
   useEffect(() => {
     if (images) {
@@ -142,6 +214,29 @@ export default function WebPPage() {
       return () => clearTimeout(timeout);
     }
   }, [images]);
+
+  // Get current page from URL or default to 1
+  useEffect(() => {
+    const url = new URL(window.location);
+    const cursor = url.searchParams.get('cursor');
+    const direction = url.searchParams.get('direction');
+    
+    if (!cursor) {
+      setCurrentPage(1);
+    } else {
+      // Estimate page number based on cursor presence
+      // This is an approximation since we don't have total count
+      const storedPage = sessionStorage.getItem('webp-current-page');
+      if (storedPage && direction) {
+        const page = parseInt(storedPage);
+        if (direction === 'next') {
+          setCurrentPage(page + 1);
+        } else if (direction === 'previous' && page > 1) {
+          setCurrentPage(page - 1);
+        }
+      }
+    }
+  }, []);
 
   const filteredResources = (localImages || [])
     .map(({ node }) => ({
@@ -164,6 +259,33 @@ export default function WebPPage() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isError, setIsError] = useState(false);
+
+  // Pagination navigation functions
+  const handleNextPage = useCallback(() => {
+    if (pageInfo?.hasNextPage && pageInfo?.endCursor) {
+      const nextPage = currentPage + 1;
+      sessionStorage.setItem('webp-current-page', nextPage.toString());
+      setCurrentPage(nextPage);
+      
+      const url = new URL(window.location);
+      url.searchParams.set('cursor', pageInfo.endCursor);
+      url.searchParams.set('direction', 'next');
+      navigate(`${url.pathname}${url.search}`);
+    }
+  }, [pageInfo, navigate, currentPage]);
+
+  const handlePreviousPage = useCallback(() => {
+    if (pageInfo?.hasPreviousPage && pageInfo?.startCursor) {
+      const prevPage = Math.max(1, currentPage - 1);
+      sessionStorage.setItem('webp-current-page', prevPage.toString());
+      setCurrentPage(prevPage);
+      
+      const url = new URL(window.location);
+      url.searchParams.set('cursor', pageInfo.startCursor);
+      url.searchParams.set('direction', 'previous');
+      navigate(`${url.pathname}${url.search}`);
+    }
+  }, [pageInfo, navigate, currentPage]);
 
   // --- WebP Conversion Logic ---
   const handleWebPConversion = useCallback(async () => {
@@ -193,7 +315,8 @@ export default function WebPPage() {
               },
               body: JSON.stringify({
                 imageUrl: resource.image.url,
-                imageId: resource.id
+                imageId: resource.id,
+                skipActivityLog: true  // Skip individual logging for batch operation
               })
             });
 
@@ -211,7 +334,7 @@ export default function WebPPage() {
               }
               let errorMsg = result.error || 'Unknown error';
               if (errorMsg.includes('no longer exists in Shopify')) {
-                errorMsg = `The image ${resource.image.url.split('/').pop()} no longer exists in Shopify and could not be converted.`;
+                errorMsg = t('images.imageNoLongerExists', { fileName: resource.image.url.split('/').pop() });
               }
               failedConversions.push({
                 filename: resource.image.url.split('/').pop(),
@@ -224,6 +347,33 @@ export default function WebPPage() {
               error: err.message
             });
           }
+        }
+      }
+
+      // Log batch activity if any conversions were successful
+      if (successfulConversions.length > 0) {
+        try {
+          console.log('Logging batch activity for WebP conversion:', successfulConversions.length);
+          const batchResponse = await fetch('/api/batch-activity', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: 'webp_conversion',
+              count: successfulConversions.length
+            })
+          });
+          
+          const batchResult = await batchResponse.json();
+          console.log('Batch activity result:', batchResult);
+          
+          if (!batchResult.success) {
+            console.error('Failed to log batch activity:', batchResult.error);
+          }
+        } catch (logError) {
+          console.error('Failed to log batch activity:', logError);
+          // Don't fail the main operation if logging fails
         }
       }
 
@@ -292,8 +442,13 @@ export default function WebPPage() {
 
   // Format file size to human readable format
   const formatFileSize = (bytes) => {
-    if (!bytes) return '0 KB';
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    if (!bytes) return `0 ${t('images.fileSizes.kb')}`;
+    const sizes = [
+      t('images.fileSizes.bytes'),
+      t('images.fileSizes.kb'), 
+      t('images.fileSizes.mb'),
+      t('images.fileSizes.gb')
+    ];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
   };
@@ -325,7 +480,7 @@ export default function WebPPage() {
         }
       >
         {toastMarkup}
-        <TitleBar title={t('images.title', 'Image Compress')} />
+        <TitleBar title={t('images.webpConversionTitle', 'Convert Images to WebP')} />
         <Layout>
           <Layout.Section>
             {/* Table/Card header with search bar styled like Shopify admin */}
@@ -362,19 +517,21 @@ export default function WebPPage() {
                 {error}
               </Banner>
             )}
-            <IndexTable
-              resourceName={{ singular: t('images.file', 'file'), plural: t('images.files', 'files') }}
-              itemCount={filteredResources.length}
-              selectedItemsCount={selectedResources.length}
-              onSelectionChange={handleSelectionChange}
-              headings={[
-                { title: t('images.preview', 'Preview') },
-                { title: t('images.fileName', 'File name') },
-                { title: t('images.size', 'Size') },
-                { title: t('images.date', 'Date') },
-              ]}
-              selectable
-            >
+            <div style={{ overflowX: 'hidden' }}>
+              <LegacyCard>
+                <IndexTable
+                  resourceName={{ singular: t('images.file', 'file'), plural: t('images.files', 'files') }}
+                  itemCount={filteredResources.length}
+                  selectedItemsCount={selectedResources.length}
+                  onSelectionChange={handleSelectionChange}
+                  headings={[
+                    { title: t('images.preview', 'Preview') },
+                    { title: t('images.fileName', 'File name') },
+                    { title: t('images.size', 'Size') },
+                    { title: t('images.date', 'Date') },
+                  ]}
+                  selectable
+                >
               {filteredResources.map(({ id, image, fileSize, createdAt }, index) => (
                 <IndexTable.Row
                   id={id}
@@ -406,6 +563,31 @@ export default function WebPPage() {
                 </IndexTable.Row>
               ))}
             </IndexTable>
+            
+            {/* Pagination */}
+            {(pageInfo?.hasNextPage || pageInfo?.hasPreviousPage) && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  padding: '16px',
+                  borderTop: '1px solid #E1E3E5',
+                  background: '#FAFBFB',
+                  gap: '12px',
+                }}
+              >
+                <Pagination
+                  hasPrevious={pageInfo?.hasPreviousPage}
+                  onPrevious={handlePreviousPage}
+                  hasNext={pageInfo?.hasNextPage}
+                  onNext={handleNextPage}
+                  label={t('pagination.page_of', { current: currentPage, total: totalPages }, `Page ${currentPage} of ${totalPages}`)}
+                />
+              </div>
+            )}
+              </LegacyCard>
+            </div>
           </Layout.Section>
         </Layout>
         <Modal

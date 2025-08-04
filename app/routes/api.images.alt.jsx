@@ -3,6 +3,7 @@ import { authenticate } from "../shopify.server";
 import { Subscription } from "../models/subscription.js";
 import { Shop } from "../models/Shop.js";
 import { connectDatabase } from "../utilty/database.js";
+import { logActivity } from "../utils/activityLogger.js";
 
 export async function action({ request }) {
   if (request.method !== "POST") {
@@ -11,7 +12,7 @@ export async function action({ request }) {
 
   try {
     const { admin, session } = await authenticate.admin(request);
-    const { imageIds, altText, altType } = await request.json();
+    const { imageIds, altText, altType, skipActivityLog } = await request.json();
 
     if (!Array.isArray(imageIds) || imageIds.length === 0 || !altText || !altType) {
       return json({ error: "Missing required fields" }, { status: 400 });
@@ -119,6 +120,16 @@ export async function action({ request }) {
     // Increment the alt text count by the number of images updated
     if (subscription) {
       await subscription.incrementImageCount('alt', imageIds.length);
+      
+      // Log activity for statistics only if not part of a batch operation
+      if (!skipActivityLog) {
+        try {
+          await logActivity(shopRecord._id, session.shop, 'alt_text', imageIds.length);
+        } catch (logError) {
+          console.error('Failed to log activity:', logError);
+          // Don't fail the main operation if logging fails
+        }
+      }
     }
 
     return json({

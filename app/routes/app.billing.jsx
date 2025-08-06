@@ -545,14 +545,14 @@ export default function BillingPage() {
       {showReopenButton ? (
         <div style={{ textAlign: 'center', marginTop: 80 }}>
           <Text color="critical" variant="headingMd">
-            Please reopen this app from your Shopify admin.
+            {safeT('billing.reopen_app_message', 'Please reopen this app from your Shopify admin.')}
           </Text>
           <Button
             onClick={() => window.location.href = '/auth/login'}
             variant="primary"
             style={{ marginTop: 24 }}
           >
-            Reopen in Shopify Admin
+            {safeT('billing.reopen_button', 'Reopen in Shopify Admin')}
           </Button>
         </div>
       ) : (
@@ -571,40 +571,40 @@ export default function BillingPage() {
                   <Card padding="400">
                     <BlockStack gap="300">
                       <Text variant="headingMd" fontWeight="bold">
-                        Current Usage - {subscription.plan}
+                        {safeT('billing.current_usage', 'Current Usage')} - {subscription.plan}
                       </Text>
                       <InlineGrid columns={3} gap="400">
                         <Box padding="300" background="bg-surface-secondary" borderRadius="200">
                           <Text variant="headingSm" fontWeight="semibold">
-                            Image Compression
+                            {safeT('billing.image_compression', 'Image Compression')}
                           </Text>
                           <Text variant="bodyMd">
                             {subscription.imageCompressCount || 0} / {subscription.limits?.imageCompressLimit || 200}
                           </Text>
                           <Text variant="bodySm" tone="subdued">
-                            {Math.round(((subscription.imageCompressCount || 0) / (subscription.limits?.imageCompressLimit || 200)) * 100)}% used
+                            {Math.round(((subscription.imageCompressCount || 0) / (subscription.limits?.imageCompressLimit || 200)) * 100)}% {safeT('billing.used', 'used')}
                           </Text>
                         </Box>
                         <Box padding="300" background="bg-surface-secondary" borderRadius="200">
                           <Text variant="headingSm" fontWeight="semibold">
-                            WebP Conversion
+                            {safeT('billing.webp_conversion', 'WebP Conversion')}
                           </Text>
                           <Text variant="bodyMd">
                             {subscription.webPConvertCount || 0} / {subscription.limits?.webPConvertLimit || 50}
                           </Text>
                           <Text variant="bodySm" tone="subdued">
-                            {Math.round(((subscription.webPConvertCount || 0) / (subscription.limits?.webPConvertLimit || 50)) * 100)}% used
+                            {Math.round(((subscription.webPConvertCount || 0) / (subscription.limits?.webPConvertLimit || 50)) * 100)}% {safeT('billing.used', 'used')}
                           </Text>
                         </Box>
                         <Box padding="300" background="bg-surface-secondary" borderRadius="200">
                           <Text variant="headingSm" fontWeight="semibold">
-                            Alt Text Updates
+                            {safeT('billing.alt_text_updates', 'Alt Text Updates')}
                           </Text>
                           <Text variant="bodyMd">
                             {subscription.altTextCount || 0} / {subscription.limits?.altTextLimit || 50}
                           </Text>
                           <Text variant="bodySm" tone="subdued">
-                            {Math.round(((subscription.altTextCount || 0) / (subscription.limits?.altTextLimit || 50)) * 100)}% used
+                            {Math.round(((subscription.altTextCount || 0) / (subscription.limits?.altTextLimit || 50)) * 100)}% {safeT('billing.used', 'used')}
                           </Text>
                         </Box>
                       </InlineGrid>

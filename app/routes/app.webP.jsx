@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, useRevalidator } from "@remix-run/react";
 import { useEffect, useState, useCallback } from "react";
 import {
   Page,
@@ -20,10 +20,19 @@ import {
   SkeletonThumbnail,
   Modal,
   Pagination,
-  LegacyCard
+  Card,
+  TextField,
+  Icon,
+  BlockStack,
+  InlineStack,
+  Bleed,
+  Scrollable,
+  IndexFilters,
+  useSetIndexFiltersMode,
+  ChoiceList,
+  Badge,
+  RangeSlider
 } from "@shopify/polaris";
-import { Icon, TextField } from "@shopify/polaris";
-import { SearchIcon } from '@shopify/polaris-icons';
 import { authenticate } from '../shopify.server';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -38,7 +47,7 @@ export const loader = async ({ request }) => {
     const url = new URL(request.url);
     const cursor = url.searchParams.get('cursor');
     const direction = url.searchParams.get('direction') || 'next';
-    const limit = 20; // Items per page
+    const limit = 15; // Items per page
 
     // Build GraphQL query with pagination
     let paginationArgs = `first: ${limit}`;
@@ -168,45 +177,131 @@ export const loader = async ({ request }) => {
 };
 
 function TableSkeleton() {
+  // Create skeleton data that matches the actual table structure
+  const skeletonRows = Array.from({ length: 15 }, (_, index) => ({
+    id: `skeleton-${index}`,
+  }));
+
   return (
-    <SkeletonPage primaryAction>
-      <Box paddingBlockEnd="400">
-        <div style={{ padding: '24px' }}>
-          <SkeletonDisplayText size="small" />
-          <Box paddingBlockStart="200" />
-          {[...Array(6)].map((_, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-              <SkeletonThumbnail size="small" />
-              <div style={{ flex: 2 }}>
-                <SkeletonBodyText lines={1} />
+    <Frame>
+      <Page 
+        fullWidth
+        primaryAction={
+          <ButtonGroup>
+            <Box width="140px">
+              <SkeletonBodyText lines={1} />
+            </Box>
+          </ButtonGroup>
+        }
+      >
+        <TitleBar title="Convert Images to WebP" />
+        <Layout>
+          <Layout.Section>
+            <Card padding="0">
+              {/* Index Filters Skeleton */}
+              <div style={{ padding: '16px', borderBottom: '1px solid var(--p-color-border)' }}>
+                <InlineStack gap="400" align="space-between" blockAlign="center">
+                  <Box width="280px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                  <InlineStack gap="200" align="end">
+                    <Box width="100px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                    <Box width="80px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                    <Box width="32px" minHeight="32px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                  </InlineStack>
+                </InlineStack>
               </div>
-              <div style={{ flex: 2 }}>
-                <SkeletonBodyText lines={1} />
+              
+              {/* Use actual IndexTable with skeleton data for pixel-perfect matching */}
+              <IndexTable
+                resourceName={{ singular: 'file', plural: 'files' }}
+                itemCount={skeletonRows.length}
+                selectedItemsCount={0}
+                onSelectionChange={() => {}}
+                headings={[
+                  { title: 'Preview' },
+                  { title: 'File name' },
+                  { title: 'Size' },
+                  { title: 'Date' },
+                ]}
+                selectable
+                loading
+              >
+                {skeletonRows.map((row, index) => (
+                  <IndexTable.Row
+                    id={row.id}
+                    key={row.id}
+                    selected={false}
+                    position={index}
+                  >
+                    <IndexTable.Cell>
+                      <SkeletonThumbnail size="small" />
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <BlockStack gap="100">
+                        <Box maxWidth="200px">
+                          <SkeletonBodyText lines={1} />
+                        </Box>
+                        <Box maxWidth="60px">
+                          <SkeletonBodyText lines={1} />
+                        </Box>
+                      </BlockStack>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="80px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="70px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                  </IndexTable.Row>
+                ))}
+              </IndexTable>
+              
+              {/* Pagination Skeleton */}
+              <div style={{ padding: '16px', borderTop: '1px solid var(--p-color-border)' }}>
+                <InlineStack align="start" blockAlign="center" gap="400">
+                  <Box width="100px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                  <Box width="150px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                </InlineStack>
               </div>
-              <div style={{ flex: 1 }}>
-                <SkeletonBodyText lines={1} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <SkeletonBodyText lines={1} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </Box>
-    </SkeletonPage>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </Page>
+    </Frame>
   );
 }
 
 export default function WebPPage() {
   const { t } = useTranslation();
   const { images = [], pageInfo, totalPages = 0, error, shop } = useLoaderData();
-  const [localImages, setLocalImages] = useState(images);
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
+  const revalidator = useRevalidator();
   const [isLoading, setIsLoading] = useState(true);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // IndexFilters state
+  const [queryValue, setQueryValue] = useState("");
+  const [sortSelected, setSortSelected] = useState(['date desc']);
+  const [fileSizeFilter, setFileSizeFilter] = useState(undefined);
+  const [fileTypeFilter, setFileTypeFilter] = useState(undefined);
+  const {mode, setMode} = useSetIndexFiltersMode();
   
   useEffect(() => {
     if (images) {
@@ -238,22 +333,177 @@ export default function WebPPage() {
     }
   }, []);
 
-  const filteredResources = (localImages || [])
-    .map(({ node }) => ({
-      id: node.id,
-      ...node,
-      fileSize: node.compressedSize != null ? node.compressedSize : (node.originalSource?.fileSize || 0)
-    }))
-    .filter(resource => {
-      if (!searchQuery) return true;
-      const fileName = decodeURIComponent(resource.image?.url?.split('/').pop().split('?')[0].split('.')[0] || '');
-      return fileName.toLowerCase().includes(searchQuery.toLowerCase());
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [queryValue, fileSizeFilter, fileTypeFilter, sortSelected]);
+
+  // Transform and filter resources
+  const allResources = (images || []).map(({ node }) => ({
+    id: node.id,
+    ...node,
+    fileSize: node.compressedSize != null ? node.compressedSize : (node.originalSource?.fileSize || 0),
+    fileName: decodeURIComponent(node.image?.url?.split('/').pop().split('?')[0].split('.')[0] || ''),
+    fileExtension: (node.image?.url?.split('.').pop().split('?')[0] || '').toUpperCase()
+  }));
+
+  // Apply filters and search
+  const filteredResources = allResources.filter(resource => {
+    // Search filter
+    if (queryValue) {
+      const searchLower = queryValue.toLowerCase();
+      const matchesFileName = resource.fileName.toLowerCase().includes(searchLower);
+      const matchesFileType = resource.fileExtension.toLowerCase().includes(searchLower);
+      if (!matchesFileName && !matchesFileType) {
+        return false;
+      }
+    }
+    
+    // File size filter
+    if (fileSizeFilter && fileSizeFilter.length === 2) {
+      const fileSizeKB = resource.fileSize / 1024;
+      if (fileSizeKB < fileSizeFilter[0] || fileSizeKB > fileSizeFilter[1]) {
+        return false;
+      }
+    }
+    
+    // File type filter
+    if (fileTypeFilter && fileTypeFilter.length > 0) {
+      if (!fileTypeFilter.includes(resource.fileExtension.toLowerCase())) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+
+  // Apply sorting
+  const sortedResources = [...filteredResources].sort((a, b) => {
+    const [sortKey, sortDirection] = sortSelected[0].split(' ');
+    
+    switch (sortKey) {
+      case 'name':
+        const nameA = a.fileName.toLowerCase();
+        const nameB = b.fileName.toLowerCase();
+        return sortDirection === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+      
+      case 'size':
+        return sortDirection === 'asc' ? a.fileSize - b.fileSize : b.fileSize - a.fileSize;
+      
+      case 'date':
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      
+      case 'type':
+        const typeA = a.fileExtension.toLowerCase();
+        const typeB = b.fileExtension.toLowerCase();
+        return sortDirection === 'asc' ? typeA.localeCompare(typeB) : typeB.localeCompare(typeA);
+        
+      default:
+        return 0;
+    }
+  });
+
+  // IndexFilters configuration
+  const sortOptions = [
+    {label: 'File Name', value: 'name asc', directionLabel: 'A-Z'},
+    {label: 'File Name', value: 'name desc', directionLabel: 'Z-A'},
+    {label: 'Date', value: 'date asc', directionLabel: 'Oldest first'},
+    {label: 'Date', value: 'date desc', directionLabel: 'Newest first'},
+    {label: 'File Size', value: 'size asc', directionLabel: 'Smallest first'},
+    {label: 'File Size', value: 'size desc', directionLabel: 'Largest first'},
+    {label: 'File Type', value: 'type asc', directionLabel: 'A-Z'},
+    {label: 'File Type', value: 'type desc', directionLabel: 'Z-A'},
+  ];
+
+  // Filter handlers
+  const handleFiltersQueryChange = useCallback((value) => setQueryValue(value), []);
+  const handleQueryValueRemove = useCallback(() => setQueryValue(''), []);
+  const handleFileSizeChange = useCallback((value) => setFileSizeFilter(value), []);
+  const handleFileSizeRemove = useCallback(() => setFileSizeFilter(undefined), []);
+  const handleFileTypeChange = useCallback((value) => setFileTypeFilter(value), []);
+  const handleFileTypeRemove = useCallback(() => setFileTypeFilter(undefined), []);
+  
+  const handleFiltersClearAll = useCallback(() => {
+    handleQueryValueRemove();
+    handleFileSizeRemove();
+    handleFileTypeRemove();
+  }, [handleQueryValueRemove, handleFileSizeRemove, handleFileTypeRemove]);
+
+  // Save and cancel handlers for IndexFilters
+  const onHandleSave = async () => {
+    await new Promise(resolve => setTimeout(resolve, 1));
+    return true;
+  };
+  
+  const onHandleCancel = () => {
+    // Clear all filters when cancel is clicked
+    handleFiltersClearAll();
+  };
+
+  // Get unique file types for filter
+  const availableFileTypes = [...new Set(allResources.map(r => r.fileExtension.toLowerCase()))]
+    .sort()
+    .map(type => ({label: type.toUpperCase(), value: type}));
+
+  const filters = [
+    {
+      key: 'fileSize',
+      label: 'File Size (KB)',
+      filter: (
+        <RangeSlider
+          label="File size is between"
+          labelHidden
+          value={fileSizeFilter || [0, 10000]}
+          prefix=""
+          suffix=" KB"
+          output
+          min={0}
+          max={10000}
+          step={100}
+          onChange={handleFileSizeChange}
+        />
+      ),
+    },
+    {
+      key: 'fileType',
+      label: 'File Type',
+      filter: (
+        <ChoiceList
+          title="File Type"
+          titleHidden
+          choices={availableFileTypes}
+          selected={fileTypeFilter || []}
+          onChange={handleFileTypeChange}
+          allowMultiple
+        />
+      ),
+      shortcut: true,
+    },
+  ];
+
+  const appliedFilters = [];
+  if (fileSizeFilter) {
+    appliedFilters.push({
+      key: 'fileSize',
+      label: `File size: ${fileSizeFilter[0]}-${fileSizeFilter[1]} KB`,
+      onRemove: handleFileSizeRemove,
     });
+  }
+  if (fileTypeFilter && fileTypeFilter.length > 0) {
+    appliedFilters.push({
+      key: 'fileType',
+      label: `File type: ${fileTypeFilter.map(t => t.toUpperCase()).join(', ')}`,
+      onRemove: handleFileTypeRemove,
+    });
+  }
 
   const {
     selectedResources,
     handleSelectionChange,
-  } = useIndexResourceState(filteredResources);
+    clearSelection,
+  } = useIndexResourceState(sortedResources);
 
   const [isConverting, setIsConverting] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -299,7 +549,7 @@ export default function WebPPage() {
       const failedConversions = [];
 
       for (const resourceId of selectedResources) {
-        const resource = filteredResources.find(r => r.id === resourceId);
+        const resource = sortedResources.find(r => r.id === resourceId);
         if (resource) {
           const fileExtension = resource.image.url.split('.').pop().toLowerCase();
           // Skip if already WebP
@@ -322,8 +572,11 @@ export default function WebPPage() {
 
             const result = await response.json();
 
+            console.log('WebP conversion result for', resource.image.url, ':', result);
+
             if (result.success && result.file) {
               successfulConversions.push(result.file);
+              console.log('Added to successful conversions:', result.file);
             } else {
               // Check if it's a limit exceeded error
               if (result.limitExceeded) {
@@ -349,6 +602,13 @@ export default function WebPPage() {
           }
         }
       }
+
+      console.log('Final conversion results:', {
+        successful: successfulConversions.length,
+        failed: failedConversions.length,
+        successfulConversions,
+        failedConversions
+      });
 
       // Log batch activity if any conversions were successful
       if (successfulConversions.length > 0) {
@@ -399,11 +659,18 @@ export default function WebPPage() {
 
         setToastMessage(message);
         setIsError(false);
+        setShowToast(true);
 
-        // Wait a moment before refreshing
+        // Clear selection after successful conversion
+        clearSelection();
+
+        console.log('WebP conversion successful, refreshing table in 1 second...');
+        // Wait a moment before refreshing the table
         setTimeout(() => {
-          navigate('.', { replace: true });
-        }, 500);
+          console.log('Executing navigation refresh...');
+          // Use revalidator to refresh data without navigation
+          revalidator.revalidate();
+        }, 1000);
 
       } else if (failedConversions.length > 0) {
         // Add details for missing images
@@ -429,7 +696,7 @@ export default function WebPPage() {
     } finally {
       setIsConverting(false);
     }
-  }, [selectedResources, filteredResources, navigate, t]);
+  }, [selectedResources, sortedResources, navigate, t]);
 
   // --- UI ---
   const toastMarkup = showToast ? (
@@ -483,111 +750,97 @@ export default function WebPPage() {
         <TitleBar title={t('images.webpConversionTitle', 'Convert Images to WebP')} />
         <Layout>
           <Layout.Section>
-            {/* Table/Card header with search bar styled like Shopify admin */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '0 1rem',
-              borderBottom: '1px solid #E1E3E5',
-              background: '#F6F6F7',
-              minHeight: 48
-            }}>
-              <div style={{ fontWeight: 600, fontSize: 14, color: '#202223' }}>
-                {/* Optionally, put a title here or leave blank for clean look */}
-              </div>
-              <div style={{ maxWidth: 320, width: '100%' }}>
-                <TextField
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder={t('images.searchByFileName', 'Search by file name')}
-                  autoComplete="off"
-                  clearButton
-                  onClearButtonClick={() => setSearchQuery("")}
-                  prefix={<Icon source={SearchIcon} color="subdued" />}
-                  label={t('images.search', 'Search')}
-                  labelHidden
-                  size="slim"
-                  style={{ background: '#fff', borderRadius: 6 }}
-                />
-              </div>
-            </div>
             {error && (
               <Banner status="critical" title={t('images.errorLoadingFiles', 'Error loading files')}>
                 {error}
               </Banner>
             )}
-            <div style={{ overflowX: 'hidden' }}>
-              <LegacyCard>
-                <IndexTable
-                  resourceName={{ singular: t('images.file', 'file'), plural: t('images.files', 'files') }}
-                  itemCount={filteredResources.length}
-                  selectedItemsCount={selectedResources.length}
-                  onSelectionChange={handleSelectionChange}
-                  headings={[
-                    { title: t('images.preview', 'Preview') },
-                    { title: t('images.fileName', 'File name') },
-                    { title: t('images.size', 'Size') },
-                    { title: t('images.date', 'Date') },
-                  ]}
-                  selectable
-                >
-              {filteredResources.map(({ id, image, fileSize, createdAt }, index) => (
-                <IndexTable.Row
-                  id={id}
-                  key={id}
-                  selected={selectedResources.includes(id)}
-                  position={index}
-                >
-                  <IndexTable.Cell>
-                    <div style={{ width: '50px', height: '50px' }}>
+            <Card padding="0">
+              {/* Index Filters */}
+              <IndexFilters
+                sortOptions={sortOptions}
+                sortSelected={sortSelected}
+                queryValue={queryValue}
+                queryPlaceholder="Search by file name or file type"
+                onQueryChange={handleFiltersQueryChange}
+                onQueryClear={handleQueryValueRemove}
+                onSort={setSortSelected}
+                filters={filters}
+                appliedFilters={appliedFilters}
+                onClearAll={handleFiltersClearAll}
+                mode={mode}
+                setMode={setMode}
+                tabs={[]}
+                views={[]}
+                onHandleSave={onHandleSave}
+                onHandleCancel={onHandleCancel}
+                hideFilters={false}
+                disabled={false}
+                canCreateNewView={true}
+                loading={false}
+              />
+              
+              {/* Table without sticky header */}
+              <IndexTable
+                resourceName={{ singular: t('images.file', 'file'), plural: t('images.files', 'files') }}
+                itemCount={sortedResources.length}
+                selectedItemsCount={selectedResources.length}
+                onSelectionChange={handleSelectionChange}
+                headings={[
+                  { title: t('images.preview', 'Preview') },
+                  { title: t('images.fileName', 'File name') },
+                  { title: t('images.size', 'Size') },
+                  { title: t('images.date', 'Date') },
+                ]}
+                selectable
+              >
+                {sortedResources.map(({ id, image, fileSize, createdAt, fileName, fileExtension }, index) => (
+                  <IndexTable.Row
+                    id={id}
+                    key={id}
+                    selected={selectedResources.includes(id)}
+                    position={index}
+                  >
+                    <IndexTable.Cell>
                       <Thumbnail
                         source={image?.url || ''}
                         alt=""
                         size="small"
                       />
-                    </div>
-                  </IndexTable.Cell>
-                  <IndexTable.Cell>
-                    <Box padding="0" display="flex" gap="100" vertical="true">
-                      <Text variant="bodyMd" as="span" fontWeight="semibold">
-                        {decodeURIComponent(image?.url?.split('/').pop().split('?')[0].split('.')[0] || '')}
-                      </Text>
-                      <Text variant="bodySm" as="p" tone="subdued">
-                        {(image?.url?.split('.').pop().split('?')[0] || '').toUpperCase()}
-                      </Text>
-                    </Box>
-                  </IndexTable.Cell>
-                  <IndexTable.Cell>{formatFileSize(fileSize)}</IndexTable.Cell>
-                  <IndexTable.Cell>{formatDate(createdAt)}</IndexTable.Cell>
-                </IndexTable.Row>
-              ))}
-            </IndexTable>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <BlockStack gap="100">
+                        <Text variant="bodyMd" as="span" fontWeight="semibold">
+                          {fileName}
+                        </Text>
+                        <Text variant="bodySm" as="p" tone="subdued">
+                          {fileExtension}
+                        </Text>
+                      </BlockStack>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>{formatFileSize(fileSize)}</IndexTable.Cell>
+                    <IndexTable.Cell>{formatDate(createdAt)}</IndexTable.Cell>
+                  </IndexTable.Row>
+                ))}
+              </IndexTable>
             
-            {/* Pagination */}
-            {(pageInfo?.hasNextPage || pageInfo?.hasPreviousPage) && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  padding: '16px',
-                  borderTop: '1px solid #E1E3E5',
-                  background: '#FAFBFB',
-                  gap: '12px',
-                }}
-              >
-                <Pagination
-                  hasPrevious={pageInfo?.hasPreviousPage}
-                  onPrevious={handlePreviousPage}
-                  hasNext={pageInfo?.hasNextPage}
-                  onNext={handleNextPage}
-                  label={t('pagination.page_of', { current: currentPage, total: totalPages }, `Page ${currentPage} of ${totalPages}`)}
-                />
-              </div>
-            )}
-              </LegacyCard>
-            </div>
+              {/* Pagination */}
+              {(pageInfo?.hasNextPage || pageInfo?.hasPreviousPage) && (
+                <div style={{ padding: '16px', borderTop: '1px solid var(--p-color-border)' }}>
+                  <InlineStack align="start" blockAlign="center" gap="400">
+                    <Pagination
+                      hasPrevious={pageInfo?.hasPreviousPage}
+                      onPrevious={handlePreviousPage}
+                      hasNext={pageInfo?.hasNextPage}
+                      onNext={handleNextPage}
+                    />
+                    <Text variant="bodySm" tone="subdued">
+                      {`${((currentPage - 1) * 15) + 1}-${Math.min(currentPage * 15, sortedResources.length)} of ${sortedResources.length}`}
+                    </Text>
+                  </InlineStack>
+                </div>
+              )}
+            </Card>
           </Layout.Section>
         </Layout>
         <Modal

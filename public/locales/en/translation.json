@@ -93,7 +93,7 @@
   "support": {
     "help_options": {
       "email_support": {
-        "title": "Need help or Import?",
+        "title": "Need help?",
         "description": "Get email support",
         "info": "Email us and we'll get back to you as soon as possible."
       },
@@ -109,52 +109,44 @@
   },
   "faq": [
     {
-      "question": "What is the Bulk Product Uploading App?",
-      "answer": "The Bulk Product Uploading App allows you to easily import and export products across multiple eCommerce platforms, including Shopify, WooCommerce, Amazon, Walmart, Etsy, BigCommerce, and more. With our app, you can streamline your product management process and move data between platforms effortlessly."
+      "question": "What does this tool do?",
+      "answer": "Our tool compresses images and converts them to the WebP format — a modern image format that provides superior lossless and lossy compression for images on the web."
     },
     {
-      "question": "Which platforms are supported for product import and export?",
-      "answer": "Our app supports the following platforms for product import and export:\n\n- Shopify\n- Amazon Seller\n- Walmart Seller\n- eBay Seller\n- AliExpress\n- WooCommerce\n- Wix Seller\n- Alibaba\n- Etsy\n- Squarespace\n- BigCommerce\n- Custom CSV"
+      "question": "What image formats can I upload?",
+      "answer": "You can upload JPG, JPEG, PNG, or GIF files. Our tool will automatically compress them and convert them to WebP."
     },
     {
-      "question": "How do I import products into my store?",
-      "answer": "To import products, select your desired platform (e.g., Shopify, Amazon, etc.), upload your CSV file containing the product details, and the app will automatically import the products to your store."
+      "question": "What is WebP, and why should I use it?",
+      "answer": "WebP is a next-generation image format developed by Google that provides high-quality images with smaller file sizes. This improves website loading speed and overall performance."
     },
     {
-      "question": "How do I export products from Shopify to other platforms?",
-      "answer": "To export your products from Shopify, simply select the desired platform (e.g., Amazon, eBay, etc.) and choose the export option. Our app will generate a CSV file that you can upload to the chosen platform."
+      "question": "Is there any limit on file size or number of uploads?",
+      "answer": "Free users can compress up to [X MB] per image and [Y images] per session. You can upgrade for higher limits and batch processing."
     },
     {
-      "question": "What types of plans are available?",
-      "answer": "We offer multiple subscription plans to fit your needs:\n\nFREE: $0/month for 20 products import & export (Shopify, WooCommerce). Does not renew.\nSHOP PLAN: $9.99/month for 100 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace). Renews monthly.\nWAREHOUSE PLAN: $14.99/month for 300 products import & export (Shopify, WooCommerce, Squarespace, Amazon, Alibaba, Custom Sheet). Renews monthly.\nFACTORY PLAN: $49.99/month for 1,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy). Includes priority support. Renews monthly.\nFRANCHISE PLAN: $129.99/month for 3,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, eBay). Includes priority support. Renews monthly.\nCITADEL PLAN: $499.99/month for 50,000 products import & export (Shopify, WooCommerce, Wix, BigCommerce, Squarespace, Amazon, Alibaba, Custom Sheet, AliExpress, Etsy, eBay). Includes priority support. Renews monthly."
+      "question": "Will image quality be reduced?",
+      "answer": "We use smart compression to reduce file size while maintaining visual quality. You can also choose the compression level before downloading."
     },
     {
-      "question": "What is the difference between the plans?",
-      "answer": "The main differences between the plans are the number of products you can import/export and the platforms supported. Higher-tier plans allow for larger product imports and more platform integrations. Additionally, the Factory, Franchise, and Citadel plans include priority support."
+      "question": "Do you store my images?",
+      "answer": "No. Your images are processed securely in your browser or temporarily on our servers and then permanently deleted. Your privacy is our priority."
     },
     {
-      "question": "Do I get support if I need help with the app?",
-      "answer": "Yes, we offer customer support through live chat and a support form. You can reach out for assistance with any issues you're facing. Our priority support is available for the Factory, Franchise, and Citadel plans."
+      "question": "Can I download images in original format after compression?",
+      "answer": "No. The tool is designed to convert and compress to WebP format only. For original formats, please keep a backup before uploading."
     },
     {
-      "question": "What information do I need to provide for support?",
-      "answer": "For support, please provide your name, email ID, collaboration code, store password (for previous reasons), and a detailed message describing your issue."
+      "question": "Why should I compress images for my website?",
+      "answer": "Smaller images = faster loading = better SEO + better user experience. Compressed WebP images save bandwidth and load faster across all devices."
     },
     {
-      "question": "What happens if I exceed the product limits of my plan?",
-      "answer": "If you exceed the product limits of your current plan, you will need to upgrade to a higher-tier plan that supports a larger number of products. You can easily upgrade your plan through your account settings."
+      "question": "Do you support batch image compression?",
+      "answer": "Yes! Simply drag and drop multiple images and we'll compress and convert them all in one go."
     },
     {
-      "question": "Can I cancel my subscription at any time?",
-      "answer": "Yes, you can cancel your subscription at any time. If you are on a monthly-renewing plan, the cancellation will take effect after your current billing cycle ends."
-    },
-    {
-      "question": "How do I contact support?",
-      "answer": "You can contact support through our live chat feature or by filling out the support form available in the app. If you are using a Factory, Franchise, or Citadel plan, you'll have access to priority support."
-    },
-    {
-      "question": "What is the 'Custom CSV' option?",
-      "answer": "The 'Custom CSV' option allows you to import and export product data using your own custom CSV file format. This is ideal for businesses that have specific data structures or use multiple platforms outside of the standard integrations."
+      "question": "Is this tool free to use?",
+      "answer": "Yes! Our basic version is free. We also offer premium plans with more features, faster processing, and unlimited usage."
     }
   ],
   "feedback": {
@@ -198,12 +190,12 @@
     "price": "Price",
     "period": "Period",
     "choose_plan": "Choose Plan",
-    "free": "Free",
-    "shop_plan": "Shop Plan",
-    "warehouse_plan": "Warehouse Plan",
-    "factory_plan": "Factory Plan",
-    "franchise_plan": "Franchise Plan",
-    "citadel_plan": "Citadel Plan",
+    "free": "FREE",
+    "shop_plan": "SHOP PLAN",
+    "warehouse_plan": "WAREHOUSE PLAN",
+    "factory_plan": "FACTORY PLAN",
+    "franchise_plan": "FRANCHISE PLAN",
+    "citadel_plan": "CITADEL PLAN",
     "warning_cookies": "Warning: Cookies are disabled or blocked. Please enable third-party cookies in your browser and ensure you are not using a tunnel that blocks cookies (like some Cloudflare/ngrok setups). Shopify embedded apps require cookies to work correctly.",
     "plan_details": "Plan Details",
     "plan_limits": "Plan Limits",
@@ -246,8 +238,15 @@
     "import_export_1000": "2000 Image Compress",
     "import_export_3000": "3,000 Products Import & Export",
     "import_export_50000": "5000 Image Compress",
-    "webP_50000": "5000 webP Content",
-    "alt_export_50000": "5000 alt Content"
+    "webP_50000": "5000 webP Convert",
+    "alt_export_50000": "5000 alt Content",
+    "current_usage": "Current Usage",
+    "image_compression": "Image Compression",
+    "webp_conversion": "WebP Conversion", 
+    "alt_text_updates": "Alt Text Updates",
+    "used": "used",
+    "reopen_app_message": "Please reopen this app from your Shopify admin.",
+    "reopen_button": "Reopen in Shopify Admin"
   },
   "stats": {
     "total_products": "Total Products",
@@ -298,12 +297,12 @@
     "Chinese": "Chinese"
   },
   "plans": {
-    "FREE": "Free",
-    "SHOP PLAN": "Shop Plan", 
-    "WAREHOUSE PLAN": "Warehouse Plan",
-    "FACTORY PLAN": "Factory Plan",
-    "FRANCHISE PLAN": "Franchise Plan",
-    "CITADEL PLAN": "Citadel Plan"
+    "FREE": "FREE",
+    "SHOP PLAN": "SHOP PLAN",
+    "WAREHOUSE PLAN": "WAREHOUSE PLAN",
+    "FACTORY PLAN": "FACTORY PLAN",
+    "FRANCHISE PLAN": "FRANCHISE PLAN",
+    "CITADEL PLAN": "CITADEL PLAN"
   },
   "active_imports": {
     "title": "Active Imports",
@@ -319,11 +318,12 @@
     "compress": "Compress",
     "compressSelected": "Compress Selected",
     "selectedImages": "Selected images: {{count}}",
+    "selected_images": "Selected images: {{count}}",
     "compressionQualityHint": "Higher quality means larger file size. Recommended: 70-85%",
     "originalSize": "Original Size",
     "compressedSize": "Compressed Size",
     "compressionRatio": "Compression Ratio",
-    "buildAltText": "Build your alt text by adding tags below. You can add Product Title, Store Name, or custom text. The final alt text will be a combination of these, in order, separated by your chosen separator.",
+    "buildAltText": "Build your alt text by adding tags below. You can add the actual Product Title from your selected products, Store Name, or custom text. The final alt text will be a combination of these, in order, separated by your chosen separator.",
     "separatorLabel": "Separator:",
     "spaceSeparator": "Space",
     "addProductTitle": "+ Product Title",
@@ -415,7 +415,7 @@
     "page_of": "Page {{current}} of {{total}}"
   },
   "import": {
-    "need_help_or_import": "Need help or Import?",
+    "need_help_or_import": "Need help?",
     "get_email_support": "Get Email Support",
     "email_support_description": "Get help via email from our support team",
     "start_live_chat": "Start Live Chat",

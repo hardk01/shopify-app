@@ -3,7 +3,7 @@
 client_id = "74e8091ecf85154f7cd6717315c86263"
 name = "SBit - Image Compres and webp"
 handle = "sbit-image-compres-and-webp"
-application_url = "https://gore-madagascar-adjustment-mp.trycloudflare.com"
+application_url = "https://symposium-fantastic-balloon-et.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "write_products,read_files,write_files,read_themes,write_themes,"
 
 [auth]
 redirect_urls = [
-  "https://gore-madagascar-adjustment-mp.trycloudflare.com/auth/callback",
-  "https://gore-madagascar-adjustment-mp.trycloudflare.com/auth/shopify/callback",
-  "https://gore-madagascar-adjustment-mp.trycloudflare.com/api/auth/callback"
+  "https://symposium-fantastic-balloon-et.trycloudflare.com/auth/callback",
+  "https://symposium-fantastic-balloon-et.trycloudflare.com/auth/shopify/callback",
+  "https://symposium-fantastic-balloon-et.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

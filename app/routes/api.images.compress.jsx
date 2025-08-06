@@ -22,7 +22,7 @@ export async function action({ request }) {
       throw new Error('Sharp module is not available');
     }
 
-    const { imageUrl, imageId, quality, filename, originalFilename, altText, skipActivityLog } = await request.json();
+    const { imageUrl, imageId, quality, filename, originalFilename, altText } = await request.json();
 
     // Try to connect to database
     let subscription = null;
@@ -294,14 +294,12 @@ export async function action({ request }) {
     if (subscription) {
       await subscription.incrementImageCount('compress', 1);
       
-      // Log activity for statistics only if not part of a batch operation
-      if (!skipActivityLog) {
-        try {
-          await logActivity(shopRecord._id, session.shop, 'image_compression', 1);
-        } catch (logError) {
-          console.error('Failed to log activity:', logError);
-          // Don't fail the main operation if logging fails
-        }
+      // Log activity for statistics
+      try {
+        await logActivity(shopRecord._id, session.shop, 'image_compression', 1);
+      } catch (logError) {
+        console.error('Failed to log activity:', logError);
+        // Don't fail the main operation if logging fails
       }
     }
 

@@ -614,7 +614,7 @@ export default function Dashboard() {
   };
 
   return (
-    <Box background="bg-surface-secondary" minHeight="100vh" paddingBlockStart="600" paddingBlockEnd="600">
+
       <Page>
         {/* MediaCard Banner with image filling the left side */}
         {showBanner && (
@@ -659,9 +659,9 @@ export default function Dashboard() {
                 {getPlanDisplayName(loaderData.plan || 'FREE')}
               </Badge>
             </InlineStack>
-            <Box display="flex" alignItems="center" gap="200">
+            <InlineStack gap="200" blockAlign="center">
               <LanguageDropdown selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
-            </Box>
+            </InlineStack>
           </InlineStack>
         </Box>
 
@@ -762,16 +762,15 @@ export default function Dashboard() {
 
 
         {/* Date Range Dropdown */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" paddingBlockEnd="400">
-          <DateRangeDropdown selectedRange={selectedRange} setSelectedRange={setSelectedRange} />
-          {/* <Text variant="bodySm" tone="subdued">
-            {statsLoading ? 'Loading stats...' : `Showing activity for last ${selectedRange} days`}
-          </Text> */}
+        <Box paddingBlockEnd="400">
+          <InlineStack align="space-between" blockAlign="center">
+            <DateRangeDropdown selectedRange={selectedRange} setSelectedRange={setSelectedRange} />
+          </InlineStack>
         </Box>
 
         {/* Stats */}
-        <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
-          <Card padding="500" background="bg-surface" borderRadius="2xl" flex="1" paddingBlockStart="600" paddingBlockEnd="600">
+        <Box paddingBlockEnd="400">
+          <Card padding="500" background="bg-surface" borderRadius="2xl" paddingBlockStart="600" paddingBlockEnd="600">
             <div style={{ width: '100%' }}>
               {/* Labels Row */}
               <div style={{
@@ -843,7 +842,7 @@ export default function Dashboard() {
         )}
 
         {/* Help Section */ /* FAQ Section */}
-        <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
+        <Box paddingBlockEnd="400">
           <Card paddingBlockStart="600" paddingBlockEnd="600" background="bg-surface" borderRadius="2xl">
             <div style={{ padding: '5px 0px 11px 2px' }}>
               <Text variant="headingMd" as="h2" fontWeight="bold">
@@ -852,7 +851,7 @@ export default function Dashboard() {
             </div>
             <InlineGrid columns={3} gap="400" style={{ width: '100%' }}>
               <Card padding="400" border="base" background="bg-surface" borderRadius="lg" style={{ width: '100%', margin: 0 }}>
-                <Box marginInlineStart="200">
+                <Box paddingInlineStart="200">
                   <Link url="#" monochrome={false} style={{ color: '#3574F2', fontWeight: 500 }} onClick={e => { e.preventDefault(); navigate('/app/contact#help-section'); }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                       <Icon source={EmailIcon} color="interactive" />
@@ -865,7 +864,7 @@ export default function Dashboard() {
                 </Box>
               </Card>
               <Card padding="400" border="base" background="bg-surface" borderRadius="lg" style={{ width: '100%', margin: 0 }}>
-                <Box marginInlineStart="200">
+                <Box paddingInlineStart="200">
                   <Link url="#" monochrome={false} style={{ color: '#3574F2', fontWeight: 500 }} onClick={e => { e.preventDefault(); if (window.$crisp) window.$crisp.push(["do", "chat:open"]); }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                       <Icon source={ChatIcon} color="interactive" />
@@ -878,7 +877,7 @@ export default function Dashboard() {
                 </Box>
               </Card>
               <Card padding="400" border="base" background="bg-surface" borderRadius="lg" style={{ width: '100%', margin: 0 }}>
-                <Box marginInlineStart="200">
+                <Box paddingInlineStart="200">
                   <Link url="#" monochrome={false} style={{ color: '#3574F2', fontWeight: 500 }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                       <Icon source={NoteIcon} color="interactive" />
@@ -891,7 +890,7 @@ export default function Dashboard() {
                 </Box>
               </Card>
             </InlineGrid>
-            <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400" paddingBlockStart="400">
+            <Box paddingBlockEnd="400" paddingBlockStart="400">
               <FaqSection />
             </Box>
           </Card>
@@ -899,7 +898,7 @@ export default function Dashboard() {
         
         {/* Review Request Banner */}
         {showReviewBanner && (
-          <Box marginBlockEnd="400" marginBlockStart="400">
+          <Box>
             <Banner
               title={t('review_banner.title')}
               status="info"
@@ -923,19 +922,21 @@ export default function Dashboard() {
               {/* Placeholder for user's apps */}
               {/* <InlineGrid columns={{ xs: 1, sm: 2 }} gap="400">
                 <Card padding="400" background="bg-surface" borderRadius="lg">
-                  <Box display="flex" alignItems="center" justifyContent="center" minHeight="120px">
+                  <Box paddingInline="200" paddingBlock="400" style={{ textAlign: 'center', minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Text color="subdued">You have not installed or created any apps yet.</Text>
                   </Box>
                 </Card>
               </InlineGrid>
-              <Box display="flex" alignItems="center" justifyContent="space-between" marginBlockStart="4">
-                <Pagination
-                  hasPrevious={tutorialPage > 1}
-                  onPrevious={() => setTutorialPage(tutorialPage - 1)}
-                  hasNext={tutorialPage < totalPages}
-                  onNext={() => setTutorialPage(tutorialPage + 1)}
-                  label={`${tutorialPage}/${totalPages}`}
-                />
+              <Box paddingBlockStart="400">
+                <InlineStack align="space-between" blockAlign="center">
+                  <Pagination
+                    hasPrevious={tutorialPage > 1}
+                    onPrevious={() => setTutorialPage(tutorialPage - 1)}
+                    hasNext={tutorialPage < totalPages}
+                    onNext={() => setTutorialPage(tutorialPage + 1)}
+                    label={`${tutorialPage}/${totalPages}`}
+                  />
+                </InlineStack>
               </Box> */} 
               {/* In the future, map over user's apps here */}
             {/* </BlockStack>
@@ -943,47 +944,10 @@ export default function Dashboard() {
         </Box> */}
         <Footer />
       </Page>
-    </Box>
+    
   );
 }
 
-const SpacingBackground = ({
-  children,
-  width = '100%',
-}) => {
-  return (
-    <div
-      style={{
-        width,
-        height: 'auto',
-      }}
-    >
-      {children}
-    </div>
-  );
-};
-
-const Placeholder = ({ height = 'auto', width = 'auto', children }) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'white',
-        height: height ?? undefined,
-        width: width ?? undefined,
-        borderRadius: 16,
-        border: '1px solid #E3E3E3',
-        gap: 5,
-        padding: 24,
-      }}
-    >
-      {children}
-    </div>
-  );
-};
 
 function LanguageDropdown({ selectedLanguage, setSelectedLanguage }) {
   const [active, setActive] = useState(false);

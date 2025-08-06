@@ -38,14 +38,6 @@ const subscriptionSchema = new mongoose.Schema({
     currentPeriodEnd: {
         type: Date
     },
-    importCount: {
-        type: Number,
-        default: 0
-    },
-    exportCount: {
-        type: Number,
-        default: 0
-    },
     // Image processing usage tracking
     imageCompressCount: {
         type: Number,

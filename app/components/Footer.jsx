@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <div style={{ textAlign: 'center', color: '#6D7175', fontSize: 15, marginTop: 24 }}>
+    <div style={{ textAlign: 'center', color: '#6D7175', fontSize: 15, marginTop: 24 ,marginBottom: 24 }}>
       Learn more about{' '}
       <a
         href="#"

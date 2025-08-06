@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, useRevalidator } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import { useEffect, useState, useCallback } from "react";
 import {
@@ -8,7 +8,7 @@ import {
   Text,
   Banner,
   Box,
-  LegacyCard,
+  Card,
   IndexTable,
   useIndexResourceState,
   Thumbnail,
@@ -20,8 +20,23 @@ import {
   Toast,
   Frame,
   SkeletonPage,
+  SkeletonBodyText,
+  SkeletonDisplayText,
+  SkeletonThumbnail,
   Pagination,
+  TextField,
+  Icon,
+  BlockStack,
+  InlineStack,
+  Bleed,
+  Scrollable,
+  IndexFilters,
+  useSetIndexFiltersMode,
+  ChoiceList,
+  Badge,
+  Divider
 } from "@shopify/polaris";
+import { SearchIcon } from '@shopify/polaris-icons';
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -116,15 +131,138 @@ export const loader = async ({ request }) => {
   }
 };
 
+function TableSkeleton() {
+  // Create skeleton data that matches the actual table structure
+  const skeletonRows = Array.from({ length: 15 }, (_, index) => ({
+    id: `skeleton-${index}`,
+  }));
+
+  return (
+    <Frame>
+      <Page 
+        fullWidth
+        primaryAction={
+          <ButtonGroup>
+            <Box width="140px">
+              <SkeletonBodyText lines={1} />
+            </Box>
+          </ButtonGroup>
+        }
+      >
+        <TitleBar title="Image Compression" />
+        <Layout>
+          <Layout.Section>
+            <Card padding="0">
+              {/* Index Filters Skeleton */}
+              <div style={{ padding: '16px', borderBottom: '1px solid var(--p-color-border)' }}>
+                <InlineStack gap="400" align="space-between" blockAlign="center">
+                  <Box width="280px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                  <InlineStack gap="200" align="end">
+                    <Box width="100px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                    <Box width="80px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                    <Box width="32px" minHeight="32px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                  </InlineStack>
+                </InlineStack>
+              </div>
+              
+              {/* Use actual IndexTable with skeleton data for pixel-perfect matching */}
+              <IndexTable
+                resourceName={{ singular: 'file', plural: 'files' }}
+                itemCount={skeletonRows.length}
+                selectedItemsCount={0}
+                onSelectionChange={() => {}}
+                headings={[
+                  { title: 'Preview' },
+                  { title: 'File name' },
+                  { title: 'Alt text' },
+                  { title: 'Size' },
+                  { title: 'Date' },
+                ]}
+                selectable
+                loading
+              >
+                {skeletonRows.map((row, index) => (
+                  <IndexTable.Row
+                    id={row.id}
+                    key={row.id}
+                    selected={false}
+                    position={index}
+                  >
+                    <IndexTable.Cell>
+                      <SkeletonThumbnail size="small" />
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <BlockStack gap="100">
+                        <Box maxWidth="200px">
+                          <SkeletonBodyText lines={1} />
+                        </Box>
+                        <Box maxWidth="60px">
+                          <SkeletonBodyText lines={1} />
+                        </Box>
+                      </BlockStack>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="180px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="80px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="70px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                  </IndexTable.Row>
+                ))}
+              </IndexTable>
+              
+              {/* Pagination Skeleton */}
+              <div style={{ padding: '16px', borderTop: '1px solid var(--p-color-border)' }}>
+                <InlineStack align="start" blockAlign="center" gap="400">
+                  <Box width="100px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                  <Box width="150px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                </InlineStack>
+              </div>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </Page>
+    </Frame>
+  );
+}
+
 export default function ImagesPage() {
   const { t } = useTranslation();
   const { images = [], error, shop } = useLoaderData();
   const [localImages, setLocalImages] = useState(images);
   const navigate = useNavigate();
-  // Add searchQuery state
-  const [searchQuery, setSearchQuery] = useState("");
+  const revalidator = useRevalidator();
+  
+  // IndexFilters state
+  const [queryValue, setQueryValue] = useState("");
+  const [sortSelected, setSortSelected] = useState(['date desc']);
+  const [fileSizeFilter, setFileSizeFilter] = useState(undefined);
+  const [fileTypeFilter, setFileTypeFilter] = useState(undefined);
+  const {mode, setMode} = useSetIndexFiltersMode();
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 15;
 
   const [compressModalActive, setCompressModalActive] = useState(false);
   const [compressionValue, setCompressionValue] = useState(80);
@@ -140,6 +278,7 @@ export default function ImagesPage() {
   const [altType, setAltType] = useState("product");
   const [customAlt, setCustomAlt] = useState("");
   const [isSavingAlt, setIsSavingAlt] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   // Badge/tag state for new alt text UI
   const [altTags, setAltTags] = useState([]); // array of {type, value}
   const [customTag, setCustomTag] = useState("");
@@ -148,12 +287,12 @@ export default function ImagesPage() {
   const [upgradeMessage, setUpgradeMessage] = useState("");
   const [previewImageUrl, setPreviewImageUrl] = useState(null);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
-
+  
   // Always use shop for storeName extraction
   const storeName = shop ? shop.split('.')[0] : '';
 
   // Transform images array for resource state
-  const resources = (localImages || []).map(({ node }) => {
+  const allResources = (localImages || []).map(({ node }) => {
     // Prioritize compressedSize from metafield over originalSource.fileSize
     const fileSize = node.compressedSize != null
       ? node.compressedSize
@@ -164,24 +303,89 @@ export default function ImagesPage() {
       id: node.id,
       ...node,
       fileSize,
-      fileFormat: node.fileFormat
+      fileFormat: node.fileFormat,
+      fileName: decodeURIComponent(node.image?.url?.split('/').pop().split('?')[0].split('.')[0] || ''),
+      fileExtension: (node.image?.url?.split('.').pop().split('?')[0] || '').toUpperCase()
     };
   });
 
+  // Apply filters and search
+  const resources = allResources.filter(resource => {
+    // Search filter
+    if (queryValue) {
+      const searchLower = queryValue.toLowerCase();
+      const matchesFileName = resource.fileName.toLowerCase().includes(searchLower);
+      const matchesFileType = resource.fileExtension.toLowerCase().includes(searchLower);
+      const matchesAltText = resource.image?.altText?.toLowerCase().includes(searchLower);
+      if (!matchesFileName && !matchesFileType && !matchesAltText) {
+        return false;
+      }
+    }
+    
+    // File size filter
+    if (fileSizeFilter && fileSizeFilter.length === 2) {
+      const fileSizeKB = resource.fileSize / 1024;
+      if (fileSizeKB < fileSizeFilter[0] || fileSizeKB > fileSizeFilter[1]) {
+        return false;
+      }
+    }
+    
+    // File type filter
+    if (fileTypeFilter && fileTypeFilter.length > 0) {
+      if (!fileTypeFilter.includes(resource.fileExtension.toLowerCase())) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+
+  // Apply sorting
+  const sortedResources = [...resources].sort((a, b) => {
+    const [sortKey, sortDirection] = sortSelected[0].split(' ');
+    
+    switch (sortKey) {
+      case 'name':
+        const nameA = a.fileName.toLowerCase();
+        const nameB = b.fileName.toLowerCase();
+        return sortDirection === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+      
+      case 'size':
+        return sortDirection === 'asc' ? a.fileSize - b.fileSize : b.fileSize - a.fileSize;
+      
+      case 'date':
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      
+      case 'type':
+        const typeA = a.fileExtension.toLowerCase();
+        const typeB = b.fileExtension.toLowerCase();
+        return sortDirection === 'asc' ? typeA.localeCompare(typeB) : typeB.localeCompare(typeA);
+        
+      default:
+        return 0;
+    }
+  });
+
   const resourceName = {
-    singular: 'file',
-    plural: 'files',
+    singular: t('images.file', 'file'),
+    plural: t('images.files', 'files'),
   };
 
   const {
     selectedResources,
     allResourcesSelected,
     handleSelectionChange,
-  } = useIndexResourceState(resources);
+    clearSelection,
+  } = useIndexResourceState(sortedResources);
 
   const handleCompressClick = useCallback(() => {
     if (selectedResources.length > 0) {
       setCompressModalActive(true);
+      setCompressionResults([]); // Clear previous results when opening modal
+      setCompressionDone(false); // Reset completion state
+      setCompressionValue(80); // Reset compression quality to default (80%)
     }
   }, [selectedResources]);
 
@@ -200,7 +404,7 @@ export default function ImagesPage() {
       let updatedImages = [...localImages];
 
       for (const resourceId of selectedResources) {
-        const resource = resources.find(r => r.id === resourceId);
+        const resource = sortedResources.find(r => r.id === resourceId);
         if (resource) {
           try {
             const response = await fetch('/api/images/compress', {
@@ -352,6 +556,14 @@ export default function ImagesPage() {
         }));
         setIsError(false);
         setCompressionDone(true);
+        
+        // Clear selection after successful compression
+        clearSelection();
+        
+        // Refresh the table after successful compression
+        setTimeout(() => {
+          revalidator.revalidate();
+        }, 1000);
       } else if (failedCompressions.length > 0) {
         setToastMessage(t('images.failedToConvert', `Failed to compress ${failedCompressions.length} ${
           failedCompressions.length === 1 ? 'image' : 'images'
@@ -395,9 +607,9 @@ export default function ImagesPage() {
   // const [currentPage, setCurrentPage] = useState(1);
 
   // Add pagination calculations after your resources filter
-  const totalItems = resources.length;
+  const totalItems = sortedResources.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const currentPageItems = resources.slice(
+  const currentPageItems = sortedResources.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -405,75 +617,114 @@ export default function ImagesPage() {
   // Add useEffect to reset page when search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [queryValue, fileSizeFilter, fileTypeFilter, sortSelected]);
 
-  const rowMarkup = resources.map(
-    (resource, index) => {
-      // Find compression result for this file (if any)
-      const compressionResult = compressionResults.find(
-        (result) => result.displayFilename === resource.image.url.split('/').pop() ||
-                    result.filename === decodeURIComponent(resource.image.url.split('/').pop().split('?')[0].split('.')[0])
-      );
-      // Use compression result if available, otherwise use resource.fileSize which already accounts for compressedSize
-      const displaySize = compressionResult
-        ? compressionResult.compressedSize
-        : resource.fileSize;
-      return (
-        <IndexTable.Row
-          id={resource.id}
-          key={resource.id}
-          selected={selectedResources.includes(resource.id)}
-          position={index}
-        >
-          <IndexTable.Cell>
-            <Box padding="200" display="flex" gap="300">
-              <Thumbnail
-                source={resource.image.url}
-                alt={resource.image.altText || "Image"}
-                size="small"
-              />
-              <div>
-                <Text variant="bodyMd" as="span" fontWeight="semibold">
-                  {resource.image.url.split('/').pop()}
-                </Text>
-                <Text variant="bodySm" as="p" tone="subdued">
-                 
-                </Text>
-              </div>
-            </Box>
-          </IndexTable.Cell>
-          <IndexTable.Cell>
-            <Text variant="bodyMd" as="span">
-              {resource.image.altText || "—"}
-            </Text>
-          </IndexTable.Cell>
-          <IndexTable.Cell>
-            <Text variant="bodyMd" as="span">
-              {formatDate(resource.createdAt)}
-            </Text>
-          </IndexTable.Cell>
-          <IndexTable.Cell>
-            <Text variant="bodyMd" as="span">
-              {formatFileSize(displaySize)}
-            </Text>
-          </IndexTable.Cell>
-        </IndexTable.Row>
-      );
+  useEffect(() => {
+    if (images) {
+      const timeout = setTimeout(() => setIsLoading(false), 400);
+      return () => clearTimeout(timeout);
     }
-  );
+  }, [images]);
 
-  const bulkActions = selectedResources.length > 0
-    ? [
-        {
-          content: t('images.delete_files', 'Delete files'),
-          onAction: () => {}, // Removed console.log
-        },
-      ]
-    : [];
+  // IndexFilters configuration
+  const sortOptions = [
+    {label: 'File Name', value: 'name asc', directionLabel: 'A-Z'},
+    {label: 'File Name', value: 'name desc', directionLabel: 'Z-A'},
+    {label: 'Date', value: 'date asc', directionLabel: 'Oldest first'},
+    {label: 'Date', value: 'date desc', directionLabel: 'Newest first'},
+    {label: 'File Size', value: 'size asc', directionLabel: 'Smallest first'},
+    {label: 'File Size', value: 'size desc', directionLabel: 'Largest first'},
+    {label: 'File Type', value: 'type asc', directionLabel: 'A-Z'},
+    {label: 'File Type', value: 'type desc', directionLabel: 'Z-A'},
+  ];
+
+  // Filter handlers
+  const handleFiltersQueryChange = useCallback((value) => setQueryValue(value), []);
+  const handleQueryValueRemove = useCallback(() => setQueryValue(''), []);
+  const handleFileSizeChange = useCallback((value) => setFileSizeFilter(value), []);
+  const handleFileSizeRemove = useCallback(() => setFileSizeFilter(undefined), []);
+  const handleFileTypeChange = useCallback((value) => setFileTypeFilter(value), []);
+  const handleFileTypeRemove = useCallback(() => setFileTypeFilter(undefined), []);
+  
+  const handleFiltersClearAll = useCallback(() => {
+    handleQueryValueRemove();
+    handleFileSizeRemove();
+    handleFileTypeRemove();
+  }, [handleQueryValueRemove, handleFileSizeRemove, handleFileTypeRemove]);
+
+  // Save and cancel handlers for IndexFilters
+  const onHandleSave = async () => {
+    await new Promise(resolve => setTimeout(resolve, 1));
+    return true;
+  };
+  
+  const onHandleCancel = () => {
+    // Clear all filters when cancel is clicked
+    handleFiltersClearAll();
+  };
+
+  // Get unique file types for filter
+  const availableFileTypes = [...new Set(allResources.map(r => r.fileExtension.toLowerCase()))]
+    .sort()
+    .map(type => ({label: type.toUpperCase(), value: type}));
+
+  const filters = [
+    {
+      key: 'fileSize',
+      label: 'File Size (KB)',
+      filter: (
+        <RangeSlider
+          label="File size is between"
+          labelHidden
+          value={fileSizeFilter || [0, 10000]}
+          prefix=""
+          suffix=" KB"
+          output
+          min={0}
+          max={10000}
+          step={100}
+          onChange={handleFileSizeChange}
+        />
+      ),
+    },
+    {
+      key: 'fileType',
+      label: 'File Type',
+      filter: (
+        <ChoiceList
+          title="File Type"
+          titleHidden
+          choices={availableFileTypes}
+          selected={fileTypeFilter || []}
+          onChange={handleFileTypeChange}
+          allowMultiple
+        />
+      ),
+      shortcut: true,
+    },
+  ];
+
+  const appliedFilters = [];
+  if (fileSizeFilter) {
+    appliedFilters.push({
+      key: 'fileSize',
+      label: `File size: ${fileSizeFilter[0]}-${fileSizeFilter[1]} KB`,
+      onRemove: handleFileSizeRemove,
+    });
+  }
+  if (fileTypeFilter && fileTypeFilter.length > 0) {
+    appliedFilters.push({
+      key: 'fileType',
+      label: `File type: ${fileTypeFilter.map(t => t.toUpperCase()).join(', ')}`,
+      onRemove: handleFileTypeRemove,
+    });
+  }
 
   const handleCloseCompressModal = useCallback(() => {
     setCompressModalActive(false);
     setCompressionDone(false);
+    setCompressionResults([]); // Clear previous compression results
+    setCompressionValue(80); // Reset compression quality to default
   }, []);
 
   const compressionModal = (
@@ -524,15 +775,179 @@ export default function ImagesPage() {
             />
           </Box>
           <Text as="p" variant="bodySm" tone="subdued">
-            {t('images.higher_quality_means_larger_file_size', 'Higher quality means larger file size')}
+            {t('images.compressionQualityHint', 'Higher quality means larger file size. Recommended: 70-85%')}
           </Text>
+          
+          {/* Demo Compression Preview */}
+          {!compressionDone && selectedResources.length > 0 && (() => {
+            // Get a random selected image as demo
+            const demoResource = sortedResources.find(r => selectedResources.includes(r.id));
+            const demoOriginalSizeKB = Math.round(demoResource?.fileSize / 1024) || 245;
+            
+            // Calculate realistic compression based on actual file size
+            const baseCompression = 0.35; // 35% base compression
+            const qualityFactor = compressionValue / 100;
+            const compressionFactor = baseCompression + (1 - baseCompression) * qualityFactor;
+            const demoPredictedSize = Math.round(demoOriginalSizeKB * compressionFactor);
+            const demoPredictedRatio = Math.round(((demoOriginalSizeKB - demoPredictedSize) / demoOriginalSizeKB) * 100);
+            
+            return (
+              <Box padding="400" background="bg-surface-secondary" borderRadius="200">
+                <BlockStack gap="300">
+                  <Text variant="headingSm" fontWeight="bold">
+                    💡 Live Preview - Your Selected Image
+                  </Text>
+                  <Text variant="bodySm" tone="subdued">
+                    Showing preview with "{demoResource?.fileName || 'your image'}" - {selectedResources.length} image{selectedResources.length > 1 ? 's' : ''} selected
+                  </Text>
+                  
+                  {/* Side-by-side image comparison */}
+                  <InlineStack gap="400" align="center">
+                    {/* Original Image */}
+                    <BlockStack gap="200" align="center">
+                      <Text variant="bodyMd" fontWeight="medium" tone="subdued">
+                        Original Image
+                      </Text>
+                      <Box 
+                        padding="200" 
+                        background="bg-surface" 
+                        borderRadius="200"
+                        borderWidth="025"
+                        borderColor="border"
+                        style={{ minHeight: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      >
+                        <Thumbnail
+                          source={demoResource?.image?.url || "https://via.placeholder.com/120x120/E5E5E5/999999?text=No+Image"}
+                          alt={demoResource?.image?.altText || "Original image"}
+                          size="large"
+                        />
+                      </Box>
+                      <Text variant="bodySm" fontWeight="bold" tone="base">
+                        {demoOriginalSizeKB} KB - 100% Quality
+                      </Text>
+                    </BlockStack>
+                    
+                    {/* Arrow indicator */}
+                    <Box padding="200">
+                      <Text variant="headingMd" tone="subdued" style={{ fontSize: '24px' }}>
+                        →
+                      </Text>
+                    </Box>
+                    
+                    {/* Compressed Image Preview */}
+                    <BlockStack gap="200" align="center">
+                      <Text variant="bodyMd" fontWeight="medium" tone="subdued">
+                        Compressed Preview
+                      </Text>
+                      <Box 
+                        padding="200" 
+                        background="bg-surface-success-subdued" 
+                        borderRadius="200"
+                        borderWidth="025"
+                        borderColor="border-success"
+                        style={{ minHeight: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      >
+                        {/* Simulate compression effect with CSS filter */}
+                        <div style={{ 
+                          filter: `contrast(${0.85 + (compressionValue / 100) * 0.15}) brightness(${0.92 + (compressionValue / 100) * 0.08}) saturate(${0.9 + (compressionValue / 100) * 0.1})`,
+                          transition: 'filter 0.3s ease',
+                          opacity: compressionValue < 30 ? 0.8 : compressionValue < 60 ? 0.92 : 1
+                        }}>
+                          <Thumbnail
+                            source={demoResource?.image?.url || "https://via.placeholder.com/120x120/E5E5E5/999999?text=No+Image"}
+                            alt={demoResource?.image?.altText || "Compressed preview"}
+                            size="large"
+                          />
+                        </div>
+                      </Box>
+                      <Text variant="bodySm" fontWeight="bold" tone="success">
+                        {demoPredictedSize} KB - {compressionValue}% Quality
+                      </Text>
+                    </BlockStack>
+                  </InlineStack>
+                  
+                  {/* Quality indicator */}
+                  <InlineStack align="space-between" blockAlign="center">
+                    <Text variant="bodyMd" fontWeight="medium">
+                      Quality: {compressionValue}%
+                    </Text>
+                    <Badge 
+                      status={
+                        compressionValue >= 90 ? 'success' : 
+                        compressionValue >= 70 ? 'attention' : 
+                        compressionValue >= 50 ? 'warning' : 'critical'
+                      }
+                    >
+                      {compressionValue >= 90 ? 'Excellent' : 
+                       compressionValue >= 70 ? 'Good' : 
+                       compressionValue >= 50 ? 'Fair' : 'Low'}
+                    </Badge>
+                  </InlineStack>
+                  
+                  <Divider />
+                  
+                  {/* Size comparison */}
+                  <InlineStack gap="400" align="space-between">
+                    <BlockStack gap="100">
+                      <Text variant="bodySm" tone="subdued">Original Size</Text>
+                      <Text variant="bodyMd" fontWeight="bold">
+                        {demoOriginalSizeKB} KB
+                      </Text>
+                    </BlockStack>
+                    
+                    <BlockStack gap="100">
+                      <Text variant="bodySm" tone="subdued">Predicted Size</Text>
+                      <Text 
+                        variant="bodyMd" 
+                        fontWeight="bold" 
+                        tone={demoPredictedSize < demoOriginalSizeKB ? 'success' : 'base'}
+                      >
+                        {demoPredictedSize} KB
+                      </Text>
+                    </BlockStack>
+                    
+                    <BlockStack gap="100">
+                      <Text variant="bodySm" tone="subdued">Space Saved</Text>
+                      <Text 
+                        variant="bodyMd" 
+                        fontWeight="bold" 
+                        tone={demoPredictedRatio > 0 ? 'success' : 'base'}
+                      >
+                        {demoPredictedRatio}%
+                      </Text>
+                    </BlockStack>
+                  </InlineStack>
+                  
+                  {/* Total savings for all selected images */}
+                  {selectedResources.length > 1 && (
+                    <Box padding="200" background="bg-surface-info-subdued" borderRadius="150">
+                      <Text variant="bodySm" alignment="center" tone="info">
+                        💾 Estimated total savings for all {selectedResources.length} selected images: 
+                        <Text as="span" fontWeight="bold"> ~{Math.round((demoOriginalSizeKB - demoPredictedSize) * selectedResources.length)} KB</Text>
+                      </Text>
+                    </Box>
+                  )}
+                  
+                  {/* Savings highlight for single image */}
+                  {selectedResources.length === 1 && (
+                    <Box padding="200" background="bg-surface-success-subdued" borderRadius="150">
+                      <Text variant="bodySm" alignment="center" tone="success">
+                        ✅ You'll save {demoOriginalSizeKB - demoPredictedSize} KB ({demoPredictedRatio}%) from this image
+                      </Text>
+                    </Box>
+                  )}
+                </BlockStack>
+              </Box>
+            );
+          })()}
+          
           {compressionResults.length > 0 && (
             <Box padding="400">
               <LegacyStack vertical spacing="tight">
                 <Text variant="headingSm">{t('images.compression_results', 'Compression Results')}</Text>
                 {compressionResults.map((result, index) => {
                   // Find the resource for this result
-                  const resource = resources.find(r =>
+                  const resource = sortedResources.find(r =>
                     r.image.url.includes(result.filename.split('?')[0])
                   );
                   return (
@@ -601,7 +1016,7 @@ export default function ImagesPage() {
         }
       }
       const results = await Promise.all(
-        resources.map(img => {
+        sortedResources.map(img => {
           // If using badges, replace 'Product Title' with actual product title for each image
           let finalAltText = altText;
           if (altTags.length > 0) {
@@ -634,7 +1049,7 @@ export default function ImagesPage() {
       if (failed.length === 0) {
         // Log batch activity
         try {
-          console.log('Logging batch activity for alt text:', resources.length);
+          console.log('Logging batch activity for alt text:', sortedResources.length);
           const batchResponse = await fetch('/api/batch-activity', {
             method: 'POST',
             headers: {
@@ -642,7 +1057,7 @@ export default function ImagesPage() {
             },
             body: JSON.stringify({
               type: 'alt_text',
-              count: resources.length
+              count: sortedResources.length
             })
           });
           
@@ -708,6 +1123,10 @@ export default function ImagesPage() {
     }
   };
 
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     <Frame>
       
@@ -753,93 +1172,109 @@ export default function ImagesPage() {
                 {error}
               </Banner>
             )}
-            <div style={{ overflowX: 'hidden' }}>
-              <LegacyCard>
-                <IndexTable
-                  resourceName={resourceName}
-                  itemCount={resources.length}
-                  selectedItemsCount={selectedResources.length}
-                  onSelectionChange={handleSelectionChange}
-                  headings={[
-                    { title: t('images.preview', 'Preview') },
-                    { title: t('images.fileName', 'File name') },
-                    { title: t('images.alt_text', 'Alt text') },
-                    { title: t('images.size', 'Size') },
-                    { title: t('images.date', 'Date') },
-                  ]}
-                  selectable
-                >
-                  {currentPageItems.map((resource, index) => {
-                    const { id, image, fileSize, createdAt } = resource;
-                    return (
-                      <IndexTable.Row
-                        id={id}
-                        key={id}
-                        selected={selectedResources.includes(id)}
-                        position={index}
-                      >
-                        <IndexTable.Cell>
-                          <div>
-                            <Thumbnail
-                              source={image?.url}
-                              alt={image?.altText || "Image"}
-                              size="small"
-                            />
-                          </div>
-                        </IndexTable.Cell>
-                        <IndexTable.Cell>
-                          <Box padding="0" display="flex" gap="100" vertical="true">
-                            <Text variant="bodyMd" as="span" fontWeight="semibold">
-                              {decodeURIComponent(image?.url?.split('/').pop().split('?')[0].split('.')[0] || '')}
-                            </Text>
-                            <Text variant="bodySm" as="p" tone="subdued">
-                              {(resource.fileFormat ? resource.fileFormat.toUpperCase() : (image?.url?.split('.').pop().split('?')[0] || '')).toUpperCase()}
-                            </Text>
-                          </Box>
-                        </IndexTable.Cell>
-                        <IndexTable.Cell>
-                          <div style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {image?.altText || '—'}
-                          </div>
-                        </IndexTable.Cell>
-                        <IndexTable.Cell>{formatFileSize(fileSize)}</IndexTable.Cell>
-                        <IndexTable.Cell>{formatDate(createdAt)}</IndexTable.Cell>
-                      </IndexTable.Row>
-                    );
-                  })}
-                </IndexTable>
+            <Card padding="0">
+              <IndexFilters
+                sortOptions={sortOptions}
+                sortSelected={sortSelected}
+                queryValue={queryValue}
+                queryPlaceholder="Search images..."
+                onQueryChange={handleFiltersQueryChange}
+                onQueryClear={handleQueryValueRemove}
+                onSort={setSortSelected}
+                filters={filters}
+                appliedFilters={appliedFilters}
+                onClearAll={handleFiltersClearAll}
+                mode={mode}
+                setMode={setMode}
+                tabs={[]}
+                views={[]}
+                onHandleSave={onHandleSave}
+                onHandleCancel={onHandleCancel}
+                hideFilters={false}
+                disabled={false}
+                canCreateNewView={true}
+                loading={false}
+              />
+              
+              {/* Table without sticky header */}
+              <IndexTable
+                resourceName={resourceName}
+                itemCount={sortedResources.length}
+                selectedItemsCount={selectedResources.length}
+                onSelectionChange={handleSelectionChange}
+                headings={[
+                  { title: t('images.preview', 'Preview') },
+                  { title: t('images.fileName', 'File name') },
+                  { title: t('images.altText', 'Alt text') },
+                  { title: t('images.size', 'Size') },
+                  { title: t('images.date', 'Date') },
+                ]}
+                selectable
+              >
+                {currentPageItems.map((resource, index) => {
+                const { id, image, fileSize, createdAt, fileName, fileExtension } = resource;
+                return (
+                  <IndexTable.Row
+                    id={id}
+                    key={id}
+                    selected={selectedResources.includes(id)}
+                    position={index}
+                  >
+                    <IndexTable.Cell>
+                      <Thumbnail
+                        source={image?.url}
+                        alt={image?.altText || "Image"}
+                        size="small"
+                      />
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <BlockStack gap="100">
+                        <Text variant="bodyMd" as="span" fontWeight="semibold">
+                          {fileName}
+                        </Text>
+                        <Text variant="bodySm" as="p" tone="subdued">
+                          {fileExtension}
+                        </Text>
+                      </BlockStack>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Text variant="bodyMd" truncate>
+                        {image?.altText || '—'}
+                      </Text>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>{formatFileSize(fileSize)}</IndexTable.Cell>
+                    <IndexTable.Cell>{formatDate(createdAt)}</IndexTable.Cell>
+                  </IndexTable.Row>
+                );
+              })}
+              </IndexTable>
 
-                {/* Add pagination section */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    padding: '16px',
-                    borderTop: '1px solid #E1E3E5',
-                    background: '#FAFBFB',
-                    gap: '12px',
-                  }}
-                >
-                  <Pagination
-                    hasPrevious={currentPage > 1}
-                    onPrevious={() => setCurrentPage(currentPage - 1)}
-                    hasNext={currentPage < totalPages}
-                    onNext={() => setCurrentPage(currentPage + 1)}
-                    label={t('pagination.page_of', { current: currentPage, total: totalPages }, `Page ${currentPage} of ${totalPages}`)}
-                  />
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div style={{ padding: '16px', borderTop: '1px solid var(--p-color-border)' }}>
+                  <InlineStack align="start" blockAlign="center" gap="400">
+                    <Pagination
+                      hasPrevious={currentPage > 1}
+                      onPrevious={() => setCurrentPage(currentPage - 1)}
+                      hasNext={currentPage < totalPages}
+                      onNext={() => setCurrentPage(currentPage + 1)}
+                    />
+                    <Text variant="bodySm" tone="subdued">
+                      {`${((currentPage - 1) * itemsPerPage) + 1}-${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems}`}
+                    </Text>
+                  </InlineStack>
                 </div>
-              </LegacyCard>
-            </div>
+              )}
+            </Card>
 
             {selectedResources.length > 0 && (
-              <div style={{ marginTop: '1rem' }}>
+              <Box paddingBlockStart="400">
                 <ButtonGroup>
                   <Button primary onClick={handleCompressClick}>
                     {t('images.compressSelected', 'Compress Selected')} ({selectedResources.length})
                   </Button>
                 </ButtonGroup>
-              </div>
+              </Box>
             )}
           </Layout.Section>
         </Layout>

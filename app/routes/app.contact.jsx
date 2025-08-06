@@ -84,111 +84,187 @@ export const loader = async ({ request }) => {
 
 function ContactSkeleton() {
     return (
-        <SkeletonPage>
-            {/* Header Skeleton */}
-            <Box paddingBlockEnd="400">
-                <Card>
-                    <div style={{ padding: '20px' }}>
-                        <SkeletonDisplayText size="large" />
-                        <SkeletonBodyText lines={2} />
-                    </div>
-                </Card>
-            </Box>
-
-            {/* Contact Form Skeleton */}
-            <Box paddingBlockEnd="400" display="flex" justifyContent="center">
-                <Card>
-                    <Box padding="600" minWidth="700px" maxWidth="900px">
-                        <BlockStack gap="400">
-                            <SkeletonDisplayText size="medium" />
-                            <SkeletonBodyText lines={1} />
-                            <FormLayout>
-                                {[1, 2, 3, 4, 5].map((i) => (
-                                    <div key={i}>
-                                        <SkeletonBodyText lines={1} />
-                                        <Box paddingBlockStart="200">
-                                            <SkeletonThumbnail size="medium" />
-                                        </Box>
+        <Frame>
+            <SkeletonPage>
+                {/* Contact Form Skeleton - Centered with exact dimensions */}
+                <div style={{ paddingTop: '16px', paddingBottom: '16px', display: 'flex', justifyContent: 'center' }}>
+                    <Card>
+                        <div style={{ 
+                            padding: '48px', 
+                            minWidth: '700px', 
+                            maxWidth: '900px',
+                            width: '100%'
+                        }}>
+                            <BlockStack gap="400">
+                                {/* Title */}
+                                <div style={{ marginBottom: '16px' }}>
+                                    <SkeletonDisplayText size="large" />
+                                </div>
+                                
+                                {/* Store Information Header */}
+                                <div style={{ marginBottom: '24px' }}>
+                                    <SkeletonDisplayText size="medium" />
+                                </div>
+                                
+                                {/* Name and Email Row */}
+                                <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+                                    <div style={{ width: '49%' }}>
+                                        <div style={{ marginBottom: '8px' }}>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                        <div style={{ height: '36px', backgroundColor: '#f6f6f7', borderRadius: '6px' }}></div>
                                     </div>
+                                    <div style={{ width: '49%' }}>
+                                        <div style={{ marginBottom: '8px' }}>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                        <div style={{ height: '36px', backgroundColor: '#f6f6f7', borderRadius: '6px' }}></div>
+                                        <div style={{ marginTop: '4px' }}>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Code and Password Row */}
+                                <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+                                    <div style={{ width: '49%' }}>
+                                        <div style={{ marginBottom: '8px' }}>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                        <div style={{ height: '36px', backgroundColor: '#f6f6f7', borderRadius: '6px' }}></div>
+                                        <div style={{ marginTop: '4px' }}>
+                                            <SkeletonBodyText lines={2} />
+                                        </div>
+                                    </div>
+                                    <div style={{ width: '49%' }}>
+                                        <div style={{ marginBottom: '8px' }}>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                        <div style={{ height: '36px', backgroundColor: '#f6f6f7', borderRadius: '6px' }}></div>
+                                        <div style={{ marginTop: '4px' }}>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Divider */}
+                                <div style={{ 
+                                    height: '1px', 
+                                    backgroundColor: '#e1e3e5', 
+                                    margin: '24px 0' 
+                                }}></div>
+                                
+                                {/* Contact Reason Header */}
+                                <div style={{ marginBottom: '16px' }}>
+                                    <SkeletonDisplayText size="medium" />
+                                </div>
+                                
+                                {/* Reason Dropdown */}
+                                <div style={{ marginBottom: '24px' }}>
+                                    <div style={{ marginBottom: '8px' }}>
+                                        <SkeletonBodyText lines={1} />
+                                    </div>
+                                    <div style={{ height: '36px', backgroundColor: '#f6f6f7', borderRadius: '6px' }}></div>
+                                </div>
+                                
+                                {/* Page Information */}
+                                <div style={{ marginBottom: '24px' }}>
+                                    <div style={{ marginBottom: '8px' }}>
+                                        <SkeletonBodyText lines={1} />
+                                    </div>
+                                    <div style={{ height: '36px', backgroundColor: '#f6f6f7', borderRadius: '6px' }}></div>
+                                    <div style={{ marginTop: '4px' }}>
+                                        <SkeletonBodyText lines={1} />
+                                    </div>
+                                </div>
+                                
+                                {/* Message */}
+                                <div style={{ marginBottom: '24px' }}>
+                                    <div style={{ marginBottom: '8px' }}>
+                                        <SkeletonBodyText lines={1} />
+                                    </div>
+                                    <div style={{ height: '120px', backgroundColor: '#f6f6f7', borderRadius: '6px' }}></div>
+                                    <div style={{ marginTop: '4px' }}>
+                                        <SkeletonBodyText lines={1} />
+                                    </div>
+                                </div>
+                                
+                                {/* Divider */}
+                                <div style={{ 
+                                    height: '1px', 
+                                    backgroundColor: '#e1e3e5', 
+                                    margin: '24px 0' 
+                                }}></div>
+                                
+                                {/* Submit Button */}
+                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <div style={{ 
+                                        width: '80px', 
+                                        height: '36px', 
+                                        backgroundColor: '#008060', 
+                                        borderRadius: '6px' 
+                                    }}></div>
+                                </div>
+                            </BlockStack>
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Help Section - Full width matching the design */}
+                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <Card background="bg-surface" borderRadius="2xl" style={{ width: '100%' }}>
+                        <div style={{ paddingTop: '48px', paddingBottom: '48px', paddingLeft: '24px', paddingRight: '24px' }}>
+                            {/* Need Help Header */}
+                            <div style={{ padding: '5px 0px 24px 2px' }}>
+                                <SkeletonDisplayText size="medium" />
+                            </div>
+                            
+                            {/* Help Cards Grid */}
+                            <div style={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: 'repeat(3, 1fr)', 
+                                gap: '16px', 
+                                marginBottom: '32px' 
+                            }}>
+                                {[1, 2, 3].map((i) => (
+                                    <Card key={i} padding="400" border="base" background="bg-surface" borderRadius="lg">
+                                        <div style={{ marginLeft: '8px' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                                <div style={{ 
+                                                    width: '16px', 
+                                                    height: '16px', 
+                                                    backgroundColor: '#3574F2', 
+                                                    borderRadius: '2px' 
+                                                }}></div>
+                                                <SkeletonBodyText lines={1} />
+                                            </div>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                    </Card>
                                 ))}
-                                {/* Submit button skeleton */}
-                                <Box paddingBlockStart="400">
-                                    <SkeletonThumbnail size="large" />
-                                </Box>
-                            </FormLayout>
-                        </BlockStack>
-                    </Box>
-                </Card>
-            </Box>
-
-            {/* Tutorials Skeleton */}
-            <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
-                <Card padding="500" background="bg-surface" borderRadius="2xl" paddingBlockStart="600" paddingBlockEnd="600">
-                    <BlockStack gap="200">
-                        <SkeletonDisplayText size="medium" />
-                        <SkeletonBodyText lines={1} />
-                        <InlineGrid columns={{ xs: 1, sm: 2 }} gap="400">
-                            {[1, 2].map((i) => (
-                                <Card key={i} padding="400">
-                                    <Box background="bg-surface">
-                                        <Box display="flex" gap="100">
-                                            <Box
-                                                width="60px"
-                                                height="60px"
-                                                borderRadius="full"
-                                                background="#8B5CF6"
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="center"
-                                                marginInlineEnd="200"
-                                            >
-                                                <SkeletonThumbnail size="large" />
-                                            </Box>
-                                            <BlockStack gap="100">
-                                                <SkeletonDisplayText size="small" />
-                                                <SkeletonBodyText lines={1} />
-                                                <SkeletonBodyText lines={1} />
-                                            </BlockStack>
-                                        </Box>
-                                    </Box>
-                                </Card>
-                            ))}
-                        </InlineGrid>
-                        <Box display="flex" alignItems="center" justifyContent="space-between" marginBlockStart="4">
-                            <SkeletonBodyText lines={1} />
-                        </Box>
-                    </BlockStack>
-                </Card>
-            </Box>
-
-            {/* FAQ/Help Skeleton */}
-            <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
-                <Card paddingBlockStart="600" paddingBlockEnd="600" background="bg-surface" borderRadius="2xl">
-                    <Box padding="20px 0px 11px 2px">
-                        <SkeletonDisplayText size="medium" />
-                    </Box>
-                    <InlineGrid columns={3} gap="400" style={{ width: '100%' }}>
-                        {[1, 2, 3].map((i) => (
-                            <Card key={i} padding="400" border="base" background="bg-surface" borderRadius="lg" style={{ width: '100%', margin: 0 }}>
-                                <Box marginInlineStart="200">
-                                    <SkeletonBodyText lines={1} />
-                                    <SkeletonBodyText lines={1} />
-                                </Box>
-                            </Card>
-                        ))}
-                    </InlineGrid>
-                    <Box display="flex" justifyContent="flex-start" paddingBlockEnd="400">
-                        <Box display="flex" paddingBlockStart="400">
-                            {[1, 2, 3].map((i) => (
-                                <Box key={i} marginBlockEnd="200">
-                                    <SkeletonBodyText lines={1} />
-                                </Box>
-                            ))}
-                        </Box>
-                    </Box>
-                </Card>
-            </Box>
-        </SkeletonPage>
+                            </div>
+                            
+                            {/* FAQ Section */}
+                            <div style={{ display: 'flex', paddingTop: '16px' }}>
+                                <div style={{ width: '100%' }}>
+                                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                                        <div key={i} style={{ 
+                                            marginBottom: '16px',
+                                            padding: '16px',
+                                            backgroundColor: '#fafbfb',
+                                            borderRadius: '8px',
+                                            border: '1px solid #e1e3e5'
+                                        }}>
+                                            <SkeletonBodyText lines={1} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            </SkeletonPage>
+        </Frame>
     );
 }
 

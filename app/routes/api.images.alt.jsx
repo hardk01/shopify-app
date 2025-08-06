@@ -12,7 +12,7 @@ export async function action({ request }) {
 
   try {
     const { admin, session } = await authenticate.admin(request);
-    const { imageIds, altText, altType, skipActivityLog } = await request.json();
+    const { imageIds, altText, altType } = await request.json();
 
     if (!Array.isArray(imageIds) || imageIds.length === 0 || !altText || !altType) {
       return json({ error: "Missing required fields" }, { status: 400 });
@@ -121,14 +121,12 @@ export async function action({ request }) {
     if (subscription) {
       await subscription.incrementImageCount('alt', imageIds.length);
       
-      // Log activity for statistics only if not part of a batch operation
-      if (!skipActivityLog) {
-        try {
-          await logActivity(shopRecord._id, session.shop, 'alt_text', imageIds.length);
-        } catch (logError) {
-          console.error('Failed to log activity:', logError);
-          // Don't fail the main operation if logging fails
-        }
+      // Log activity for statistics
+      try {
+        await logActivity(shopRecord._id, session.shop, 'alt_text', imageIds.length);
+      } catch (logError) {
+        console.error('Failed to log activity:', logError);
+        // Don't fail the main operation if logging fails
       }
     }
 

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 if (typeof window === "undefined" && React.useLayoutEffect) {
   React.useLayoutEffect = React.useEffect;
 }
 import { json } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, useRevalidator } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import {
   Page,
@@ -13,7 +13,7 @@ import {
   Text,
   Banner,
   Box,
-  LegacyCard,
+  Card,
   IndexTable,
   useIndexResourceState,
   Thumbnail,
@@ -31,7 +31,15 @@ import {
   SkeletonDisplayText,
   SkeletonThumbnail,
   Icon,
-  Pagination
+  Pagination,
+  BlockStack,
+  InlineStack,
+  Bleed,
+  IndexFilters,
+  useSetIndexFiltersMode,
+  ChoiceList,
+  Badge,
+  RangeSlider
 } from "@shopify/polaris";
 import { SearchIcon } from '@shopify/polaris-icons';
 import { TitleBar } from "@shopify/app-bridge-react";
@@ -162,17 +170,27 @@ export const loader = async ({ request }) => {
 
     const data = await response.json();
     
-    // Build a map of image URLs to product IDs (simplified)
+    // Build a map of image URLs to product information
     const productImages = {};
+    const productTitles = {};
     if (data.data && data.data.products && data.data.products.edges) {
       data.data.products.edges.forEach(productEdge => {
         if (!productEdge || !productEdge.node || !productEdge.node.images || !productEdge.node.images.edges) return;
         productEdge.node.images.edges.forEach(imgEdge => {
           if (!imgEdge || !imgEdge.node || !imgEdge.node.url) return;
           const url = imgEdge.node.url;
+          const fileName = url.split('/').pop()?.split('?')[0];
+          
+          // Map URL to product IDs
           if (!productImages[url]) productImages[url] = [];
           if (productEdge.node.id) {
             productImages[url].push(productEdge.node.id);
+          }
+          
+          // Map image file name to product title for easier lookup
+          if (fileName && productEdge.node.title) {
+            if (!productTitles[fileName]) productTitles[fileName] = [];
+            productTitles[fileName].push(productEdge.node.title);
           }
         });
       });
@@ -195,14 +213,22 @@ export const loader = async ({ request }) => {
         let references = [];
         const fileName = node.image?.url?.split('/').pop()?.split('?')[0];
         let productCount = 0;
+        let productTitle = null;
         
-        // Check product references (quick)
+        // Check product references and get product title
         Object.keys(productImages).forEach(url => {
           const prodFileName = url.split('/').pop()?.split('?')[0];
           if (fileName && prodFileName && fileName === prodFileName) {
             productCount += productImages[url].length;
           }
         });
+        
+        // Get product title for this image
+        if (fileName && productTitles[fileName] && productTitles[fileName].length > 0) {
+          // Use the first product title if multiple products use the same image
+          productTitle = productTitles[fileName][0];
+        }
+        
         if (productCount > 0) {
           references.push({ type: 'product', count: productCount });
         }
@@ -216,12 +242,13 @@ export const loader = async ({ request }) => {
             ...node,
             compressedSize,
             references,
+            productTitle, // Add product title to the node
             isThemeReferenced: false // Simplified for now
           }
         };
       });
       
-      return json({ images, shop: session.shop });
+      return json({ images, productTitles, shop: session.shop });
     } else {
       return json({
         images: [],
@@ -239,46 +266,133 @@ export const loader = async ({ request }) => {
 };
 
 function TableSkeleton() {
+  // Create skeleton data that matches the actual table structure
+  const skeletonRows = Array.from({ length: 15 }, (_, index) => ({
+    id: `skeleton-${index}`,
+  }));
+
   return (
-    <SkeletonPage primaryAction>
-      <Box paddingBlockEnd="400">
-        <LegacyCard>
-          <div style={{ padding: '24px' }}>
-            <SkeletonDisplayText size="small" />
-            <Box paddingBlockStart="200" />
-            {[...Array(6)].map((_, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-                <SkeletonThumbnail size="small" />
-                <div style={{ flex: 2 }}>
-                  <SkeletonBodyText lines={1} />
-                </div>
-                <div style={{ flex: 2 }}>
-                  <SkeletonBodyText lines={1} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <SkeletonBodyText lines={1} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <SkeletonBodyText lines={1} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <SkeletonBodyText lines={1} />
-                </div>
+    <Frame>
+      <Page 
+        fullWidth
+        primaryAction={
+          <ButtonGroup>
+            <Box width="160px">
+              <SkeletonBodyText lines={1} />
+            </Box>
+          </ButtonGroup>
+        }
+      >
+        <TitleBar title="Alt Text Manager" />
+        <Layout>
+          <Layout.Section>
+            <Card padding="0">
+              {/* Index Filters Skeleton */}
+              <div style={{ padding: '16px', borderBottom: '1px solid var(--p-color-border)' }}>
+                <InlineStack gap="400" align="space-between" blockAlign="center">
+                  <Box width="280px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                  <InlineStack gap="200" align="end">
+                    <Box width="100px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                    <Box width="80px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                    <Box width="32px" minHeight="32px">
+                      <SkeletonBodyText lines={1} />
+                    </Box>
+                  </InlineStack>
+                </InlineStack>
               </div>
-            ))}
-          </div>
-        </LegacyCard>
-      </Box>
-    </SkeletonPage>
+              
+              {/* Use actual IndexTable with skeleton data for pixel-perfect matching */}
+              <IndexTable
+                resourceName={{ singular: 'file', plural: 'files' }}
+                itemCount={skeletonRows.length}
+                selectedItemsCount={0}
+                onSelectionChange={() => {}}
+                headings={[
+                  { title: 'Preview' }, // Empty titles for skeleton
+                  { title: 'File name' },
+                  { title: 'Alt text' },
+                  { title: 'Size' },
+                  { title: 'Date' },
+                  { title: 'References' },
+                ]}
+                selectable
+                loading
+              >
+                {skeletonRows.map((row, index) => (
+                  <IndexTable.Row
+                    id={row.id}
+                    key={row.id}
+                    selected={false}
+                    position={index}
+                  >
+                    <IndexTable.Cell>
+                      <SkeletonThumbnail size="small" />
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <BlockStack gap="100">
+                        <Box maxWidth="200px">
+                          <SkeletonBodyText lines={1} />
+                        </Box>
+                        <Box maxWidth="60px">
+                          <SkeletonBodyText lines={1} />
+                        </Box>
+                      </BlockStack>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="180px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="80px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="70px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Box maxWidth="100px">
+                        <SkeletonBodyText lines={1} />
+                      </Box>
+                    </IndexTable.Cell>
+                  </IndexTable.Row>
+                ))}
+              </IndexTable>
+              
+              {/* Pagination Skeleton */}
+              <div style={{ padding: '16px', borderTop: '1px solid var(--p-color-border)' }}>
+                <InlineStack align="start" blockAlign="center" gap="400">
+                  <Box width="100px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                  <Box width="150px">
+                    <SkeletonBodyText lines={1} />
+                  </Box>
+                </InlineStack>
+              </div>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </Page>
+    </Frame>
   );
 }
 
 export default function ImagesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const revalidator = useRevalidator();
   
-  const { images = [], error, shop } = useLoaderData();
-  const [localImages, setLocalImages] = useState(images);
+  const { images = [], productTitles = {}, error, shop } = useLoaderData();
   const [altModalActive, setAltModalActive] = useState(false);
   const [altType, setAltType] = useState("product");
   const [altTarget, setAltTarget] = useState("product");
@@ -290,12 +404,46 @@ export default function ImagesPage() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isError, setIsError] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 15;
+
+  // IndexFilters state
+  const [queryValue, setQueryValue] = useState("");
+  const [sortSelected, setSortSelected] = useState(['date desc']);
+  const [fileSizeFilter, setFileSizeFilter] = useState(undefined);
+  const [fileTypeFilter, setFileTypeFilter] = useState(undefined);
+  const [altTextFilter, setAltTextFilter] = useState(undefined);
+  const {mode, setMode} = useSetIndexFiltersMode();
+
+  // Save and cancel handlers for IndexFilters
+  const onHandleSave = async () => {
+    await new Promise(resolve => setTimeout(resolve, 1));
+    return true;
+  };
+  
+  const onHandleCancel = () => {
+    // Clear all filters when cancel is clicked
+    handleFiltersClearAll();
+    // Exit filtering mode
+    setMode('DEFAULT');
+  };
+
+  // Check if any filters are active and set mode accordingly
+  useEffect(() => {
+    const hasActiveFilters = queryValue || 
+                            (fileSizeFilter && fileSizeFilter.length === 2) || 
+                            (fileTypeFilter && fileTypeFilter.length > 0) || 
+                            (altTextFilter && altTextFilter.length > 0);
+    
+    if (hasActiveFilters) {
+      setMode('filtering');
+    } else {
+      setMode('DEFAULT');
+    }
+  }, [queryValue, fileSizeFilter, fileTypeFilter, altTextFilter, setMode]);
 
   useEffect(() => {
     if (images) {
@@ -307,39 +455,262 @@ export default function ImagesPage() {
   // Reset page when search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [queryValue, fileSizeFilter, fileTypeFilter, altTextFilter, sortSelected]);
 
   // Always use shop for storeName extraction
   const storeName = shop ? shop.split('.')[0] : '';
 
   // Transform images array for resource state
-  const resources = (localImages || []).map(({ node }) => ({
+  const allResources = (images || []).map(({ node }) => ({
     id: node.id,
     ...node,
-    fileSize: node.compressedSize != null ? node.compressedSize : (node.originalSource?.fileSize || 0)
-  })).filter(resource => {
-    if (!searchQuery) return true;
-    const fileName = decodeURIComponent(resource.image?.url?.split('/').pop().split('?')[0].split('.')[0] || '');
-    const altText = resource.image?.altText || '';
-    return fileName.toLowerCase().includes(searchQuery.toLowerCase()) || altText.toLowerCase().includes(searchQuery.toLowerCase());
+    fileSize: node.compressedSize != null ? node.compressedSize : (node.originalSource?.fileSize || 0),
+    fileName: decodeURIComponent(node.image?.url?.split('/').pop().split('?')[0].split('.')[0] || ''),
+    fileExtension: (node.image?.url?.split('.').pop().split('?')[0] || '').toUpperCase()
+  }));
+
+  // Apply filters and search
+  const filteredResources = allResources.filter(resource => {
+    // Search filter
+    if (queryValue) {
+      const searchLower = queryValue.toLowerCase();
+      const matchesFileName = resource.fileName.toLowerCase().includes(searchLower);
+      const matchesFileType = resource.fileExtension.toLowerCase().includes(searchLower);
+      const matchesAltText = (resource.image?.altText || '').toLowerCase().includes(searchLower);
+      if (!matchesFileName && !matchesFileType && !matchesAltText) {
+        return false;
+      }
+    }
+    
+    // File size filter
+    if (fileSizeFilter && fileSizeFilter.length === 2) {
+      const fileSizeKB = resource.fileSize / 1024;
+      if (fileSizeKB < fileSizeFilter[0] || fileSizeKB > fileSizeFilter[1]) {
+        return false;
+      }
+    }
+    
+    // File type filter
+    if (fileTypeFilter && fileTypeFilter.length > 0) {
+      if (!fileTypeFilter.includes(resource.fileExtension.toLowerCase())) {
+        return false;
+      }
+    }
+
+    // Alt text filter
+    if (altTextFilter && altTextFilter.length > 0) {
+      const hasAltText = resource.image?.altText && resource.image.altText.trim() !== '';
+      if (altTextFilter.includes('with_alt') && !hasAltText) {
+        return false;
+      }
+      if (altTextFilter.includes('without_alt') && hasAltText) {
+        return false;
+      }
+    }
+    
+    return true;
   });
 
-  const totalItems = resources.length;
+  // Apply sorting
+  const sortedResources = [...filteredResources].sort((a, b) => {
+    const [sortKey, sortDirection] = sortSelected[0].split(' ');
+    
+    switch (sortKey) {
+      case 'name':
+        const nameA = a.fileName.toLowerCase();
+        const nameB = b.fileName.toLowerCase();
+        return sortDirection === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+      
+      case 'size':
+        return sortDirection === 'asc' ? a.fileSize - b.fileSize : b.fileSize - a.fileSize;
+      
+      case 'date':
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      
+      case 'type':
+        const typeA = a.fileExtension.toLowerCase();
+        const typeB = b.fileExtension.toLowerCase();
+        return sortDirection === 'asc' ? typeA.localeCompare(typeB) : typeB.localeCompare(typeA);
+
+      case 'alt':
+        const altA = (a.image?.altText || '').toLowerCase();
+        const altB = (b.image?.altText || '').toLowerCase();
+        return sortDirection === 'asc' ? altA.localeCompare(altB) : altB.localeCompare(altA);
+        
+      default:
+        return 0;
+    }
+  });
+
+  const totalItems = sortedResources.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const currentPageItems = resources.slice(
+  const currentPageItems = sortedResources.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  // IndexFilters configuration
+  const sortOptions = [
+    {label: 'File Name', value: 'name asc', directionLabel: 'A-Z'},
+    {label: 'File Name', value: 'name desc', directionLabel: 'Z-A'},
+    {label: 'Date', value: 'date asc', directionLabel: 'Oldest first'},
+    {label: 'Date', value: 'date desc', directionLabel: 'Newest first'},
+    {label: 'File Size', value: 'size asc', directionLabel: 'Smallest first'},
+    {label: 'File Size', value: 'size desc', directionLabel: 'Largest first'},
+    {label: 'File Type', value: 'type asc', directionLabel: 'A-Z'},
+    {label: 'File Type', value: 'type desc', directionLabel: 'Z-A'},
+    {label: 'Alt Text', value: 'alt asc', directionLabel: 'A-Z'},
+    {label: 'Alt Text', value: 'alt desc', directionLabel: 'Z-A'},
+  ];
+
+  // Filter handlers
+  const handleFiltersQueryChange = useCallback((value) => {
+    setQueryValue(value);
+    // Enter filtering mode when search is used
+    if (value && value.length > 0) {
+      setMode('filtering');
+    }
+  }, [setMode]);
+  const handleQueryValueRemove = useCallback(() => {
+    setQueryValue('');
+    // Exit filtering mode when search is cleared
+    setMode('DEFAULT');
+  }, [setMode]);
+  const handleFileSizeChange = useCallback((value) => {
+    setFileSizeFilter(value);
+    setMode('filtering');
+  }, [setMode]);
+  const handleFileSizeRemove = useCallback(() => {
+    setFileSizeFilter(undefined);
+    setMode('DEFAULT');
+  }, [setMode]);
+  const handleFileTypeChange = useCallback((value) => {
+    setFileTypeFilter(value);
+    if (value && value.length > 0) {
+      setMode('filtering');
+    }
+  }, [setMode]);
+  const handleFileTypeRemove = useCallback(() => {
+    setFileTypeFilter(undefined);
+    setMode('DEFAULT');
+  }, [setMode]);
+  const handleAltTextChange = useCallback((value) => {
+    setAltTextFilter(value);
+    if (value && value.length > 0) {
+      setMode('filtering');
+    }
+  }, [setMode]);
+  const handleAltTextRemove = useCallback(() => {
+    setAltTextFilter(undefined);
+    setMode('DEFAULT');
+  }, [setMode]);
+  
+  const handleFiltersClearAll = useCallback(() => {
+    handleQueryValueRemove();
+    handleFileSizeRemove();
+    handleFileTypeRemove();
+    handleAltTextRemove();
+    // Exit filtering mode when all filters are cleared
+    setMode('DEFAULT');
+  }, [handleQueryValueRemove, handleFileSizeRemove, handleFileTypeRemove, handleAltTextRemove, setMode]);
+
+  // Get unique file types for filter
+  const availableFileTypes = [...new Set(allResources.map(r => r.fileExtension.toLowerCase()))]
+    .sort()
+    .map(type => ({label: type.toUpperCase(), value: type}));
+
+  const filters = [
+    {
+      key: 'fileSize',
+      label: 'File Size (KB)',
+      filter: (
+        <RangeSlider
+          label="File size is between"
+          labelHidden
+          value={fileSizeFilter || [0, 10000]}
+          prefix=""
+          suffix=" KB"
+          output
+          min={0}
+          max={10000}
+          step={100}
+          onChange={handleFileSizeChange}
+        />
+      ),
+    },
+    {
+      key: 'fileType',
+      label: 'File Type',
+      filter: (
+        <ChoiceList
+          title="File Type"
+          titleHidden
+          choices={availableFileTypes}
+          selected={fileTypeFilter || []}
+          onChange={handleFileTypeChange}
+          allowMultiple
+        />
+      ),
+      shortcut: true,
+    },
+    {
+      key: 'altText',
+      label: 'Alt Text',
+      filter: (
+        <ChoiceList
+          title="Alt Text"
+          titleHidden
+          choices={[
+            {label: 'With Alt Text', value: 'with_alt'},
+            {label: 'Without Alt Text', value: 'without_alt'}
+          ]}
+          selected={altTextFilter || []}
+          onChange={handleAltTextChange}
+          allowMultiple
+        />
+      ),
+      shortcut: true,
+    },
+  ];
+
+  const appliedFilters = [];
+  if (fileSizeFilter) {
+    appliedFilters.push({
+      key: 'fileSize',
+      label: `File size: ${fileSizeFilter[0]}-${fileSizeFilter[1]} KB`,
+      onRemove: handleFileSizeRemove,
+    });
+  }
+  if (fileTypeFilter && fileTypeFilter.length > 0) {
+    appliedFilters.push({
+      key: 'fileType',
+      label: `File type: ${fileTypeFilter.map(t => t.toUpperCase()).join(', ')}`,
+      onRemove: handleFileTypeRemove,
+    });
+  }
+  if (altTextFilter && altTextFilter.length > 0) {
+    const altLabels = altTextFilter.map(filter => 
+      filter === 'with_alt' ? 'With Alt Text' : 'Without Alt Text'
+    );
+    appliedFilters.push({
+      key: 'altText',
+      label: `Alt text: ${altLabels.join(', ')}`,
+      onRemove: handleAltTextRemove,
+    });
+  }
+
   const resourceName = {
-    singular: 'file',
-    plural: 'files',
+    singular: t('images.file', 'file'),
+    plural: t('images.files', 'files'),
   };
 
   const {
     selectedResources,
     handleSelectionChange,
-  } = useIndexResourceState(resources);
+    clearSelection,
+  } = useIndexResourceState(sortedResources);
 
   // Format file size to human readable format
   const formatFileSize = (bytes) => {
@@ -370,18 +741,18 @@ export default function ImagesPage() {
           altText = customAlt;
         }
       }
-      let filteredResources = resources;
+      let filteredResources = sortedResources;
       // If any images are selected, only use those (ignore altTarget filtering)
       if (selectedResources.length > 0) {
-        filteredResources = resources.filter(img => selectedResources.includes(img.id));
+        filteredResources = sortedResources.filter(img => selectedResources.includes(img.id));
       } else {
         // Only filter by altTarget if not using selectedResources
         if (altTarget === 'product') {
-          filteredResources = resources.filter(img =>
+          filteredResources = sortedResources.filter(img =>
             img.references && img.references.some(ref => ref.type === 'product')
           );
         } else if (altTarget === 'theme') {
-          filteredResources = resources.filter(img => {
+          filteredResources = sortedResources.filter(img => {
             const hasTheme = img.references && img.references.some(ref => ref.type === 'theme');
             const hasProduct = img.references && img.references.some(ref => ref.type === 'product');
             return hasTheme && !hasProduct;
@@ -420,45 +791,21 @@ export default function ImagesPage() {
         setToastMessage(t('images.failed_to_update_alt_text', { count: imageIds.length }, `Failed to update alt text for ${imageIds.length} images.`));
         setIsError(true);
       } else {
-        // Instantly update local display
-        setLocalImages(localImages.map(img => {
-          // Only update alt text for filtered images
-          if (!imageIds.includes(img.id)) return img;
-          return {
-            ...img,
-            node: {
-              ...img.node,
-              image: {
-                ...img.node.image,
-                altText: altTags.length > 0
-                  ? altTags.map(tag => {
-                      if (tag.type === 'product') {
-                        return img.node.image && img.node.image.url
-                          ? decodeURIComponent(img.node.image.url.split('/').pop().split('?')[0].split('.')[0])
-                          : t('images.product_title', 'Product Image');
-                      }
-                      if (tag.type === 'store') {
-                        return storeName;
-                      }
-                      return tag.value;
-                    }).join(altSeparator)
-                  : (altType === "product"
-                      ? (img.node.image && img.node.image.url
-                          ? decodeURIComponent(img.node.image.url.split('/').pop().split('?')[0].split('.')[0])
-                          : t('images.product_title', 'Product Image'))
-                    : altType === "store"
-                      ? storeName
-                      : customAlt)
-              }
-            }
-          };
-        }));
+        // Success - no need to update local state, revalidator will handle refresh
         setAltModalActive(false);
         setAltTags([]);
         setCustomTag("");
         setAltSeparator(' | ');
         setToastMessage(t('images.alt_text_updated', `Alt text updated for ${imageIds.length} image${imageIds.length !== 1 ? 's' : ''}!`));
         setIsError(false);
+        
+        // Clear selection after successful alt text update
+        clearSelection();
+        
+        // Refresh the table after successful alt text update
+        setTimeout(() => {
+          revalidator.revalidate();
+        }, 1000);
       }
       setShowToast(true);
     } catch (e) {
@@ -477,6 +824,28 @@ export default function ImagesPage() {
       onDismiss={() => setShowToast(false)}
     />
   ) : null;
+
+  // Helper function to get product title for selected images
+  const getProductTitleForSelectedImages = () => {
+    if (selectedResources.length === 0) return 'Product Title';
+    
+    // Get all selected resources with product titles
+    const selectedWithTitles = sortedResources.filter(resource => 
+      selectedResources.includes(resource.id) && resource.productTitle
+    );
+    
+    if (selectedWithTitles.length === 0) {
+      return 'Product Title'; // Fallback if no product titles found
+    }
+    
+    if (selectedWithTitles.length === 1) {
+      return selectedWithTitles[0].productTitle;
+    }
+    
+    // If multiple images with different product titles, use the first one
+    // but could be enhanced to show a selection or use a generic title
+    return selectedWithTitles[0].productTitle;
+  };
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -520,119 +889,126 @@ export default function ImagesPage() {
                 {error}
               </Banner>
             )}
-            <div  >
-              <LegacyCard>
-                {/* Table/Card header with search bar styled like Shopify admin */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0 1rem',
-                  borderBottom: '1px solid #E1E3E5',
-                  background: '#F6F6F7',
-                  minHeight: 48
-                }}>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: '#202223' }}>
-                    {/* Optionally, put a title here or leave blank for clean look */}
-                  </div>
-                  <div style={{ maxWidth: 320, width: '100%' }}>
-                    <TextField
-                      value={searchQuery}
-                      onChange={setSearchQuery}
-                      placeholder="Search by file name or alt text"
-                      autoComplete="off"
-                      clearButton
-                      onClearButtonClick={() => setSearchQuery("")}
-                      prefix={<Icon source={SearchIcon} color="subdued" />}
-                      label="Search"
-                      labelHidden
-                      size="slim"
-                      style={{ background: '#fff', borderRadius: 6 }}
+            <Card padding="0">
+              {/* Index Filters */}
+              <IndexFilters
+                sortOptions={sortOptions}
+                sortSelected={sortSelected}
+                queryValue={queryValue}
+                queryPlaceholder="Search by file name, alt text or file type"
+                onQueryChange={handleFiltersQueryChange}
+                onQueryClear={handleQueryValueRemove}
+                onSort={setSortSelected}
+                filters={filters}
+                appliedFilters={appliedFilters}
+                onClearAll={handleFiltersClearAll}
+                mode={mode}
+                setMode={setMode}
+                tabs={[]}
+                views={[]}
+                onHandleSave={onHandleSave}
+                onHandleCancel={onHandleCancel}
+                hideFilters={false}
+                disabled={false}
+                canCreateNewView={true}
+                loading={false}
+                primaryAction={
+                  mode === 'filtering' ? {
+                    type: 'save-as',
+                    onAction: async (value) => {
+                      await new Promise(resolve => setTimeout(resolve, 1));
+                      return true;
+                    },
+                    disabled: false,
+                    loading: false,
+                  } : undefined
+                }
+                cancelAction={
+                  mode === 'filtering' ? {
+                    onAction: onHandleCancel,
+                    disabled: false,
+                    loading: false,
+                  } : undefined
+                }
+              />
+              
+              {/* Table without sticky header */}
+              <IndexTable
+                resourceName={resourceName}
+                itemCount={sortedResources.length}
+                selectedItemsCount={selectedResources.length}
+                onSelectionChange={handleSelectionChange}
+                headings={[
+                  { title: t('images.preview', 'Preview') },
+                  { title: t('images.fileName', 'File name') },
+                  { title: t('images.altText', 'Alt text') },
+                  { title: t('images.size', 'Size') },
+                  { title: t('images.date', 'Date') },
+                  { title: t('images.references', 'References') },
+                ]}
+                selectable
+              >
+                {currentPageItems.map(({ id, image, fileSize, createdAt, references, fileName, fileExtension }, index) => (
+                  <IndexTable.Row
+                    id={id}
+                    key={id}
+                    selected={selectedResources.includes(id)}
+                    position={index}
+                  >
+                    <IndexTable.Cell>
+                      <Thumbnail
+                        source={image?.url || ''}
+                        alt={image?.altText || ''}
+                        size="small"
+                      />
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <BlockStack gap="100">
+                        <Text variant="bodyMd" as="span" fontWeight="semibold">
+                          {fileName}
+                        </Text>
+                        <Text variant="bodySm" as="p" tone="subdued">
+                          {fileExtension}
+                        </Text>
+                      </BlockStack>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Text variant="bodyMd" truncate>
+                        {image?.altText || '—'}
+                      </Text>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>{formatFileSize(fileSize)}</IndexTable.Cell>
+                    <IndexTable.Cell>{formatDate(createdAt)}</IndexTable.Cell>
+                    <IndexTable.Cell>
+                      {references && references.length > 0
+                        ? (references.length > 1
+                          ? `${references.length} references`
+                          : references[0].type === 'product'
+                            ? `${references[0].count} product${references[0].count > 1 ? 's' : ''}`
+                            : references[0].label || '—')
+                        : '—'}
+                    </IndexTable.Cell>
+                  </IndexTable.Row>
+                ))}
+              </IndexTable>
+                
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div style={{ padding: '16px', borderTop: '1px solid var(--p-color-border)' }}>
+                  <InlineStack align="start" blockAlign="center" gap="400">
+                    <Pagination
+                      hasPrevious={currentPage > 1}
+                      onPrevious={() => setCurrentPage(currentPage - 1)}
+                      hasNext={currentPage < totalPages}
+                      onNext={() => setCurrentPage(currentPage + 1)}
                     />
-                  </div>
+                    <Text variant="bodySm" tone="subdued">
+                      {`${((currentPage - 1) * itemsPerPage) + 1}-${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems}`}
+                    </Text>
+                  </InlineStack>
                 </div>
-                <IndexTable
-                  resourceName={resourceName}
-                  itemCount={resources.length}
-                  selectedItemsCount={selectedResources.length}
-                  onSelectionChange={handleSelectionChange}
-                  headings={[
-                    { title: 'Preview' },
-                    { title: 'File name' },
-                    { title: 'Alt text' },
-                    { title: 'Size' },
-                    { title: 'Date' },
-                    { title: 'References' },
-                  ]}
-                  selectable
-                >
-                  {currentPageItems.map(({ id, image, fileSize, createdAt, references }, index) => (
-                    <IndexTable.Row
-                      id={id}
-                      key={id}
-                      selected={selectedResources.includes(id)}
-                      position={index}
-                    >
-                      <IndexTable.Cell>
-                        <div style={{ width: '50px', height: '50px' }}>
-                          <Thumbnail
-                            source={image?.url || ''}
-                            alt={image?.altText || ''}
-                            size="small"
-                          />
-                        </div>
-                      </IndexTable.Cell>
-                      <IndexTable.Cell>
-                        <Box padding="0" display="flex" gap="100" vertical="true">
-                          <Text variant="bodyMd" as="span" fontWeight="semibold">
-                            {decodeURIComponent(image?.url?.split('/').pop().split('?')[0].split('.')[0] || '')}
-                          </Text>
-                          <Text variant="bodySm" as="p" tone="subdued">
-                            {(image?.url?.split('.').pop().split('?')[0] || '').toUpperCase()}
-                          </Text>
-                        </Box>
-                      </IndexTable.Cell>
-                      <IndexTable.Cell>
-                        <div style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {image?.altText || '—'}
-                        </div>
-                      </IndexTable.Cell>
-                      <IndexTable.Cell>{formatFileSize(fileSize)}</IndexTable.Cell>
-                      <IndexTable.Cell>{formatDate(createdAt)}</IndexTable.Cell>
-                      <IndexTable.Cell>
-                        {references && references.length > 0
-                          ? (references.length > 1
-                            ? `${references.length} references`
-                            : references[0].type === 'product'
-                              ? `${references[0].count} product${references[0].count > 1 ? 's' : ''}`
-                              : references[0].label || '—')
-                          : '—'}
-                      </IndexTable.Cell>
-                    </IndexTable.Row>
-                  ))}
-                </IndexTable>
-                {/* Add pagination section */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    padding: '16px',
-                    borderTop: '1px solid #E1E3E5',
-                    background: '#FAFBFB',
-                    gap: '12px',
-                  }}
-                >
-                  <Pagination
-                    hasPrevious={currentPage > 1}
-                    onPrevious={() => setCurrentPage(currentPage - 1)}
-                    hasNext={currentPage < totalPages}
-                    onNext={() => setCurrentPage(currentPage + 1)}
-                    label={`Page ${currentPage} of ${totalPages}`}
-                  />
-                </div>
-              </LegacyCard>
-            </div>
+              )}
+            </Card>
           </Layout.Section>
         </Layout>
         <Modal
@@ -661,11 +1037,14 @@ export default function ImagesPage() {
           <Modal.Section>
             <LegacyStack vertical spacing="loose">
               <Text as="p">
-                Build your alt text by adding tags below. You can add <b>Product Title</b>, <b>Store Name</b>, or custom text.
+                Build your alt text by adding tags below. You can add the actual <b>Product Title</b> from your selected products, <b>Store Name</b>, or custom text.
                 The final alt text will be a combination of these, in order, separated by your chosen separator.
               </Text>
               <LegacyStack spacing="tight" alignment="center">
-                <Button onClick={() => setAltTags(tags => [...tags, { type: 'product', value: 'Product Title' }])}>
+                <Button onClick={() => {
+                  const productTitle = getProductTitleForSelectedImages();
+                  setAltTags(tags => [...tags, { type: 'product', value: productTitle }]);
+                }}>
                   + Product Title
                 </Button>
                 <Button onClick={() => setAltTags(tags => [...tags, { type: 'store', value: storeName }])}>

@@ -1,5 +1,5 @@
 {
-  "name": "diversified-enterprise-app",
+  "name": "sbit-image-seo-booster",
   "private": true,
   "scripts": {
     "build": "remix vite:build",
@@ -16,7 +16,8 @@
     "shopify": "shopify",
     "prisma": "prisma",
     "graphql-codegen": "graphql-codegen",
-    "vite": "vite"
+    "vite": "vite",
+    "cleanup-exports": "node scripts/cleanupExports.js"
   },
   "type": "module",
   "engines": {

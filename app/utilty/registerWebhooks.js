@@ -28,6 +28,22 @@ export async function registerWebhooks(shop, accessToken) {
             topic: 'APP_SCOPES_UPDATE',
             address: `${process.env.SHOPIFY_APP_URL}/webhooks/app/scopes_update`,
             format: 'json'
+        },
+        // Mandatory compliance webhooks for public apps
+        {
+            topic: 'CUSTOMERS_DATA_REQUEST',
+            address: `${process.env.SHOPIFY_APP_URL}/webhooks/customers/data_request`,
+            format: 'json'
+        },
+        {
+            topic: 'CUSTOMERS_REDACT',
+            address: `${process.env.SHOPIFY_APP_URL}/webhooks/customers/redact`,
+            format: 'json'
+        },
+        {
+            topic: 'SHOP_REDACT',
+            address: `${process.env.SHOPIFY_APP_URL}/webhooks/shop/redact`,
+            format: 'json'
         }
     ];
 

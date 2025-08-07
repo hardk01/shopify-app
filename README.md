@@ -1,8 +1,15 @@
-# Shopify App Template - Remix
+# Sbit: Image SEO Booster - Shopify App
 
-This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using the [Remix](https://remix.run) framework.
+This is **Sbit: Image SEO Booster**, a comprehensive image optimization Shopify app built using the [Remix](https://remix.run) framework.
 
-Rather than cloning this repo, you can use your preferred package manager and the Shopify CLI with [these steps](https://shopify.dev/docs/apps/getting-started/create).
+## About Sbit: Image SEO Booster
+
+A powerful Shopify app that helps merchants optimize their store images for better SEO performance and faster loading times. Features include:
+
+- **Image Compression**: Reduce file sizes while maintaining quality
+- **WebP Conversion**: Convert images to modern WebP format for better performance  
+- **Alt Text Management**: Bulk optimize alt text for better SEO
+- **Performance Analytics**: Track optimization results and improvements
 
 Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app-remix) for more details on the Remix app package.
 

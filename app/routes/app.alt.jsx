@@ -427,23 +427,7 @@ export default function ImagesPage() {
   const onHandleCancel = () => {
     // Clear all filters when cancel is clicked
     handleFiltersClearAll();
-    // Exit filtering mode
-    setMode('DEFAULT');
   };
-
-  // Check if any filters are active and set mode accordingly
-  useEffect(() => {
-    const hasActiveFilters = queryValue || 
-                            (fileSizeFilter && fileSizeFilter.length === 2) || 
-                            (fileTypeFilter && fileTypeFilter.length > 0) || 
-                            (altTextFilter && altTextFilter.length > 0);
-    
-    if (hasActiveFilters) {
-      setMode('filtering');
-    } else {
-      setMode('DEFAULT');
-    }
-  }, [queryValue, fileSizeFilter, fileTypeFilter, altTextFilter, setMode]);
 
   useEffect(() => {
     if (images) {
@@ -483,7 +467,7 @@ export default function ImagesPage() {
     }
     
     // File size filter
-    if (fileSizeFilter && fileSizeFilter.length === 2) {
+    if (fileSizeFilter && fileSizeFilter.length === 2 && (fileSizeFilter[0] !== 0 || fileSizeFilter[1] !== 10000)) {
       const fileSizeKB = resource.fileSize / 1024;
       if (fileSizeKB < fileSizeFilter[0] || fileSizeKB > fileSizeFilter[1]) {
         return false;
@@ -568,53 +552,42 @@ export default function ImagesPage() {
   // Filter handlers
   const handleFiltersQueryChange = useCallback((value) => {
     setQueryValue(value);
-    // Enter filtering mode when search is used
-    if (value && value.length > 0) {
-      setMode('filtering');
-    }
-  }, [setMode]);
+  }, []);
+  
   const handleQueryValueRemove = useCallback(() => {
     setQueryValue('');
-    // Exit filtering mode when search is cleared
-    setMode('DEFAULT');
-  }, [setMode]);
+  }, []);
+  
   const handleFileSizeChange = useCallback((value) => {
     setFileSizeFilter(value);
-    setMode('filtering');
-  }, [setMode]);
+  }, []);
+  
   const handleFileSizeRemove = useCallback(() => {
     setFileSizeFilter(undefined);
-    setMode('DEFAULT');
-  }, [setMode]);
+  }, []);
+  
   const handleFileTypeChange = useCallback((value) => {
     setFileTypeFilter(value);
-    if (value && value.length > 0) {
-      setMode('filtering');
-    }
-  }, [setMode]);
+  }, []);
+  
   const handleFileTypeRemove = useCallback(() => {
     setFileTypeFilter(undefined);
-    setMode('DEFAULT');
-  }, [setMode]);
+  }, []);
+  
   const handleAltTextChange = useCallback((value) => {
     setAltTextFilter(value);
-    if (value && value.length > 0) {
-      setMode('filtering');
-    }
-  }, [setMode]);
+  }, []);
+  
   const handleAltTextRemove = useCallback(() => {
     setAltTextFilter(undefined);
-    setMode('DEFAULT');
-  }, [setMode]);
+  }, []);
   
   const handleFiltersClearAll = useCallback(() => {
-    handleQueryValueRemove();
-    handleFileSizeRemove();
-    handleFileTypeRemove();
-    handleAltTextRemove();
-    // Exit filtering mode when all filters are cleared
-    setMode('DEFAULT');
-  }, [handleQueryValueRemove, handleFileSizeRemove, handleFileTypeRemove, handleAltTextRemove, setMode]);
+    setQueryValue('');
+    setFileSizeFilter(undefined);
+    setFileTypeFilter(undefined);
+    setAltTextFilter(undefined);
+  }, []);
 
   // Get unique file types for filter
   const availableFileTypes = [...new Set(allResources.map(r => r.fileExtension.toLowerCase()))]
@@ -676,7 +649,7 @@ export default function ImagesPage() {
   ];
 
   const appliedFilters = [];
-  if (fileSizeFilter) {
+  if (fileSizeFilter && fileSizeFilter.length === 2 && (fileSizeFilter[0] !== 0 || fileSizeFilter[1] !== 10000)) {
     appliedFilters.push({
       key: 'fileSize',
       label: `File size: ${fileSizeFilter[0]}-${fileSizeFilter[1]} KB`,
@@ -912,24 +885,6 @@ export default function ImagesPage() {
                 disabled={false}
                 canCreateNewView={true}
                 loading={false}
-                primaryAction={
-                  mode === 'filtering' ? {
-                    type: 'save-as',
-                    onAction: async (value) => {
-                      await new Promise(resolve => setTimeout(resolve, 1));
-                      return true;
-                    },
-                    disabled: false,
-                    loading: false,
-                  } : undefined
-                }
-                cancelAction={
-                  mode === 'filtering' ? {
-                    onAction: onHandleCancel,
-                    disabled: false,
-                    loading: false,
-                  } : undefined
-                }
               />
               
               {/* Table without sticky header */}

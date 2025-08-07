@@ -10,7 +10,7 @@ export default function Footer() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        SBit - Image Compres and webp
+        Sbit: Image SEO Booster
       </a>
     </div>
   );
